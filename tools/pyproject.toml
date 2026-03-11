@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "context-tools"
+version = "0.1.0"
+description = "Context workspace developer tooling CLI"
+requires-python = ">=3.10"
+dependencies = ["typer>=0.9.0", "Flask>=3.0.0"]
+
+[project.scripts]
+ctx = "ctx.cli:main"
+
+[project.optional-dependencies]
+image = [
+    "openai>=1.0.0",
+    "Pillow>=10.0.0",
+    "google-genai>=0.1.0",
+]
+knowledge = [
+    "lancedb>=0.6.0",
+    "sentence-transformers>=2.2.0",
+]
+all = ["context-tools[image,knowledge]"]
+
+[tool.setuptools.packages.find]
+include = ["ctx*"]

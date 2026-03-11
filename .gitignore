@@ -1,0 +1,75 @@
+# Sub-repositories managed by ctx workspace checkout.
+# These are independent git repos and must NEVER be tracked by the root repo.
+/repos/
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# Editor artifacts
+*.swp
+*.swo
+*~
+.idea/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Generated context (schema introspection, model parsing, etc.)
+context/
+
+# Knowledge vector index (derived artifact, rebuilt via `ctx knowledge index`)
+knowledge/
+
+# Tool dependencies (node_modules in any tool subdirectory)
+tools/**/node_modules/
+
+# Build artifacts
+dist/
+
+# Python virtual environments
+.venv/
+*/.venv/
+**/.venv/
+
+# Python bytecode cache
+__pycache__/
+**/__pycache__/
+
+# Python package build artifacts
+*.egg-info/
+**/*.egg-info/
+
+# Agent memory
+# decisions/ and known-issues/ are committed (shared knowledge).
+# progress/, preferences/, observations/, environment/ are local-only.
+memory/progress/**
+!memory/progress/**/
+!memory/progress/**/.gitkeep
+memory/preferences/**
+!memory/preferences/**/
+!memory/preferences/**/.gitkeep
+memory/observations/**
+!memory/observations/**/
+!memory/observations/**/.gitkeep
+memory/environment/**
+!memory/environment/**/
+!memory/environment/**/.gitkeep
+
+# Playground (scratch space for generated files, experiments, etc.)
+# Structure is tracked via .gitkeep; everything else is ignored.
+playground/**
+!playground/**/
+!playground/**/.gitkeep
+
+# Proposals (local working docs -- promote to exec-plans/ or decisions/ when finalized)
+# Structure and _index.md are tracked; proposal content is ignored.
+docs/proposals/**
+!docs/proposals/**/
+!docs/proposals/**/.gitkeep
+!docs/proposals/_index.md
+
+# Local cache (cloned external repos, etc.)
+.cache/

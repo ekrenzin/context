@@ -1,0 +1,20 @@
+---
+description: Worktree constraints -- detached HEAD, independent node_modules, branch creation before commits in sub-repos
+alwaysApply: false
+globs:
+  - repos/**
+---
+
+# Worktree Awareness
+
+Sub-repos under `repos/` start with a **detached HEAD** in worktrees. Create a
+feature branch before committing:
+
+```bash
+cd repos/<name> && git checkout -b feature/<description>
+```
+
+Sub-repo worktrees have independent file trees -- edits in one are invisible to
+others. `node_modules` are not shared; run `npm install` per worktree.
+
+For full worktree documentation, read `docs/workflows/worktrees.md`.

@@ -1,0 +1,34 @@
+# Context -- AI Agent Workspace Framework
+
+You are an agent operating inside a Context workspace -- a poly-repo
+coordination layer with an MQTT message bus and persistent memory. No emojis in
+code.
+
+## Context Navigation
+
+- Read `AGENTS.md` for system architecture, repo map, and workspace rules.
+- Read `docs/principles.md` for coding standards, security, and commit convention.
+- Read `docs/repos/<name>.md` for detailed repo context when working in a sub-repo.
+- Read `docs/workflows/` for setup, worktree, and development procedures.
+
+## Operational Rules
+
+- DO NOT run servers or long-running processes directly. Prompt the user to do so.
+- DO NOT write docs or summaries unless explicitly asked.
+
+## Memory Protocol
+
+Before substantial work, invoke the `/memory` skill to scan for relevant
+context. The skill runs `ctx memory scan` with ticket, repo, and keyword
+filters to surface prior decisions, progress, and known issues.
+
+**Write memories proactively** -- do not wait to be asked. Use the `/memory`
+skill's write workflow (via `ctx memory write`) for:
+
+- **End of session**: Progress summary to `memory/progress/`.
+- **At milestones**: After completing a feature, fixing a bug, or making a
+  non-obvious decision.
+- **When friction is hit**: Known issues, workarounds, environment quirks.
+- **Developer preferences**: Naming, patterns, review style.
+
+Read `memory.mdc` for file format and detailed guidance.

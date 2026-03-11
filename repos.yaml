@@ -1,0 +1,35 @@
+# Context Workspace - Repository Manifest
+#
+# Declarative list of all repositories managed by this workspace.
+# Used by `ctx workspace checkout` to clone and update sub-repos into repos/<name>/.
+#
+# defaults:
+#   org    -- GitHub organization or user that owns the repos.
+#   remote -- base URLs for building clone URLs (http and ssh variants).
+#
+# Each repository entry supports these fields:
+#   name        (required) -- repo name; cloned into repos/<name>/
+#   branch      (required) -- default branch to track
+#   description (optional) -- human-readable purpose
+#   remote      (optional) -- full clone URL; overrides the defaults when set
+
+defaults:
+  org: your-github-org
+  remote:
+    http: https://github.com
+    ssh: git@github.com
+
+repositories:
+  # Example entries -- uncomment and replace with your actual repos.
+  #
+  # - name: my-web-app
+  #   branch: main
+  #   description: Core web application (React/Node.js/PostgreSQL)
+  #
+  # - name: my-api-service
+  #   branch: main
+  #   description: Backend API service (Python/FastAPI)
+  #
+  # - name: my-worker
+  #   branch: main
+  #   description: Background job processor (Node.js/SQS)

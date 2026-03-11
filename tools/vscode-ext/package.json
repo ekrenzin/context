@@ -1,0 +1,115 @@
+{
+  "name": "ctx-services",
+  "displayName": "Context Services",
+  "description": "Dashboard to manage development services, tunnels, tests, and logs",
+  "version": "0.3.0",
+  "publisher": "context",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./dist/extension.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "watch": "tsc -p tsconfig.json -w"
+  },
+  "dependencies": {
+    "mqtt": "^5.15.0",
+    "ctx-mqtt": "file:../ctx-mqtt"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "^1.80.0",
+    "typescript": "^5.7.0"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "ctx.openDashboard",
+        "title": "Context: Open Dashboard",
+        "icon": "media/icon.svg"
+      },
+      {
+        "command": "ctx.startDashboardServer",
+        "title": "Context: Start Dashboard Server"
+      },
+      {
+        "command": "ctx.stopDashboardServer",
+        "title": "Context: Stop Dashboard Server"
+      },
+      {
+        "command": "ctx.restartDashboardServer",
+        "title": "Context: Restart Dashboard Server"
+      },
+      {
+        "command": "ctx.clearMqttEvents",
+        "title": "Context: Clear MQTT Events"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "ctx.openDashboard",
+        "key": "ctrl+shift+s",
+        "mac": "cmd+shift+s"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "ctxServices",
+          "title": "Context Services",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "ctxServices": [
+        {
+          "id": "ctxLauncherView",
+          "name": "Context"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Context Services",
+      "properties": {
+        "ctx.autoOpenDashboard": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically open the Context Command Center when the workspace loads."
+        },
+        "ctx.dashboardPort": {
+          "type": "number",
+          "default": 19470,
+          "description": "Port for the Context Command Center dashboard server."
+        },
+        "ctx.dashboardWebPort": {
+          "type": "number",
+          "default": 19471,
+          "description": "Port for dashboard live web UI (Vite dev server)."
+        },
+        "ctx.dashboardLiveReload": {
+          "type": "boolean",
+          "default": true,
+          "description": "Use live-reload mode so dashboard UI reflects local source changes without rebuilding."
+        },
+        "ctx.autoSetupCheck": {
+          "type": "boolean",
+          "default": true,
+          "description": "On startup, run a setup check and launch an AI agent to fix issues automatically."
+        }
+      }
+    },
+    "viewsWelcome": [
+      {
+        "view": "ctxLauncherView",
+        "contents": "Open the Context Command Center to manage services, tunnels, tests, and logs.\n[Open Dashboard](command:ctx.openDashboard)"
+      }
+    ]
+  }
+}

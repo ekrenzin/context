@@ -1,0 +1,145 @@
+# tools/manifest.yaml -- Single source of truth for all workspace tooling.
+#
+# The VS Code extension, docs/tooling-registry.md, and validation all derive
+# from this file. When you add a tool, the ecosystem grows automatically:
+#
+#   - Every entry here appears in the generated tooling registry.
+#   - Adding `dashboard: actions` makes a tool a Quick Action in the extension.
+#   - Adding a `tests` entry makes it appear in the Tests panel.
+#   - Adding a `log_prefixes` entry makes it appear in the Logs dropdown.
+#
+# ACI (Agent-Computer Interface) fields:
+#   - `risk`: read-only | write | destructive -- guardrails use this to gate execution
+#   - `skill`: name of the skill that wraps this tool (optional)
+#   - `agent_usage`: one-line hint for when an agent should pick this tool
+#
+# After editing, run:  ctx workspace validate registry
+#
+# Format rules (keep the YAML parser happy):
+#   - All values on one line (no block scalars)
+#   - Top-level keys flush left, array items indented 2 spaces
+#   - Item properties indented 4 spaces
+
+categories:
+  - id: setup
+    label: Workspace Setup and Maintenance
+  - id: worktrees
+    label: Worktrees
+  - id: memory
+    label: Agent Memory
+  - id: observability
+    label: Observability
+  - id: dev
+    label: Development Services
+  - id: networking
+    label: Networking
+
+tools:
+  - path: ctx workspace setup
+    language: python
+    category: setup
+    description: Full workspace bootstrap (repos, hooks, .env, context generation)
+    risk: write
+    agent_usage: Run once when setting up a new workspace or after repos.yaml changes
+  - path: ctx workspace verify
+    language: python
+    category: setup
+    description: Validate workspace setup completeness without modifying anything
+    risk: read-only
+    agent_usage: Check that workspace prerequisites are met before starting work
+    dashboard: actions
+    dashboard_icon: check
+  - path: ctx workspace checkout
+    language: python
+    category: setup
+    description: Clone or update sub-repos from repos.yaml
+    risk: write
+    agent_usage: Fetch latest sub-repo code when repos are missing or stale
+    dashboard: actions
+    dashboard_label: Update All Repos
+    dashboard_icon: sync
+  - path: ctx workspace hooks install
+    language: python
+    category: setup
+    description: Install pre-commit hook for the root repo
+    risk: write
+    agent_usage: Run after cloning or if pre-commit hook is missing
+  - path: ctx workspace check
+    language: python
+    category: setup
+    description: Unified local validation runner (lint, types, tests across repos)
+    risk: read-only
+    agent_usage: Run before presenting work as complete -- mandatory quality gate
+  - path: ctx workspace deps
+    language: python
+    category: setup
+    description: Install and update dependencies for all tools (pip, npm)
+    risk: write
+    agent_usage: Run after pulling changes or when tools fail due to missing dependencies
+    dashboard: actions
+    dashboard_label: Install Tool Deps
+    dashboard_icon: package
+  - path: ctx workspace validate registry
+    language: python
+    category: setup
+    description: Generate docs/tooling-registry.md from tools/manifest.yaml
+    risk: write
+    agent_usage: Run after editing manifest.yaml to keep registry in sync
+  - path: ctx workspace validate docs
+    language: python
+    category: setup
+    description: Validate docs/ structure, cross-links, line budgets, repo alignment
+    risk: read-only
+    agent_usage: Verify documentation integrity after editing docs/ or AGENTS.md
+  - path: ctx workspace worktrees create
+    language: python
+    category: worktrees
+    description: Bootstrap a worktree for parallel development
+    risk: write
+    agent_usage: Create an isolated worktree before starting a new feature branch
+  - path: ctx workspace worktrees prune
+    language: python
+    category: worktrees
+    description: Clean up stale worktree metadata across all sub-repos
+    risk: write
+    agent_usage: Clean up after completed or abandoned worktrees
+  - path: ctx memory
+    language: python
+    category: memory
+    description: Agent memory indexer (scan, write, list, prune)
+    risk: write
+    skill: memory
+    agent_usage: Scan memory for relevant context at session start or write progress at milestones
+  - path: ctx profiler
+    language: python
+    category: observability
+    description: Scan agent transcripts to build skill and tool usage profile
+    risk: read-only
+    agent_usage: Run to analyze which skills and tools are used most across sessions
+    dashboard: actions
+    dashboard_label: Profile Agent Usage
+    dashboard_icon: chart
+  - path: ctx profiler synth agents
+    language: python
+    category: observability
+    description: Auto-synthesize agent skill files from recurring session workflow clusters
+    risk: write
+    agent_usage: Run after ctx profiler scan to detect workflow patterns and generate agent candidates
+  - path: ctx workspace start
+    language: python
+    category: dev
+    description: Launch all local dev services in background jobs
+    risk: write
+    agent_usage: Do not start directly -- prompt the user to run long-lived processes
+
+actions: []
+
+tests: []
+
+log_prefixes: []
+
+log_windows:
+  - 15m
+  - 1h
+  - 6h
+  - 1d

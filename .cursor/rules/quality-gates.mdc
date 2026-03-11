@@ -1,0 +1,75 @@
+---
+description: Validation-first development, quality gates, tool risk classification, and escalation triggers
+alwaysApply: true
+---
+
+# Quality Gates
+
+Build the rail, then build the thing. Every implementation must be preceded by
+its validation, and followed by proof that the validation passes.
+
+## Validation First
+
+Before writing implementation code, ensure the validation infrastructure exists:
+
+1. **Tests exist** for the module being modified. If not, write them first.
+2. **Linting passes** on the files you will touch.
+3. **Type checks pass** (where applicable).
+
+If creating something new, write the test alongside or before the implementation.
+
+## Local Validation
+
+```bash
+ctx workspace check --quick --repo <repo-name>  # lint + types
+ctx workspace check --repo <repo-name>           # lint + types + tests
+ctx workspace check --root                       # root repo only
+```
+
+### Per-Repo Commands
+
+| Repo            | Lint                                  | Types              | Tests                 |
+| --------------- | ------------------------------------- | ------------------ | --------------------- |
+| your-app        | `npm run lint:server` / `lint:client` | `npx tsc --noEmit` | `npm run test:server` |
+| your-service    | (via check.sh)                        | N/A                | `npm test`            |
+| your-gateway    | (via check.sh)                        | N/A                | `python -m pytest`    |
+
+## Before Presenting Work as Complete
+
+1. `ctx workspace check --quick --repo <name>` passes.
+2. Relevant tests pass if the change is non-trivial.
+3. `/code-review` checklist applied.
+4. For platform changes, `/browser-checker` confirms UI renders.
+
+## Before Creating a PR
+
+1. All code-review criteria met.
+2. `ctx workspace check` passes.
+3. PR summary generated from diff (not fabricated).
+4. Jira ticket linked.
+
+## Tool Risk Classification
+
+| Risk Level  | Behavior                                |
+| ----------- | --------------------------------------- |
+| read-only   | Execute freely.                         |
+| write       | Execute normally. Log what was changed. |
+| destructive | Pause and confirm with the user first.  |
+
+For ad-hoc shell commands, classify by intent: reading = read-only,
+creating/modifying = write, deleting/deploying = destructive.
+
+## Escalation Triggers
+
+Stop and ask the user when:
+
+- **Repeated failure**: Same step failed 3 times.
+- **Ambiguous requirements**: Multiple valid interpretations, wrong choice costly.
+- **Cross-repo impact**: Schema, MQTT topics, event formats, or API contracts.
+- **Security-sensitive**: Auth logic, encryption, secrets, access control.
+- **Destructive operations**: Data deletion, force push, production deployment.
+
+## New Tooling
+
+Scripts in `tools/` must validate their own output (e.g., `--dry-run` mode).
+Register in `tools/manifest.yaml` (run `ctx workspace validate registry` to sync).
