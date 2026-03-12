@@ -29,6 +29,16 @@ tools/**/node_modules/
 # Build artifacts
 dist/
 
+# TypeScript compiled output (in-place next to .ts sources)
+# The canonical build goes to dist/; these are stale if present.
+tools/**/*.js
+tools/**/*.d.ts
+# Allow JS config files that are source, not compiled
+!tools/**/vite.config.js
+!tools/**/tailwind.config.js
+!tools/**/postcss.config.js
+!tools/**/eslint.config.js
+
 # Python virtual environments
 .venv/
 */.venv/
@@ -71,5 +81,11 @@ docs/proposals/**
 !docs/proposals/**/.gitkeep
 !docs/proposals/_index.md
 
+# Session logs (generated terminal I/O, rebuilt at runtime)
+memory/sessions/
+
 # Local cache (cloned external repos, etc.)
 .cache/
+
+# Application data (SQLite DB, local state)
+.ctx/

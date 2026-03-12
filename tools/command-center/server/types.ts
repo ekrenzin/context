@@ -204,6 +204,7 @@ export type AgentJobType =
   | "memory-synthesis"
   | "skill-evolution"
   | "agent-synthesis"
+  | "knowledge-index"
   | "intel-analysis";
 
 export type AgentJobStatus = "pending" | "running" | "completed" | "failed" | "skipped" | "cancelled";

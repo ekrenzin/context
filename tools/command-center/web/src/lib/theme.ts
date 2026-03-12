@@ -1,4 +1,5 @@
-import { createTheme } from "@mui/material/styles";
+import { createTheme, type Theme } from "@mui/material/styles";
+import type { BrandingConfig, PaletteConfig } from "./branding";
 
 const shared = {
   typography: {
@@ -7,7 +8,6 @@ const shared = {
     h5: { fontWeight: 600 },
     h6: { fontWeight: 600 },
   },
-  shape: { borderRadius: 10 },
   components: {
     MuiCard: {
       defaultProps: { variant: "outlined" as const },
@@ -19,45 +19,29 @@ const shared = {
   },
 };
 
-export const darkTheme = createTheme({
-  ...shared,
-  palette: {
-    mode: "dark",
-    primary: { main: "#d4af37" },
-    secondary: { main: "#f0cf67" },
-    success: { main: "#4caf50" },
-    warning: { main: "#e6b44a" },
-    error: { main: "#ef5350" },
-    background: {
-      default: "#050505",
-      paper: "#111111",
+function buildMode(mode: "dark" | "light", p: PaletteConfig, borderRadius: number): Theme {
+  return createTheme({
+    ...shared,
+    shape: { borderRadius },
+    palette: {
+      mode,
+      primary: { main: p.primary },
+      secondary: { main: p.secondary },
+      success: { main: p.success },
+      warning: { main: p.warning },
+      error: { main: p.error },
+      background: { default: p.background, paper: p.surface },
+      text: { primary: p.text, secondary: p.textSecondary },
     },
-    text: {
-      primary: "#f5e6b3",
-      secondary: "#c9b27a",
-    },
-  },
-});
+  });
+}
 
-export const lightTheme = createTheme({
-  ...shared,
-  palette: {
-    mode: "light",
-    primary: { main: "#8a6a0a" },
-    secondary: { main: "#b7890d" },
-    success: { main: "#2e7d32" },
-    warning: { main: "#b7791f" },
-    error: { main: "#c62828" },
-    background: {
-      default: "#f8f5ea",
-      paper: "#fffdf7",
-    },
-    text: {
-      primary: "#121212",
-      secondary: "#3a3a3a",
-    },
-  },
-});
+export function buildThemes(cfg: BrandingConfig): { dark: Theme; light: Theme } {
+  return {
+    dark: buildMode("dark", cfg.dark, cfg.borderRadius),
+    light: buildMode("light", cfg.light, cfg.borderRadius),
+  };
+}
 
 export function getInitialMode(): "light" | "dark" {
   const params = new URLSearchParams(window.location.search);

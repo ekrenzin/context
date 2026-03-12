@@ -4,12 +4,32 @@ You are an agent operating inside a Context workspace -- a poly-repo
 coordination layer with an MQTT message bus and persistent memory. No emojis in
 code.
 
-## Context Navigation
+## Navigation
 
-- Read `AGENTS.md` for system architecture, repo map, and workspace rules.
-- Read `docs/principles.md` for coding standards, security, and commit convention.
-- Read `docs/repos/<name>.md` for detailed repo context when working in a sub-repo.
-- Read `docs/workflows/` for setup, worktree, and development procedures.
+- Read `AGENTS.md` for workspace rule index.
+- Read `rules/` for the full set of workspace rules (shared across all AI tools).
+- Read `docs/proposals/` for feature proposals and design docs.
+
+## Always-Apply Rules
+
+Read and follow these rules in every session:
+
+- `rules/context-engineering.md` -- Manage context as a finite resource
+- `rules/modular-design.md` -- Files under 200 lines, functions under 50
+- `rules/name-things-once.md` -- No redundant naming
+- `rules/quality-gates.md` -- Validation-first development
+- `rules/playground.md` -- Git-ignored scratch space
+
+## Conditional Rules
+
+Read on demand when the task requires:
+
+- `rules/memory.md` -- Persistent agent memory protocol
+- `rules/contribute.md` -- End-of-session contribution evaluation
+- `rules/create-tooling.md` -- Building new ctx CLI tools
+- `rules/orchestration.md` -- Multi-agent coordination
+- `rules/pr-workflow.md` -- PR creation and diff workflow
+- `rules/worktrees.md` -- Sub-repo worktree constraints
 
 ## Operational Rules
 
@@ -18,17 +38,5 @@ code.
 
 ## Memory Protocol
 
-Before substantial work, invoke the `/memory` skill to scan for relevant
-context. The skill runs `ctx memory scan` with ticket, repo, and keyword
-filters to surface prior decisions, progress, and known issues.
-
-**Write memories proactively** -- do not wait to be asked. Use the `/memory`
-skill's write workflow (via `ctx memory write`) for:
-
-- **End of session**: Progress summary to `memory/progress/`.
-- **At milestones**: After completing a feature, fixing a bug, or making a
-  non-obvious decision.
-- **When friction is hit**: Known issues, workarounds, environment quirks.
-- **Developer preferences**: Naming, patterns, review style.
-
-Read `memory.mdc` for file format and detailed guidance.
+Before substantial work, scan `memory/` for relevant context (decisions,
+progress, known issues). Write memory proactively -- see `rules/memory.md`.

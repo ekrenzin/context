@@ -1,0 +1,51 @@
+```markdown
+---
+title: Decision Tracker Rule
+domain: decision-tracker
+version: 1.0
+---
+
+# Decision Tracker Rule
+
+## Purpose
+To ensure consistent and complete documentation of project decisions and their reasoning.
+
+## Scope
+This rule applies to all agents involved in project management and decision-making processes.
+
+## Guidelines
+
+1. **Identify Decision Context**
+   - Clearly define the project or task associated with the decision.
+   - Specify the stakeholders involved.
+
+2. **Document Decision Details**
+   - Record the decision made, including any alternatives considered.
+   - Provide a concise summary of the decision.
+
+3. **Capture Reasoning**
+   - Explain the rationale behind the decision.
+   - Include any data, analysis, or discussions that influenced the decision.
+
+4. **Record Date and Time**
+   - Log the date and time when the decision was made.
+
+5. **Assign Responsibility**
+   - Identify the individual or team responsible for the decision.
+
+6. **Review and Approval**
+   - Ensure the decision is reviewed and approved by relevant stakeholders.
+   - Document any feedback or objections.
+
+7. **Version Control**
+   - Maintain a version history of decisions for future reference.
+
+8. **Accessibility**
+   - Ensure that the decision documentation is accessible to all relevant parties.
+
+## Compliance
+Adherence to this rule is mandatory for all agents within the decision-tracker domain. Non-compliance may result in project delays or miscommunication.
+
+## Review Cycle
+This rule will be reviewed annually to ensure its effectiveness and relevance.
+```

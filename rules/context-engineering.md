@@ -1,0 +1,57 @@
+# Context Engineering
+
+Context is the set of tokens present when sampling from the model. As context
+grows, recall accuracy degrades (context rot). Your job is to maximize signal
+per token at every inference step.
+
+## Right-Altitude Instructions
+
+Instructions exist on a spectrum from brittle (over-specified, hardcoded
+if-else) to vague (under-specified, relies on assumptions). Aim for the middle:
+
+- Provide strong heuristics, not exhaustive rules.
+- Add specificity only after observing a concrete failure mode.
+- Use structured sections (XML tags, Markdown headers) to delineate concerns.
+- If a rule is longer than ~20 lines, it may be too low-altitude. Extract the
+  intent and let the model reason about edge cases.
+
+## Scoped Retrieval
+
+Load only what the current task requires:
+
+- Read `docs/repos/<name>.md` for repo-specific context before touching that
+  repo. Do not load all repo docs at once.
+- Load `context/` artifacts (schema, models, drift) only when the task involves
+  database or model changes. Never front-load the entire directory.
+- Use `AGENTS.md` as the navigation index, not as a dump of all knowledge.
+
+## Just-in-Time Discovery
+
+Prefer searching over pre-loading. The hybrid strategy:
+
+- **Speed layer**: Always-applied rules and AGENTS.md are already in context.
+  These cover orientation and standards.
+- **Flexibility layer**: Use search tools to discover specifics on demand. Each
+  search result is high-signal because the agent chose to look for it.
+- Avoid reading entire large files when a targeted search would suffice. Read
+  the section you need, not the whole file.
+
+## Compaction During Long Sessions
+
+As a session accumulates tool outputs and conversation history:
+
+- Summarize findings before moving to the next phase of work. A two-sentence
+  summary of what was learned replaces thousands of tokens of raw output.
+- When referencing earlier work, cite the conclusion -- not the full trace.
+- If you notice the conversation is very long, proactively summarize the
+  current state (what has been done, what remains, key decisions) before
+  continuing.
+
+## Token Efficiency in Tool Outputs
+
+When designing or using tools:
+
+- Prefer concise, structured output over verbose narratives.
+- Strip irrelevant fields from API responses before reasoning over them.
+- If a tool returns more data than needed, extract the relevant subset and
+  discard the rest from working memory.

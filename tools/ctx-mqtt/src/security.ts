@@ -23,11 +23,11 @@ const CONFIG_DIR = path.join(os.homedir(), ".ctx", "mqtt");
 const TCP_PORT = 1883;
 const WS_PORT = 9001;
 
-export function generateBrokerSecurity(): BrokerSecurity {
+export function generateBrokerSecurity(externalToken?: string): BrokerSecurity {
   fs.mkdirSync(CONFIG_DIR, { recursive: true, mode: 0o700 });
 
   const username = "ctx";
-  const password = crypto.randomBytes(32).toString("hex");
+  const password = externalToken ?? crypto.randomBytes(32).toString("hex");
 
   const creds: BrokerCredentials = {
     username,

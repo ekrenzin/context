@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   Chip,
   Popover,
@@ -7,72 +7,65 @@ import {
   Divider,
 } from "@mui/material";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import GitHubIcon from "@mui/icons-material/GitHub";
-import CloudIcon from "@mui/icons-material/Cloud";
-import PersonIcon from "@mui/icons-material/Person";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import type { IdentitySnapshot, IdentityProvider } from "../lib/api";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 
-interface Props {
-  socketConnected: boolean;
-  identities: IdentitySnapshot;
+export interface ServiceCheck {
+  id: string;
+  label: string;
+  status: "ok" | "degraded" | "down";
+  detail?: string;
 }
 
-function ProviderIcon({ provider }: { provider: IdentityProvider["provider"] }) {
-  if (provider === "github") return <GitHubIcon sx={{ fontSize: 16 }} />;
-  if (provider === "aws") return <CloudIcon sx={{ fontSize: 16 }} />;
-  return <PersonIcon sx={{ fontSize: 16 }} />;
+function StatusIcon({ status }: { status: ServiceCheck["status"] }) {
+  if (status === "ok") return <CheckCircleOutlineIcon sx={{ fontSize: 14 }} color="success" />;
+  if (status === "degraded") return <WarningAmberIcon sx={{ fontSize: 14 }} color="warning" />;
+  return <ErrorOutlineIcon sx={{ fontSize: 14 }} color="error" />;
 }
 
-function StatusIcon({ status }: { status: IdentityProvider["status"] }) {
-  if (status === "connected") return <CheckCircleOutlineIcon sx={{ fontSize: 14 }} color="success" />;
-  if (status === "disconnected") return <ErrorOutlineIcon sx={{ fontSize: 14 }} color="error" />;
-  return <HelpOutlineIcon sx={{ fontSize: 14 }} color="disabled" />;
-}
-
-function IdentityRow({ identity }: { identity: IdentityProvider }) {
-  const label = identity.username ?? identity.displayName ?? identity.accountId ?? "--";
-
+function ServiceRow({ service }: { service: ServiceCheck }) {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        py: 0.75,
-        px: 2,
-      }}
-    >
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1.25, minWidth: 0 }}>
-        <ProviderIcon provider={identity.provider} />
-        <Box sx={{ minWidth: 0 }}>
-          <Typography variant="body2" fontWeight={500} sx={{ textTransform: "capitalize" }}>
-            {identity.provider}
-          </Typography>
-          <Typography variant="caption" color="text.secondary" noWrap>
-            {identity.status === "connected" ? label : (identity.detail ?? identity.status)}
-          </Typography>
-        </Box>
+    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", py: 0.75, px: 2 }}>
+      <Box sx={{ minWidth: 0 }}>
+        <Typography variant="body2" fontWeight={500}>{service.label}</Typography>
+        {service.detail && (
+          <Typography variant="caption" color="text.secondary" noWrap>{service.detail}</Typography>
+        )}
       </Box>
-      <StatusIcon status={identity.status} />
+      <StatusIcon status={service.status} />
     </Box>
   );
 }
 
-export function StatusDropdown({ socketConnected, identities }: Props) {
+export function StatusDropdown() {
   const anchorRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
+  const [services, setServices] = useState<ServiceCheck[]>([]);
 
-  const providers = [identities.github, identities.cursor, identities.aws];
-  const connectedCount = providers.filter((p) => p.status === "connected").length;
-  const allGood = connectedCount === 3 && socketConnected;
+  useEffect(() => {
+    let cancelled = false;
+    const load = () =>
+      fetch("/api/health")
+        .then((r) => r.json())
+        .then((h) => { if (!cancelled && Array.isArray(h.services)) setServices(h.services); })
+        .catch(() => {});
+    load();
+    const id = setInterval(load, 30_000);
+    return () => { cancelled = true; clearInterval(id); };
+  }, []);
 
-  const chipColor: "success" | "warning" | "error" | "default" =
-    allGood ? "success"
-      : connectedCount > 0 ? "warning"
-        : "error";
+  const downCount = services.filter((s) => s.status === "down").length;
+  const degradedCount = services.filter((s) => s.status === "degraded").length;
+
+  const chipColor: "success" | "warning" | "error" =
+    downCount > 0 ? "error" : degradedCount > 0 ? "warning" : "success";
+
+  const chipLabel = downCount > 0
+    ? `${downCount} down`
+    : degradedCount > 0
+      ? `${degradedCount} warn`
+      : "All OK";
 
   return (
     <>
@@ -84,13 +77,10 @@ export function StatusDropdown({ socketConnected, identities }: Props) {
         onClick={() => setOpen((prev) => !prev)}
         icon={
           <FiberManualRecordIcon
-            sx={{
-              fontSize: "10px !important",
-              color: socketConnected ? "success.main" : "error.main",
-            }}
+            sx={{ fontSize: "10px !important", color: `${chipColor}.main` }}
           />
         }
-        label={`${connectedCount}/3`}
+        label={chipLabel}
         sx={{ height: 22, fontSize: 11, cursor: "pointer" }}
       />
 
@@ -103,21 +93,11 @@ export function StatusDropdown({ socketConnected, identities }: Props) {
         slotProps={{ paper: { sx: { width: 280, mt: 0.5 } } }}
       >
         <Box sx={{ px: 2, py: 1.25 }}>
-          <Typography variant="subtitle2" fontWeight={600}>
-            Status
-          </Typography>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, mt: 0.25 }}>
-            <FiberManualRecordIcon
-              sx={{ fontSize: 10, color: socketConnected ? "success.main" : "error.main" }}
-            />
-            <Typography variant="caption" color="text.secondary">
-              Bridge {socketConnected ? "connected" : "disconnected"}
-            </Typography>
-          </Box>
+          <Typography variant="subtitle2" fontWeight={600}>Services</Typography>
         </Box>
         <Divider />
-        {providers.map((p) => (
-          <IdentityRow key={p.provider} identity={p} />
+        {services.map((s) => (
+          <ServiceRow key={s.id} service={s} />
         ))}
       </Popover>
     </>

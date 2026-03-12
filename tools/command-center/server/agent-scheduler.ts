@@ -271,13 +271,15 @@ export function createAgentScheduler(
       case "skill-evolution":
         return {
           cmd: ctxBin,
-          args: ["profiler", "synth", "skills", "--top", "5", "--stage"],
+          args: ["profiler", "synth", "skills", "--top", "5"],
         };
       case "agent-synthesis":
         return {
           cmd: ctxBin,
           args: ["profiler", "synth", "agents", "--top", "5", "--stage"],
         };
+      case "knowledge-index":
+        return { cmd: ctxBin, args: ["knowledge", "index"] };
       case "intel-analysis":
         return { cmd: path.join(s, "intel-analysis.sh"), args: [] };
     }
@@ -295,7 +297,9 @@ export function createAgentScheduler(
     const j4 = makeJob("memory-synthesis", trigger);
     const j5 = makeJob("skill-evolution", trigger);
     const j6 = makeJob("agent-synthesis", trigger);
+    const j7 = makeJob("knowledge-index", trigger);
 
+    pushJob(j7);
     pushJob(j6);
     pushJob(j5);
     pushJob(j4);
@@ -311,7 +315,7 @@ export function createAgentScheduler(
     try {
       await runScript(j1, ctxBin, ["profiler", "scan"], root);
       if (cancelRequested) {
-        skipRemaining("cancelled", j2, j3, j4, j5, j6);
+        skipRemaining("cancelled", j2, j3, j4, j5, j6, j7);
         return;
       }
 
@@ -322,11 +326,11 @@ export function createAgentScheduler(
         root,
       );
       if (cancelRequested) {
-        skipRemaining("cancelled", j3, j4, j5, j6);
+        skipRemaining("cancelled", j3, j4, j5, j6, j7);
         return;
       }
       if (j2exit !== 0) {
-        skipRemaining("session-analysis failed", j3, j4, j5, j6);
+        skipRemaining("session-analysis failed", j3, j4, j5, j6, j7);
         return;
       }
 
@@ -338,25 +342,25 @@ export function createAgentScheduler(
       } else {
         await runScript(j3, ctxBin, ["workspace", "scan"], root);
         if (cancelRequested) {
-          skipRemaining("cancelled", j4, j5, j6);
+          skipRemaining("cancelled", j4, j5, j6, j7);
           return;
         }
       }
 
       await runScript(j4, ctxBin, ["profiler", "synth", "memory"], root);
       if (cancelRequested) {
-        skipRemaining("cancelled", j5, j6);
+        skipRemaining("cancelled", j5, j6, j7);
         return;
       }
 
       await runScript(
         j5,
         ctxBin,
-        ["profiler", "synth", "skills", "--top", "5", "--stage"],
+        ["profiler", "synth", "skills", "--top", "5"],
         root,
       );
       if (cancelRequested) {
-        skipRemaining("cancelled", j6);
+        skipRemaining("cancelled", j6, j7);
         return;
       }
 
@@ -366,6 +370,12 @@ export function createAgentScheduler(
         ["profiler", "synth", "agents", "--top", "5", "--stage"],
         root,
       );
+      if (cancelRequested) {
+        skipRemaining("cancelled", j7);
+        return;
+      }
+
+      await runScript(j7, ctxBin, ["knowledge", "index"], root);
     } finally {
       running = false;
       cancelRequested = false;

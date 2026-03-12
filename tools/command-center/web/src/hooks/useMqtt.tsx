@@ -177,30 +177,6 @@ export function useMqttBuffer<T = unknown>(
   return items;
 }
 
-/**
- * Publish a VS Code command via MQTT.
- * Accepts either (type, data?) or ({type, ...data}) for backward compat.
- */
-export function useVscodeCommand(): (
-  typeOrMsg: string | { type: string; [key: string]: unknown },
-  data?: Record<string, unknown>,
-) => void {
-  const publish = useMqttPublish();
-  return useCallback(
-    (
-      typeOrMsg: string | { type: string; [key: string]: unknown },
-      data?: Record<string, unknown>,
-    ) => {
-      const cmdTopic = topicFor("vscode/cmd");
-      if (typeof typeOrMsg === "string") {
-        publish(cmdTopic, { type: typeOrMsg, ...data });
-      } else {
-        publish(cmdTopic, typeOrMsg);
-      }
-    },
-    [publish],
-  );
-}
 
 function topicMatches(topic: string, pattern: string): boolean {
   if (pattern === "#" || pattern === topic) return true;

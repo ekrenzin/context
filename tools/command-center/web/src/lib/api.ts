@@ -6,6 +6,16 @@ async function get<T>(path: string): Promise<T> {
   return res.json();
 }
 
+async function postJson<T>(path: string, body: unknown): Promise<T> {
+  const res = await fetch(path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) throw new Error(`POST ${path} failed: ${res.status}`);
+  return res.json();
+}
+
 export interface SessionRecord {
   chatId: string;
   title: string;
@@ -36,27 +46,6 @@ export interface SessionsPage {
   total: number;
 }
 
-export interface SessionAnalysis {
-  verdict: string;
-  title: string;
-  summary: string;
-  wins: string[];
-  errors: string[];
-  gaps: string[];
-  userStats: Record<string, number>;
-  agentStats: Record<string, number>;
-  efficiency: { wastedCycles: string; bottlenecks: string; score: number };
-  insights: string[];
-  recommendations: string[];
-}
-
-export interface ProfileData {
-  skills: Array<{ name: string; count: number; lastSeen: string }>;
-  tools: Array<{ name: string; count: number }>;
-  lastScan: string;
-  sessions: number;
-}
-
 export interface StatsOverview {
   totalSessions: number;
   analyzedSessions: number;
@@ -75,58 +64,12 @@ export interface StatsOverview {
   };
 }
 
-export interface TunnelInstance {
-  pid: number;
-  port: number;
-  url: string;
-  fullUrl: string;
-  startedAt: string;
-  alive?: boolean;
-}
-
-export interface RepoEntry {
-  name: string;
-  branch: string;
-  description: string;
-  installCommand?: string;
-  present: boolean;
-}
-
-export interface DashboardConfig {
-  tests: Array<{ name: string; command: string; watchCommand?: string; cwd: string }>;
-  actions: Array<{ label: string; command: string; cwd?: string; icon?: string }>;
-  logPrefixes: Array<{ label: string; value: string }>;
-  logWindows: string[];
-  logSyncLabel?: string;
-}
-
-export interface SkillNode {
-  id: string;
-  description: string;
-  category: string;
-  relatedSkills: string[];
-}
-
-export interface SkillEdge {
-  source: string;
-  target: string;
-  type: "trigger" | "related";
-}
-
-export interface SkillGraph {
-  nodes: SkillNode[];
-  edges: SkillEdge[];
-}
-
 export interface IdentityProvider {
   provider: "github" | "cursor" | "aws";
   status: "connected" | "disconnected" | "unknown";
   username?: string;
   displayName?: string;
   email?: string;
-  team?: string;
-  accountId?: string;
-  detail?: string;
 }
 
 export interface IdentitySnapshot {
@@ -134,159 +77,6 @@ export interface IdentitySnapshot {
   cursor: IdentityProvider;
   aws: IdentityProvider;
   updatedAt: string;
-}
-
-export interface SessionMapNode {
-  id: string;
-  title: string;
-  date: string;
-  verdict: string;
-  skills: string[];
-  theme: string;
-  totalCalls: number;
-  userTurns: number;
-  repos: string[];
-}
-
-export interface SessionMapEdge {
-  source: string;
-  target: string;
-  weight: number;
-  sharedSkills: string[];
-}
-
-export interface SessionMapData {
-  nodes: SessionMapNode[];
-  edges: SessionMapEdge[];
-}
-
-export interface ChatTurn {
-  role: "user" | "assistant";
-  text: string;
-}
-
-export type IntelReportType =
-  | "product-analysis"
-  | "competitor-search"
-  | "competitor-deepdive"
-  | "industry-leaders"
-  | "news-scan"
-  | "article-analysis"
-  | "competitive-suggestions"
-  | "demo-sales"
-  | "market-analysis";
-
-export interface IntelReport {
-  filename: string;
-  type: IntelReportType;
-  title: string;
-  date: string;
-  sizeBytes: number;
-}
-
-export interface IntelRunPhase {
-  filename: string;
-  type: IntelReportType;
-  title: string;
-  sizeBytes: number;
-  order: number;
-}
-
-export interface IntelRunProgress {
-  completedPhases: number;
-  expectedPhases: number;
-  currentLabel?: string;
-  elapsedSec: number;
-}
-
-export interface IntelRun {
-  id: string;
-  dirName: string;
-  repo: string;
-  date: string;
-  depth: string;
-  focus?: string;
-  complete: boolean;
-  phases: IntelRunPhase[];
-  totalBytes: number;
-  progress?: IntelRunProgress;
-}
-
-export interface IntelListResponse {
-  runs: IntelRun[];
-  legacyReports: IntelReport[];
-}
-
-export type AgentJobType =
-  | "profile-scan"
-  | "session-analysis"
-  | "codebase-scan"
-  | "memory-synthesis"
-  | "skill-evolution"
-  | "agent-synthesis"
-  | "intel-analysis";
-
-export type AgentJobStatus = "pending" | "running" | "completed" | "failed" | "skipped" | "cancelled";
-
-export type AgentJobTrigger = "periodic" | "manual";
-
-export interface AgentJob {
-  id: string;
-  type: AgentJobType;
-  status: AgentJobStatus;
-  trigger: AgentJobTrigger;
-  queuedAt: string;
-  startedAt?: string;
-  completedAt?: string;
-  durationMs?: number;
-  detail?: string;
-  logTail: string[];
-  exitCode?: number;
-}
-
-export interface FingerprintSources {
-  transcripts: string;
-  repos: string;
-  memory: string;
-}
-
-export interface AgentSchedulerState {
-  jobs: AgentJob[];
-  lastCheckedAt: string;
-  lastFingerprint: string;
-  fingerprintSources: FingerprintSources;
-  nextRunAt: string;
-  running: boolean;
-  intervalMs: number;
-}
-
-export interface MemoryCandidate {
-  category: string;
-  filename: string;
-  content: string;
-}
-
-export interface SkillResource {
-  path: string;
-  content: string;
-}
-
-export interface SkillCandidate {
-  skillName: string;
-  skillDir: string;
-  currentMd: string;
-  skillMd: string;
-  resources: SkillResource[];
-  analysisCount: number;
-}
-
-export interface AgentCandidate {
-  agentName: string;
-  skills: string[];
-  frequency: number;
-  confidence: number;
-  triggerPhrases: string[];
-  skillMd: string;
 }
 
 export interface CommitInfo {
@@ -309,152 +99,263 @@ export interface UpdateStatus {
   autoUpdated: boolean;
   previousSha?: string;
   error?: string;
-  stashConflict?: boolean;
 }
 
-export interface DepStatus {
+export interface ViewGenerateRequest {
   name: string;
-  installed: boolean;
-  group: string;
+  description: string;
 }
 
-export interface EnvStatus {
-  pythonVersion: string | null;
-  cliInstalled: boolean;
-  venvExists: boolean;
-  deps: DepStatus[];
-}
-
-export interface BootstrapResult {
-  success: boolean;
-  exitCode: number;
-  output: string;
-  env: EnvStatus;
-}
-
-export interface MigrateEnvironment {
+export interface ViewEntry {
+  name: string;
+  path: string;
   label: string;
-  script: string;
-  command: string;
+  icon: string;
 }
 
-export interface MigrateResult {
-  success: boolean;
-  exitCode: number | string | undefined;
-  output: string;
-}
-
-async function post<T>(path: string): Promise<T> {
-  const res = await fetch(path, { method: "POST" });
-  if (!res.ok) throw new Error(`POST ${path} failed: ${res.status}`);
-  return res.json();
-}
-
-async function postJson<T>(path: string, body: unknown): Promise<T> {
+async function patchJson<T>(path: string, body: unknown): Promise<T> {
   const res = await fetch(path, {
-    method: "POST",
+    method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
-  if (!res.ok) throw new Error(`POST ${path} failed: ${res.status}`);
+  if (!res.ok) throw new Error(`PATCH ${path} failed: ${res.status}`);
   return res.json();
+}
+
+async function del<T>(path: string): Promise<T> {
+  const res = await fetch(path, { method: "DELETE" });
+  if (!res.ok) throw new Error(`DELETE ${path} failed: ${res.status}`);
+  return res.json();
+}
+
+export interface ProjectRecord {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  root_path: string;
+  status: string;
+  config: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ApprovalRecord {
+  id: string;
+  project_id: string;
+  type: string;
+  title: string;
+  summary: string;
+  diff: string;
+  status: string;
+  created_at: string;
+  reviewed_at: string | null;
+}
+
+export interface FeedEvent {
+  id: string;
+  project_id: string;
+  type: string;
+  title: string;
+  detail: string;
+  created_at: string;
+}
+
+export interface IntelItem {
+  name: string;
+  description: string;
+  content: string;
+}
+
+export interface LaunchResult {
+  method: "opened" | "session";
+  label: string;
+  sessionId?: string;
+}
+
+export interface IdeInfo {
+  name: string;
+}
+
+export interface ProjectFileEntry {
+  name: string;
+  path: string;
+  isDir: boolean;
+  size: number;
+}
+
+export interface ProjectBrowseResult {
+  current: string;
+  root: string;
+  relative: string;
+  parent: string | null;
+  entries: ProjectFileEntry[];
+  exists: boolean;
+}
+
+export interface FileReadResult {
+  path: string;
+  name: string;
+  size: number;
+  binary: boolean;
+  truncated?: boolean;
+  content: string | null;
 }
 
 export const api = {
   sessions: (page = 0, pageSize = 25) =>
     get<SessionsPage>(`/api/sessions?page=${page}&pageSize=${pageSize}`),
 
-  sessionDetail: (chatId: string) =>
-    get<{ record: SessionRecord | null; analysis: SessionAnalysis | null }>(
-      `/api/sessions/${chatId}`,
-    ),
-
-  profile: () => get<ProfileData>("/api/profile"),
-
   stats: () => get<StatsOverview>("/api/stats"),
-
-  tunnels: () => get<{ tunnels: Record<string, TunnelInstance> }>("/api/tunnels"),
-
-  repos: () => get<RepoEntry[]>("/api/repos"),
-
-  config: () =>
-    get<{ dashboard: DashboardConfig; services: string[] }>("/api/config"),
 
   identities: () => get<IdentitySnapshot>("/api/identities"),
 
-  skillGraph: () => get<SkillGraph>("/api/skills/graph"),
-
-  sessionMap: () => get<SessionMapData>("/api/sessions/map"),
-
-  sessionTranscript: (chatId: string) =>
-    get<{ turns: ChatTurn[] }>(`/api/sessions/${chatId}/transcript`),
-
-  agents: () => get<AgentSchedulerState>("/api/agents"),
-
-  triggerAgents: () => post<{ queued: boolean }>("/api/agents/trigger"),
-
-  triggerJob: (type: AgentJobType) =>
-    post<{ queued: boolean }>(`/api/agents/trigger/${type}`),
-
-  cancelPipeline: () => post<{ cancelled: boolean }>("/api/agents/cancel"),
-
-  cancelJob: (jobId: string) =>
-    post<{ cancelled: boolean }>(`/api/agents/cancel/${jobId}`),
-
-  skillCandidates: () => get<SkillCandidate[]>("/api/agents/skill-candidates"),
-
-  applySkillCandidate: (candidate: SkillCandidate) =>
-    postJson<{ applied: boolean; skillName: string }>("/api/agents/skill-candidates/apply", candidate),
-
-  dismissSkillCandidate: (skillName: string) =>
-    postJson<{ dismissed: boolean }>("/api/agents/skill-candidates/dismiss", { skillName }),
-
-  agentCandidates: () => get<AgentCandidate[]>("/api/agents/agent-candidates"),
-
-  applyAgentCandidate: (candidate: AgentCandidate) =>
-    postJson<{ applied: boolean; agentName: string }>("/api/agents/agent-candidates/apply", candidate),
-
-  dismissAgentCandidate: (agentName: string) =>
-    postJson<{ dismissed: boolean }>("/api/agents/agent-candidates/dismiss", { agentName }),
-
-  intelList: () => get<IntelListResponse>("/api/intel"),
-
-  createIntelRun: (repo: string, depth: string, focus?: string) =>
-    postJson<{ runId: string }>("/api/intel/runs", { repo, depth, focus }),
-
-  triggerIntelAnalysis: (repo: string, depth: string, runId: string, focus?: string) =>
-    postJson<{ queued: boolean; jobId?: string }>(
-      "/api/agents/trigger/intel-analysis",
-      { repo, depth, focus, runId },
-    ),
-
-  intelRunContent: (runId: string) =>
-    get<{ content: string }>(`/api/intel/runs/${encodeURIComponent(runId)}`),
-
-  intelRunPhaseContent: (runId: string, filename: string) =>
-    get<{ content: string }>(
-      `/api/intel/runs/${encodeURIComponent(runId)}/${encodeURIComponent(filename)}`,
-    ),
-
-  intelLegacyContent: (filename: string) =>
-    get<{ content: string }>(
-      `/api/intel/legacy/${encodeURIComponent(filename)}`,
-    ),
-
-  migrateEnvironments: () =>
-    get<MigrateEnvironment[]>("/api/platform/migrate/environments"),
-
-  migrate: (script: string, undo = false) =>
-    postJson<MigrateResult>("/api/platform/migrate", { script, undo }),
-
   updates: () => get<UpdateStatus>("/api/updates"),
 
-  checkForUpdates: () => post<UpdateStatus>("/api/updates/check"),
+  viewsList: () => get<ViewEntry[]>("/api/views"),
 
-  pullUpdates: () => post<UpdateStatus>("/api/updates/pull"),
+  generateView: (req: ViewGenerateRequest) =>
+    postJson<ViewEntry>("/api/views/generate", req),
 
-  env: () => get<EnvStatus>("/api/env"),
+  modifyView: (name: string, instruction: string) =>
+    postJson<{ ok: boolean }>("/api/views/modify", { name, instruction }),
 
-  bootstrap: (extras?: string) =>
-    postJson<BootstrapResult>("/api/env/bootstrap", extras ? { extras } : {}),
+  viewSource: (name: string) =>
+    get<{ source: string }>(`/api/views/${encodeURIComponent(name)}/source`),
+
+  // Projects
+  listProjects: () => get<ProjectRecord[]>("/api/projects"),
+
+  getProject: (id: string) => get<ProjectRecord>(`/api/projects/${id}`),
+
+  createProject: (body: {
+    name: string;
+    description?: string;
+    rootPath: string;
+    projectType?: string;
+    goals?: string[];
+    repos?: Array<{ name: string; url?: string; path?: string }>;
+    config?: Record<string, unknown>;
+  }) => postJson<ProjectRecord>("/api/projects", body),
+
+  importProject: (rootPath: string, name?: string) =>
+    postJson<ProjectRecord>("/api/projects/import", { rootPath, name }),
+
+  updateProject: (id: string, body: Record<string, unknown>) =>
+    patchJson<ProjectRecord>(`/api/projects/${id}`, body),
+
+  deleteProject: (id: string) => del<{ ok: boolean }>(`/api/projects/${id}`),
+
+  // Approvals
+  listApprovals: (projectId: string, status = "pending") =>
+    get<ApprovalRecord[]>(`/api/projects/${projectId}/approvals?status=${status}`),
+
+  approveApproval: (projectId: string, approvalId: string) =>
+    postJson<{ ok: boolean }>(`/api/projects/${projectId}/approvals/${approvalId}/approve`, {}),
+
+  rejectApproval: (projectId: string, approvalId: string) =>
+    postJson<{ ok: boolean }>(`/api/projects/${projectId}/approvals/${approvalId}/reject`, {}),
+
+  // Feed
+  listFeed: (projectId: string, opts?: { type?: string; limit?: number; offset?: number }) => {
+    const params = new URLSearchParams();
+    if (opts?.type) params.set("type", opts.type);
+    if (opts?.limit) params.set("limit", String(opts.limit));
+    if (opts?.offset) params.set("offset", String(opts.offset));
+    const qs = params.toString();
+    return get<FeedEvent[]>(`/api/projects/${projectId}/feed${qs ? `?${qs}` : ""}`);
+  },
+
+  // Intelligence
+  listRules: (projectId: string) => get<IntelItem[]>(`/api/projects/${projectId}/rules`),
+  listSkills: (projectId: string) => get<IntelItem[]>(`/api/projects/${projectId}/skills`),
+  listMemory: (projectId: string, category?: string) => {
+    const qs = category ? `?category=${category}` : "";
+    return get<IntelItem[]>(`/api/projects/${projectId}/memory${qs}`);
+  },
+
+  // IDE
+  listIdes: () => get<IdeInfo[]>("/api/ides"),
+  launchIde: (projectId: string, ide: string) =>
+    postJson<LaunchResult>(`/api/projects/${projectId}/launch`, { ide }),
+
+  // Terminal
+  spawnTerminal: (command?: string, args?: string[], cwd?: string) =>
+    postJson<{ id: string; command: string; cwd: string; startedAt: string; label?: string }>(
+      "/api/terminal",
+      { command, args, cwd },
+    ),
+
+  listTerminals: () =>
+    get<Array<{ id: string; command: string; cwd: string; startedAt: string; exitCode?: number; label?: string }>>(
+      "/api/terminal",
+    ),
+
+  getTerminal: (id: string) =>
+    get<{ id: string; command: string; cwd: string; startedAt: string; exitCode?: number; label?: string }>(
+      `/api/terminal/${id}`,
+    ),
+
+  renameTerminal: (id: string, label: string) =>
+    patchJson<{ ok: boolean; label: string }>(`/api/terminal/${id}/label`, { label }),
+
+  killTerminal: (id: string) => del<{ killed: boolean }>(`/api/terminal/${id}`),
+
+  // Ollama
+  ollamaStatus: () =>
+    get<{ installed: boolean; running: boolean; version: string | null; models: Array<{ name: string; size: number }> }>(
+      "/api/ollama/status",
+    ),
+
+  ollamaInstall: () => postJson<{ success: boolean; error?: string }>("/api/ollama/install", {}),
+
+  ollamaPull: (model: string) => postJson<{ ok: boolean }>("/api/ollama/pull", { model }),
+
+  ollamaTest: (model: string) =>
+    postJson<{ ok: boolean; result?: string; latency?: number; error?: string }>(
+      "/api/ollama/test",
+      { model },
+    ),
+
+  // Session logs
+  listSessionLogs: () =>
+    get<SessionLogMeta[]>("/api/session-logs"),
+
+  getSessionLog: (id: string) =>
+    get<{ entries: SessionLogEntry[] }>(`/api/session-logs/${id}`),
+
+  deleteSessionLog: (id: string) => del<{ deleted: boolean }>(`/api/session-logs/${id}`),
+
+  // Project filesystem
+  projectBrowse: (root: string, browsePath?: string) => {
+    const params = new URLSearchParams({ root });
+    if (browsePath) params.set("path", browsePath);
+    return get<ProjectBrowseResult>(`/api/fs/project-browse?${params}`);
+  },
+
+  readFile: (filePath: string, root?: string) => {
+    const params = new URLSearchParams({ path: filePath });
+    if (root) params.set("root", root);
+    return get<FileReadResult>(`/api/fs/read?${params}`);
+  },
 };
+
+export interface SessionLogMeta {
+  id: string;
+  command?: string;
+  cwd?: string;
+  startedAt?: string;
+  exitCode?: number;
+  lineCount: number;
+  sizeBytes: number;
+}
+
+export interface SessionLogEntry {
+  ts: string;
+  type: "started" | "output" | "exited";
+  data?: string;
+  command?: string;
+  cwd?: string;
+  exitCode?: number;
+}

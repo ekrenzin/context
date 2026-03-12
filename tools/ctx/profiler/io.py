@@ -16,9 +16,10 @@ TRANSCRIPTS_DIR = Path.home() / ".cursor" / "projects"
 
 
 def find_transcripts_dir() -> Path | None:
+    base = root_dir().name
     candidates = list(TRANSCRIPTS_DIR.glob("*/agent-transcripts"))
     for c in candidates:
-        if "sos-context" in str(c):
+        if base in str(c):
             return c
     return candidates[0] if candidates else None
 

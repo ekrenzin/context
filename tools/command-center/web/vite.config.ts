@@ -20,6 +20,8 @@ export default defineConfig({
   },
   server: {
     port: 19471,
+    strictPort: true,
+    host: "127.0.0.1",
     proxy: {
       "/api": "http://127.0.0.1:19470",
       "/ws": { target: "ws://127.0.0.1:19470", ws: true },

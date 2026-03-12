@@ -16,7 +16,8 @@ import path from "path";
 import type { Manager } from "./manager.js";
 import type { SkillsSyncStatus } from "./types.js";
 
-const SYNC_INTERVAL_MS = 30 * 60 * 1000;
+const REMOTE_INTERVAL_MS = 30 * 60 * 1000;
+const LOCAL_INTERVAL_MS = 30 * 1000;
 const ALLOWED_REMOTE = "https://github.com/anthropics/skills.git";
 const ALLOWED_REMOTE_SSH = "git@github.com:anthropics/skills.git";
 const REPO_BRANCH = "main";
@@ -106,7 +107,8 @@ export function createSkillsSyncer(
   root: string,
   manager: Manager,
 ): SkillsSyncer {
-  let timer: ReturnType<typeof setInterval> | null = null;
+  let localTimer: ReturnType<typeof setInterval> | null = null;
+  let remoteTimer: ReturnType<typeof setInterval> | null = null;
   const cacheDir = path.join(root, ".cache", "anthropic-skills");
   const targetDir = resolveTargetDir();
 
@@ -186,9 +188,9 @@ export function createSkillsSyncer(
     return { linked, skipped };
   }
 
-  async function sync(): Promise<SkillsSyncStatus> {
+  function updateStatus(updated?: boolean): void {
     try {
-      const updated = cloneOrPull();
+      if (!fs.existsSync(cacheDir)) return;
       const { linked, skipped } = linkSkills();
       const skills = availableSkills(cacheDir);
 
@@ -203,6 +205,21 @@ export function createSkillsSyncer(
         updated,
       };
       broadcast();
+    } catch (err) {
+      status = {
+        ...status,
+        state: "error",
+        lastSyncedAt: new Date().toISOString(),
+        error: err instanceof Error ? err.message : String(err),
+      };
+      broadcast();
+    }
+  }
+
+  async function syncRemote(): Promise<SkillsSyncStatus> {
+    try {
+      const updated = cloneOrPull();
+      updateStatus(updated);
       return status;
     } catch (err) {
       status = {
@@ -216,15 +233,25 @@ export function createSkillsSyncer(
     }
   }
 
+  async function sync(): Promise<SkillsSyncStatus> {
+    await syncRemote();
+    return status;
+  }
+
   return {
     start() {
-      sync();
-      timer = setInterval(() => sync(), SYNC_INTERVAL_MS);
+      syncRemote();
+      localTimer = setInterval(() => updateStatus(), LOCAL_INTERVAL_MS);
+      remoteTimer = setInterval(() => syncRemote(), REMOTE_INTERVAL_MS);
     },
     stop() {
-      if (timer) {
-        clearInterval(timer);
-        timer = null;
+      if (localTimer) {
+        clearInterval(localTimer);
+        localTimer = null;
+      }
+      if (remoteTimer) {
+        clearInterval(remoteTimer);
+        remoteTimer = null;
       }
     },
     sync,

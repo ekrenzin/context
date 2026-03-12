@@ -10,6 +10,7 @@ const JOB_TYPES: AgentJobType[] = [
   "memory-synthesis",
   "skill-evolution",
   "agent-synthesis",
+  "knowledge-index",
 ];
 
 function formatJob(j: { id: string; type: string; status: string; detail?: string; durationMs?: number }) {

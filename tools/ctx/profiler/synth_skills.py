@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import sys
+from pathlib import Path
 
 from ctx.profiler.llm import call_agent
 from ctx.profiler.skill_synth_io import (
@@ -15,6 +16,24 @@ from ctx.profiler.skill_synth_io import (
 )
 
 SYNTHESIS_MODEL = "gemini-3-flash"
+
+
+def _auto_index_skill(file_paths: list[str]) -> None:
+    """Index evolved skill files into the knowledge base."""
+    try:
+        from ctx.knowledge.incremental import index_file
+        from ctx.config import root_dir
+        root = root_dir()
+        for fpath in file_paths:
+            try:
+                rel = str(Path(fpath).relative_to(root))
+                count = index_file(rel)
+                if count:
+                    print(f"[knowledge] Indexed {count} chunk(s) from {rel}")
+            except Exception:
+                pass
+    except ImportError:
+        pass
 
 
 def _parse_json(output: str) -> dict | None:
@@ -111,7 +130,9 @@ def evolve_skill(skill_name: str, dry_run: bool, model: str, stage: bool = False
             "analysisCount": len(analyses),
         }
 
-    apply_evolution(skill_path, result, dry_run)
+    updated = apply_evolution(skill_path, result, dry_run)
+    if not dry_run and updated:
+        _auto_index_skill(updated)
     return True
 
 

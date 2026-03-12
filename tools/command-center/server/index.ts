@@ -1,5 +1,6 @@
 import Fastify from "fastify";
 import fastifyStatic from "@fastify/static";
+import websocket from "@fastify/websocket";
 import { execFileSync } from "child_process";
 import fs from "fs";
 import path from "path";
@@ -10,8 +11,14 @@ import { createManager } from "./manager.js";
 import { createMqttClient, ensureBroker, stopBroker } from "ctx-mqtt";
 import { createAgentScheduler } from "./agent-scheduler.js";
 import { createUpdateChecker } from "./update-checker.js";
-import { createSkillsSyncer } from "./skills-syncer.js";
 import { createMcpServer, registerMcpRoutes } from "./mcp/index.js";
+import { openDb, closeDb, migrate } from "./db/index.js";
+import { ensureAuthToken } from "./auth/index.js";
+import { registerAuthHook, setServerToken } from "./auth/index.js";
+import { importMarkdownMemory } from "./memory/import.js";
+import { registerTerminalRoutes } from "./terminal/routes.js";
+import { closeAll as closeTerminals, restoreSessions } from "./terminal/manager.js";
+import { initSessionLogger } from "./terminal/session-logger.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -69,9 +76,27 @@ function resolveCursorProjectDir(): string {
 
 export async function start(): Promise<void> {
   ensureCtxEnv();
+
+  const db = openDb(ROOT);
+  const { applied } = migrate(db);
+  if (applied.length) {
+    console.log(`[db] applied ${applied.length} migration(s): ${applied.join(", ")}`);
+  }
+
+  const appUrl = `http://127.0.0.1:${PORT}`;
+  const authToken = ensureAuthToken(appUrl);
+  setServerToken(authToken);
+
+  const memImport = importMarkdownMemory(ROOT);
+  if (memImport.imported > 0) {
+    console.log(`[memory] imported ${memImport.imported} entries from markdown`);
+  }
+
   await ensureBroker(ROOT);
 
   const app = Fastify({ logger: false });
+  await app.register(websocket);
+  registerAuthHook(app);
   const mqttClient = createMqttClient();
 
   const manager = createManager(mqttClient);
@@ -82,14 +107,23 @@ export async function start(): Promise<void> {
 
   const scheduler = createAgentScheduler(ROOT, transcriptDir, manager);
   const updateChecker = createUpdateChecker(ROOT, manager);
-  const skillsSyncer = createSkillsSyncer(ROOT, manager);
 
-  registerRoutes(app, ROOT, scheduler, transcriptDir, updateChecker, skillsSyncer, mqttClient);
+  registerRoutes(app, ROOT, scheduler, transcriptDir, updateChecker, mqttClient);
+  registerTerminalRoutes(app);
+  initSessionLogger(mqttClient, ROOT);
+
+  const restoredCount = await restoreSessions();
+  if (restoredCount > 0) {
+    console.log(`[terminal] restored ${restoredCount} session(s) from previous run`);
+  }
 
   const mcp = createMcpServer({ scheduler, mqttClient, updateChecker, root: ROOT });
   registerMcpRoutes(app, mcp);
 
-  const distWeb = path.resolve(__dirname, "..", "dist", "web");
+  const isCompiledRun = __dirname.includes(path.sep + "dist" + path.sep);
+  const distWeb = isCompiledRun
+    ? path.resolve(__dirname, "..", "web")
+    : path.resolve(__dirname, "..", "dist", "web");
   try {
     await app.register(fastifyStatic, {
       root: distWeb,
@@ -111,10 +145,9 @@ export async function start(): Promise<void> {
 
   scheduler.start();
   updateChecker.start();
-  skillsSyncer.start();
 
   async function shutdown() {
-    skillsSyncer.stop();
+    closeTerminals();
     updateChecker.stop();
     scheduler.stop();
     watchers.close();
@@ -122,13 +155,20 @@ export async function start(): Promise<void> {
     await mqttClient.close();
     stopBroker();
     await app.close();
+    closeDb();
   }
 
   process.on("SIGTERM", shutdown);
   process.on("SIGINT", shutdown);
 }
 
-start().catch((err) => {
-  console.error("Failed to start dashboard server:", err);
-  process.exit(1);
-});
+const isDirectRun =
+  process.argv[1] &&
+  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+
+if (isDirectRun) {
+  start().catch((err) => {
+    console.error("Failed to start dashboard server:", err);
+    process.exit(1);
+  });
+}

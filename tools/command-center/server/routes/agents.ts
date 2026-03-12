@@ -89,6 +89,7 @@ export function registerAgentRoutes(
     "codebase-scan",
     "memory-synthesis",
     "skill-evolution",
+    "knowledge-index",
   ]);
 
   app.post<{ Params: { type: string } }>("/api/agents/trigger/:type", async (req, reply) => {
