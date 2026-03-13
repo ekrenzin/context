@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import type { SkillGraph } from "../lib/api";
 import { api } from "../lib/api";
 import { useRefetchOnMqtt } from "./useRefetchOnMqtt";
@@ -9,13 +9,14 @@ export interface SkillGraphData {
   maxDeg: number;
   loading: boolean;
   error: string | null;
+  refetch: () => void;
 }
 
 export function useSkillGraph(): SkillGraphData {
   const [graph, setGraph] = useState<SkillGraph | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { generation } = useRefetchOnMqtt("ctx/tasks/complete");
+  const { generation, bump } = useRefetchOnMqtt("ctx/tasks/complete");
 
   useEffect(() => {
     setLoading(true);
@@ -26,8 +27,10 @@ export function useSkillGraph(): SkillGraphData {
       .finally(() => setLoading(false));
   }, [generation]);
 
+  const refetch = useCallback(() => bump(), [bump]);
+
   return useMemo(() => {
-    if (!graph) return { elements: [], maxDeg: 0, loading, error };
+    if (!graph) return { elements: [], maxDeg: 0, loading, error, refetch };
 
     const degMap = new Map<string, number>();
     for (const edge of graph.edges) {
@@ -57,6 +60,6 @@ export function useSkillGraph(): SkillGraphData {
       })),
     ];
 
-    return { elements, maxDeg, loading, error };
-  }, [graph, loading, error]);
+    return { elements, maxDeg, loading, error, refetch };
+  }, [graph, loading, error, refetch]);
 }

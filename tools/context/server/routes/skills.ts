@@ -134,6 +134,52 @@ function loadSkillGraph(root: string): SkillGraph {
   return { nodes, edges };
 }
 
+const VALID_NAME = /^[a-z0-9][a-z0-9-]*$/;
+
 export function registerSkillRoutes(app: FastifyInstance, root: string): void {
+  const skillsDir = path.join(root, ".cursor", "skills");
+
   app.get("/api/skills/graph", async () => loadSkillGraph(root));
+
+  app.post<{ Body: { name: string; description: string; category?: string; content?: string } }>(
+    "/api/skills",
+    async (req, reply) => {
+      const { name, description, category, content } = req.body;
+      if (!name || !VALID_NAME.test(name)) {
+        return reply.code(400).send({ error: "Invalid name: lowercase letters, numbers, hyphens only" });
+      }
+      if (!description) {
+        return reply.code(400).send({ error: "Description is required" });
+      }
+
+      const dir = path.join(skillsDir, name);
+      if (fs.existsSync(dir)) {
+        return reply.code(409).send({ error: "Skill already exists" });
+      }
+
+      const body = content ?? `# ${name}\n\nTODO: Add skill instructions here.\n`;
+      const md = `---\nname: ${name}\ndescription: ${description}\n---\n\n${body}`;
+
+      fs.mkdirSync(dir, { recursive: true });
+      fs.writeFileSync(path.join(dir, "SKILL.md"), md, "utf-8");
+
+      if (category && CATEGORIES[name] === undefined) {
+        CATEGORIES[name] = category;
+      }
+
+      return { ok: true, name };
+    },
+  );
+
+  app.delete<{ Params: { name: string } }>(
+    "/api/skills/:name",
+    async (req, reply) => {
+      const dir = path.join(skillsDir, req.params.name);
+      if (!fs.existsSync(dir)) {
+        return reply.code(404).send({ error: "Skill not found" });
+      }
+      fs.rmSync(dir, { recursive: true });
+      return { ok: true };
+    },
+  );
 }
