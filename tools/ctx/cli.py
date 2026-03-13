@@ -2,6 +2,7 @@
 
 import typer
 
+from ctx.proposals.commands import app as proposals_app
 from ctx.skills.commands import app as skills_app
 from ctx.image.commands import app as image_app
 from ctx.knowledge.commands import app as knowledge_app
@@ -22,6 +23,7 @@ app.add_typer(localpypi_app, name="localpypi", help="Local Python package index 
 app.add_typer(image_app, name="image", help="AI image generation.")
 app.add_typer(knowledge_app, name="knowledge", help="Knowledge base vector search.")
 app.add_typer(workspace_app, name="workspace", help="Workspace setup and validation.")
+app.add_typer(proposals_app, name="proposals", help="Proposal management and agent dispatch.")
 app.add_typer(skills_app, name="skills", help="External skills sync.")
 
 

@@ -12,16 +12,48 @@ SESSIONS_PATH = PROFILE_DIR / "agent-sessions.jsonl"
 HISTORY_PATH = PROFILE_DIR / "agent-history.jsonl"
 ANALYSES_DIR = PROFILE_DIR / "analyses"
 STATE_PATH = PROFILE_DIR / ".state.json"
-TRANSCRIPTS_DIR = Path.home() / ".cursor" / "projects"
+CURSOR_PROJECTS_DIR = Path.home() / ".cursor" / "projects"
+CLAUDE_PROJECTS_DIR = Path.home() / ".claude" / "projects"
+
+
+def find_transcript_dirs() -> list[Path]:
+    """Return all transcript directories matching the current workspace."""
+    base = root_dir().name
+    dirs: list[Path] = []
+
+    # Cursor: ~/.cursor/projects/*/agent-transcripts
+    candidates = list(CURSOR_PROJECTS_DIR.glob("*/agent-transcripts"))
+    matched = [c for c in candidates if base in str(c)]
+    dirs.extend(matched or candidates[:1])
+
+    # Claude Code: ~/.claude/projects/*<workspace>*
+    if CLAUDE_PROJECTS_DIR.is_dir():
+        for entry in CLAUDE_PROJECTS_DIR.iterdir():
+            if entry.is_dir() and base in entry.name:
+                dirs.append(entry)
+
+    return dirs
 
 
 def find_transcripts_dir() -> Path | None:
-    base = root_dir().name
-    candidates = list(TRANSCRIPTS_DIR.glob("*/agent-transcripts"))
-    for c in candidates:
-        if base in str(c):
-            return c
-    return candidates[0] if candidates else None
+    """Legacy helper -- returns first Cursor transcript dir or None."""
+    dirs = find_transcript_dirs()
+    return dirs[0] if dirs else None
+
+
+def collect_transcript_files(dirs: list[Path]) -> list[Path]:
+    """Gather .txt and .jsonl transcript files from the given directories."""
+    files: list[Path] = []
+    for d in dirs:
+        # Flat .txt files (legacy Cursor format)
+        files.extend(d.glob("*.txt"))
+        # Flat .jsonl files (Claude Code format)
+        files.extend(d.glob("*.jsonl"))
+        # Nested <uuid>/<uuid>.jsonl (new Cursor format)
+        for sub in d.iterdir():
+            if sub.is_dir():
+                files.extend(sub.glob("*.jsonl"))
+    return sorted(set(files))
 
 
 def load_json(path: Path) -> dict[str, Any]:

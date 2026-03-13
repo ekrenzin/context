@@ -2,7 +2,7 @@
 
 ## Brand CSS Variables
 
-Defined in `tools/vscode-ext/media/dashboard.css` and used across the UI:
+Used across the UI:
 
 | Variable | Value | Use |
 |----------|-------|-----|
@@ -13,25 +13,6 @@ Defined in `tools/vscode-ext/media/dashboard.css` and used across the UI:
 | `--brand-gold-glow` | rgba(201, 168, 76, 0.06) | Gradient backgrounds |
 
 **Naming pattern**: `--brand-gold[-modifier]`. Modifiers: base (none), `-light`, `-dim`, `-border`, `-glow`. Never hardcode these hex/rgba values; always use the variable.
-
-## VS Code Extension Theming
-
-Webviews in the VS Code extension use `var(--vscode-*)` tokens so the UI adapts to the user's theme (light/dark/high contrast).
-
-**Common tokens**:
-- `--vscode-foreground` - primary text
-- `--vscode-editor-background` - main background
-- `--vscode-font-family`, `--vscode-font-size`
-- `--vscode-sideBar-background`, `--vscode-panel-border`
-- `--vscode-input-background`, `--vscode-input-foreground`, `--vscode-input-border`
-- `--vscode-button-secondaryBackground`, `--vscode-button-secondaryHoverBackground`
-- `--vscode-list-hoverBackground`
-- `--vscode-testing-iconPassed`, `--vscode-testing-iconFailed`
-- `--vscode-descriptionForeground` - muted text
-
-**Fallback pattern**: `var(--vscode-token, fallbackValue)` for tokens that may be undefined in older VS Code versions.
-
-**Test**: Toggle between light and dark themes in VS Code and verify contrast and readability.
 
 ## Responsive Breakpoints
 

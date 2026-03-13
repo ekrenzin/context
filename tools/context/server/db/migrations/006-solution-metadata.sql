@@ -1,0 +1,2 @@
+ALTER TABLE solutions ADD COLUMN description TEXT NOT NULL DEFAULT '';
+ALTER TABLE solutions ADD COLUMN proposal TEXT NOT NULL DEFAULT '';

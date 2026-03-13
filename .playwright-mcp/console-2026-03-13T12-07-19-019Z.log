@@ -1,0 +1,83 @@
+[  211763ms] [ERROR] WebSocket connection to 'ws://localhost:19471/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/@vite/client:1034
+[  225233ms] [ERROR] WebSocket connection to 'ws://localhost:19471/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/@vite/client:1034
+[  226238ms] [ERROR] WebSocket connection to 'ws://localhost:19471/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/@vite/client:1034
+[  227242ms] [ERROR] WebSocket connection to 'ws://localhost:19471/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/@vite/client:1034
+[  228244ms] [ERROR] WebSocket connection to 'ws://localhost:19471/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/@vite/client:1034
+[  229245ms] [ERROR] WebSocket connection to 'ws://localhost:19471/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/@vite/client:1034
+[  229974ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:9001/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/@fs/Users/eankrenzin/Documents/Dev/Repos/sos-context/repos/context/tools/command-center/node_modules/.vite/deps/mqtt.js?v=e94436ba:11160
+[  279671ms] [ERROR] WebSocket connection to 'ws://localhost:19471/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/@vite/client:1034
+[ 1611679ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:19471/api/terminal/b1140c1e-1a64-4f62-a16f-a8a6d9a72563:0
+[ 1611680ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:19471/api/terminal/3389b262-1977-4cb2-be57-79acb7558965:0
+[ 1611680ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:19471/api/terminal/0e7c331c-757c-4107-9532-392b3caf5dc3:0
+[ 1621680ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:19471/api/terminal/b1140c1e-1a64-4f62-a16f-a8a6d9a72563:0
+[ 1621681ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:19471/api/terminal/3389b262-1977-4cb2-be57-79acb7558965:0
+[ 1621681ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:19471/api/terminal/0e7c331c-757c-4107-9532-392b3caf5dc3:0
+[ 1631679ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:19471/api/terminal/b1140c1e-1a64-4f62-a16f-a8a6d9a72563:0
+[ 1631679ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:19471/api/terminal/3389b262-1977-4cb2-be57-79acb7558965:0
+[ 1631679ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:19471/api/terminal/0e7c331c-757c-4107-9532-392b3caf5dc3:0
+[ 1631680ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:19471/api/terminal/a488c30d-e523-4de8-af15-4d178dd19950:0
+[ 1641684ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:19471/api/terminal/b1140c1e-1a64-4f62-a16f-a8a6d9a72563:0
+[ 1641684ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:19471/api/terminal/3389b262-1977-4cb2-be57-79acb7558965:0
+[ 1641684ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:19471/api/terminal/0e7c331c-757c-4107-9532-392b3caf5dc3:0
+[ 1641686ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:19471/api/terminal/a488c30d-e523-4de8-af15-4d178dd19950:0
+[ 1654540ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:19471/api/terminal/b1140c1e-1a64-4f62-a16f-a8a6d9a72563:0
+[ 1654542ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:19471/api/terminal/3389b262-1977-4cb2-be57-79acb7558965:0
+[ 1654542ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:19471/api/terminal/0e7c331c-757c-4107-9532-392b3caf5dc3:0
+[ 1654542ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:19471/api/terminal/a488c30d-e523-4de8-af15-4d178dd19950:0
+[ 1662019ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:19471/api/terminal/b1140c1e-1a64-4f62-a16f-a8a6d9a72563:0
+[ 1662020ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:19471/api/terminal/3389b262-1977-4cb2-be57-79acb7558965:0
+[ 1662024ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:19471/api/terminal/0e7c331c-757c-4107-9532-392b3caf5dc3:0
+[ 1662061ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:19471/api/terminal/a488c30d-e523-4de8-af15-4d178dd19950:0
+[ 1683273ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:19471/api/terminal/8a3c3b62-fbec-47f9-9bca-c63e28f95dcf:0
+[ 1867150ms] [ERROR] WebSocket connection to 'ws://localhost:19471/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/@vite/client:1034
+[ 1868154ms] [ERROR] WebSocket connection to 'ws://localhost:19471/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/@vite/client:1034
+[ 1869159ms] [ERROR] WebSocket connection to 'ws://localhost:19471/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/@vite/client:1034
+[ 1870161ms] [ERROR] WebSocket connection to 'ws://localhost:19471/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/@vite/client:1034
+[ 1871381ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:19471/api/branding:0
+[ 1871385ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:19471/api/stats:0
+[ 1871688ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:19471/api/branding:0
+[ 1871688ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:19471/api/health:0
+[ 1871688ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:19471/api/branding:0
+[ 1871688ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:19471/api/health:0
+[ 1871710ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:19471/api/health:0
+[ 1871710ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:19471/api/updates:0
+[ 1871710ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:19471/api/settings:0
+[ 1871713ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:19471/api/terminal:0
+[ 1871713ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:19471/api/preview/entries:0
+[ 1871714ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:19471/api/mqtt-credentials:0
+[ 1871714ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:19471/api/health:0
+[ 1871714ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:19471/api/updates:0
+[ 1871715ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:19471/api/settings:0
+[ 1871715ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:19471/api/terminal:0
+[ 1871716ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:19471/api/mqtt-credentials:0
+[ 1871724ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:19471/api/preview/entries:0
+[ 1871725ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:9001/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/@fs/Users/eankrenzin/Documents/Dev/Repos/sos-context/repos/context/tools/command-center/node_modules/.vite/deps/mqtt.js?v=53760560:11160
+[ 1871761ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:19471/api/ides:0
+[ 1871762ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:19471/api/projects:0
+[ 1871764ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:19471/api/ides:0
+[ 1871764ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:19471/api/projects:0
+[ 2215263ms] [ERROR] WebSocket connection to 'ws://localhost:19471/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/@vite/client:1034
+[ 2216269ms] [ERROR] WebSocket connection to 'ws://localhost:19471/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/@vite/client:1034
+[ 2217054ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/api/health:0
+[ 2217272ms] [ERROR] WebSocket connection to 'ws://localhost:19471/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/@vite/client:1034
+[ 2217537ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/api/terminal/e01b019f-2ab0-4a0c-a44e-6271f58b2b91:0
+[ 2217537ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/api/terminal/33e53093-7c34-4343-9540-a5a3ee0b2f70:0
+[ 2217537ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/api/terminal/2667990f-9b13-45b9-8245-545cf922bcba:0
+[ 2217538ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/api/terminal/591b44ca-c7f5-46e8-925f-caa66a7c0892:0
+[ 2217538ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/api/terminal/d033c4bb-3cb2-4477-b927-e2e765fc5301:0
+[ 2217538ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/api/terminal/d164ba55-d66c-4edc-9bb2-1486fc86d5e4:0
+[ 2218274ms] [ERROR] WebSocket connection to 'ws://localhost:19471/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/@vite/client:1034
+[ 2219278ms] [ERROR] WebSocket connection to 'ws://localhost:19471/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/@vite/client:1034
+[ 2300898ms] [ERROR] WebSocket connection to 'ws://localhost:19471/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/@vite/client:1034
+[ 2301533ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/api/terminal/e01b019f-2ab0-4a0c-a44e-6271f58b2b91:0
+[ 2301533ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/api/terminal/33e53093-7c34-4343-9540-a5a3ee0b2f70:0
+[ 2301533ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/api/terminal/2667990f-9b13-45b9-8245-545cf922bcba:0
+[ 2301533ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/api/terminal/591b44ca-c7f5-46e8-925f-caa66a7c0892:0
+[ 2301534ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/api/terminal/d033c4bb-3cb2-4477-b927-e2e765fc5301:0
+[ 2301534ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/api/terminal/d164ba55-d66c-4edc-9bb2-1486fc86d5e4:0
+[ 2301902ms] [ERROR] WebSocket connection to 'ws://localhost:19471/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/@vite/client:1034
+[ 2302907ms] [ERROR] WebSocket connection to 'ws://localhost:19471/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/@vite/client:1034
+[ 2303911ms] [ERROR] WebSocket connection to 'ws://localhost:19471/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/@vite/client:1034
+[ 2304913ms] [ERROR] WebSocket connection to 'ws://localhost:19471/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:19471/@vite/client:1034
+[ 2306062ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:19471/api/branding:0
+[ 2306066ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:19471/api/stats:0

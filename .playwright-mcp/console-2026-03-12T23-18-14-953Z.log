@@ -1,0 +1,35 @@
+[     145ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:19471/favicon.ico:0
+[     413ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://127.0.0.1:19471/api/preview/entries:0
+[     528ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://127.0.0.1:19471/api/preview/entries:0
+[  107074ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:19471/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:19471/@vite/client:1034
+[  108076ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:19471/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:19471/@vite/client:1034
+[  109080ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:19471/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:19471/@vite/client:1034
+[  110082ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:19471/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:19471/@vite/client:1034
+[  110550ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:19471/api/terminal/5d056468-ce69-4128-bd21-b5b00927cb1c:0
+[  110550ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:19471/api/terminal/113d8f6f-1a12-4615-93d3-06bbc6051abf:0
+[  110550ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:19471/api/terminal/2b48ba8c-75d3-47cc-baf5-335d9581fc5a:0
+[  110550ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:19471/api/terminal/d287b382-0385-476b-a11f-90ad1ace3e42:0
+[  110551ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:19471/api/terminal/9c90bba2-aa5d-4dd5-8628-d29077d96728:0
+[  110551ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:19471/api/terminal/33efef60-207b-4435-98ba-6e1a827514eb:0
+[  110551ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:19471/api/terminal/27fdfd51-f212-406f-ae73-7b7a4e3c2934:0
+[  111325ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:19471/api/branding:0
+[  111329ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:19471/api/stats:0
+[  111588ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:19471/api/branding:0
+[  111588ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:19471/api/health:0
+[  111607ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:19471/api/branding:0
+[  111607ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:19471/api/health:0
+[  111615ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:19471/api/health:0
+[  111615ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:19471/api/updates:0
+[  111615ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:19471/api/settings:0
+[  111616ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:19471/api/terminal:0
+[  111616ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:19471/api/preview/entries:0
+[  111617ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:19471/api/health:0
+[  111618ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:19471/api/mqtt-credentials:0
+[  111618ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:19471/api/updates:0
+[  111618ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:19471/api/settings:0
+[  111618ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:19471/api/terminal:0
+[  111619ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:19471/api/preview/entries:0
+[  111619ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:19471/api/mqtt-credentials:0
+[  111627ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:9001/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:19471/@fs/Users/eankrenzin/Documents/Dev/Repos/sos-context/repos/context/tools/command-center/node_modules/.vite/deps/mqtt.js?v=b7639aae:11160
+[  111635ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:19471/api/solutions:0
+[  111636ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:19471/api/solutions:0

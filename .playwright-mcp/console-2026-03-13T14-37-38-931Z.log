@@ -1,0 +1,22 @@
+[   29544ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://api.supabase.com/platform/projects/ynbgzurbwgxxjcgpovnr:0
+[   30830ms] [WARNING] ConfigCat - WARN - [3000] There is an existing client instance for the specified SDK Key. No new client instance will be created and the specified options are ignored. Returning the existing client instance. SDK Key: 'configcat-proxy/frontend-v2'. @ https://frontend-assets.supabase.com/studio/83592b1932d1/_next/static/chunks/3f947406a4d5a211.js?dpl=dpl_8J9pFB4V3SdbcKwoTbQXotUA8Z6g:14
+[   31432ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://api.supabase.com/platform/projects/ynbgzurbwgxxjcgpovnr:0
+[   31434ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://api.supabase.com/platform/notifications?offset=0&limit=20&status=new%2Cseen:0
+[   31434ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://api.supabase.com/platform/projects/ynbgzurbwgxxjcgpovnr/billing/addons:0
+[   31434ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://api.supabase.com/platform/projects/ynbgzurbwgxxjcgpovnr/settings:0
+[   31477ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://supabase.com/dashboard/api/incident-status:0
+[   31478ms] [ERROR] [getIncidentStatus] Failed: 401 {"error":{"message":"Unauthorized: Invalid JWT structure"}} @ https://frontend-assets.supabase.com/studio/83592b1932d1/_next/static/chunks/3f947406a4d5a211.js?dpl=dpl_8J9pFB4V3SdbcKwoTbQXotUA8Z6g:14
+[   31482ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://supabase.com/dashboard/api/incident-banner:0
+[   32627ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://supabase.com/dashboard/api/incident-status:0
+[   32628ms] [ERROR] [getIncidentStatus] Failed: 401 {"error":{"message":"Unauthorized: Invalid JWT structure"}} @ https://frontend-assets.supabase.com/studio/83592b1932d1/_next/static/chunks/3f947406a4d5a211.js?dpl=dpl_8J9pFB4V3SdbcKwoTbQXotUA8Z6g:14
+[   32659ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://supabase.com/dashboard/api/incident-banner:0
+[   34971ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://o398706.ingest.us.sentry.io/api/5459134/envelope/?sentry_version=7&sentry_key=caa7db5fc1da4341810a6d56251a951c&sentry_client=sentry.javascript.nextjs%2F10.27.0:0
+[   36850ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://supabase.com/dashboard/api/incident-banner:0
+[   36851ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://supabase.com/dashboard/api/incident-status:0
+[   36852ms] [ERROR] [getIncidentStatus] Failed: 401 {"error":{"message":"Unauthorized: Invalid JWT structure"}} @ https://frontend-assets.supabase.com/studio/83592b1932d1/_next/static/chunks/3f947406a4d5a211.js?dpl=dpl_8J9pFB4V3SdbcKwoTbQXotUA8Z6g:14
+[   38030ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://supabase.com/dashboard/api/incident-status:0
+[   38032ms] [ERROR] [getIncidentStatus] Failed: 401 {"error":{"message":"Unauthorized: Invalid JWT structure"}} @ https://frontend-assets.supabase.com/studio/83592b1932d1/_next/static/chunks/3f947406a4d5a211.js?dpl=dpl_8J9pFB4V3SdbcKwoTbQXotUA8Z6g:14
+[   38039ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://supabase.com/dashboard/api/incident-banner:0
+[   40198ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://supabase.com/dashboard/api/incident-status:0
+[   40200ms] [ERROR] [getIncidentStatus] Failed: 401 {"error":{"message":"Unauthorized: Invalid JWT structure"}} @ https://frontend-assets.supabase.com/studio/83592b1932d1/_next/static/chunks/3f947406a4d5a211.js?dpl=dpl_8J9pFB4V3SdbcKwoTbQXotUA8Z6g:14
+[   40232ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://supabase.com/dashboard/api/incident-banner:0

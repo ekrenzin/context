@@ -13,6 +13,7 @@ related_skills:
   - refactoring
   - database-ops
   - security-audit
+  - playwright
 ---
 
 # Feature Development Workflow

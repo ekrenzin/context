@@ -1,0 +1,90 @@
+```markdown
+---
+name: security-audit
+version: 1.0.0
+category: security
+priority: high
+---
+
+# Security Audit Rule
+
+## Purpose
+Establish comprehensive security audit standards and procedures for code review processes to identify vulnerabilities, ensure compliance, and maintain security best practices.
+
+## Scope
+- Code security analysis
+- Vulnerability assessment
+- Compliance verification
+- Security control validation
+- Risk evaluation
+
+## Standards
+
+### Code Review Security Checklist
+- **Authentication & Authorization**
+  - Verify proper authentication mechanisms
+  - Check authorization controls and permissions
+  - Validate session management
+  - Review access control implementations
+
+- **Input Validation**
+  - Ensure all inputs are validated and sanitized
+  - Check for SQL injection vulnerabilities
+  - Verify XSS prevention measures
+  - Validate file upload security
+
+- **Data Protection**
+  - Review encryption implementations
+  - Check sensitive data handling
+  - Verify secure storage practices
+  - Validate data transmission security
+
+- **Error Handling**
+  - Ensure secure error messages
+  - Check logging practices
+  - Verify exception handling
+  - Review information disclosure risks
+
+- **Configuration Security**
+  - Check default configurations
+  - Verify security headers
+  - Review environment variables
+  - Validate deployment settings
+
+### Compliance Requirements
+- Follow OWASP Top 10 guidelines
+- Adhere to industry security standards
+- Implement secure coding practices
+- Maintain audit trails
+
+## Workflow
+1. **Pre-audit Setup**
+   - Define audit scope and objectives
+   - Gather relevant documentation
+   - Set up audit tools and environment
+
+2. **Security Analysis**
+   - Perform automated security scans
+   - Conduct manual code review
+   - Execute penetration testing
+   - Analyze dependencies and libraries
+
+3. **Documentation**
+   - Record findings and vulnerabilities
+   - Assess risk levels and impact
+   - Generate remediation recommendations
+   - Create audit reports
+
+4. **Follow-up**
+   - Track remediation progress
+   - Verify fix implementations
+   - Schedule re-audits as needed
+   - Update security policies
+
+## Success Criteria
+- All critical vulnerabilities identified and documented
+- Security checklist items completed
+- Compliance requirements verified
+- Remediation plan established
+- Audit report generated and approved
+```

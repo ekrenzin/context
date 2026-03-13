@@ -2,6 +2,6 @@
   "name": "context",
   "private": true,
   "scripts": {
-    "start": "npm run start --prefix tools/command-center"
+    "start": "npm run start --prefix tools/context"
   }
 }

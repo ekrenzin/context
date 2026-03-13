@@ -10,7 +10,7 @@ from ctx.profiler.io import (
     HISTORY_PATH,
     PROFILE_PATH,
     SESSIONS_PATH,
-    find_transcripts_dir,
+    find_transcript_dirs,
     load_jsonl,
 )
 from ctx.profiler.query import _get, _match, _parse_where, _print_aggregate, _print_table
@@ -112,7 +112,7 @@ def analyze(
     typer.echo(f"Analyzing sessions via Cursor Agent CLI (model: {model or ANALYZE_MODEL})...")
     result = run_analyze(chat_id, limit, model, force)
     if result is None:
-        if not find_transcripts_dir():
+        if not find_transcript_dirs():
             typer.echo("Error: Could not locate agent-transcripts directory.", err=True)
         elif not load_jsonl(SESSIONS_PATH):
             typer.echo("No sessions found. Run 'scan' first.", err=True)

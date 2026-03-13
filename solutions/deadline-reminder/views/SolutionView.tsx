@@ -16,16 +16,12 @@ import {
   TextField,
   MenuItem,
   IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction
+  Tooltip
 } from '@mui/material';
 import {
   Add as AddIcon,
-  Delete as DeleteIcon,
   Edit as EditIcon,
-  Notifications as NotificationsIcon,
+  Delete as DeleteIcon,
   Warning as WarningIcon,
   Schedule as ScheduleIcon
 } from '@mui/icons-material';
@@ -36,19 +32,8 @@ interface Deadline {
   description?: string;
   dueDate: string;
   priority: 'low' | 'medium' | 'high';
-  category: string;
   status: 'pending' | 'completed' | 'overdue';
-  reminderDays: number;
-  createdAt: string;
-}
-
-interface DeadlineFormData {
-  title: string;
-  description: string;
-  dueDate: string;
-  priority: 'low' | 'medium' | 'high';
-  category: string;
-  reminderDays: number;
+  category?: string;
 }
 
 export default function DeadlineReminder() {
@@ -57,13 +42,12 @@ export default function DeadlineReminder() {
   const [error, setError] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingDeadline, setEditingDeadline] = useState<Deadline | null>(null);
-  const [formData, setFormData] = useState<DeadlineFormData>({
+  const [formData, setFormData] = useState({
     title: '',
     description: '',
     dueDate: '',
-    priority: 'medium',
-    category: '',
-    reminderDays: 3
+    priority: 'medium' as const,
+    category: ''
   });
 
   useEffect(() => {
@@ -73,31 +57,31 @@ export default function DeadlineReminder() {
   const fetchDeadlines = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3000/api/deadlines');
+      const response = await fetch('http://localhost:3000/deadlines');
       if (!response.ok) throw new Error('Failed to fetch deadlines');
       const data = await response.json();
       setDeadlines(data);
+      setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load deadlines');
+      setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSaveDeadline = async () => {
     try {
-      const url = editingDeadline 
-        ? `http://localhost:3000/api/deadlines/${editingDeadline.id}`
-        : 'http://localhost:3000/api/deadlines';
-      
       const method = editingDeadline ? 'PUT' : 'POST';
-      
+      const url = editingDeadline 
+        ? `http://localhost:3000/deadlines/${editingDeadline.id}`
+        : 'http://localhost:3000/deadlines';
+
       const response = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });
-      
+
       if (!response.ok) throw new Error('Failed to save deadline');
       
       await fetchDeadlines();
@@ -107,9 +91,9 @@ export default function DeadlineReminder() {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDeleteDeadline = async (id: string) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/deadlines/${id}`, {
+      const response = await fetch(`http://localhost:3000/deadlines/${id}`, {
         method: 'DELETE'
       });
       if (!response.ok) throw new Error('Failed to delete deadline');
@@ -127,8 +111,7 @@ export default function DeadlineReminder() {
         description: deadline.description || '',
         dueDate: deadline.dueDate.split('T')[0],
         priority: deadline.priority,
-        category: deadline.category,
-        reminderDays: deadline.reminderDays
+        category: deadline.category || ''
       });
     } else {
       setEditingDeadline(null);
@@ -137,8 +120,7 @@ export default function DeadlineReminder() {
         description: '',
         dueDate: '',
         priority: 'medium',
-        category: '',
-        reminderDays: 3
+        category: ''
       });
     }
     setDialogOpen(true);
@@ -165,19 +147,12 @@ export default function DeadlineReminder() {
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed': return 'success';
-      case 'overdue': return 'error';
-      case 'pending': return 'primary';
-      default: return 'default';
-    }
+  const getStatusColor = (status: string, daysUntil: number) => {
+    if (status === 'overdue' || daysUntil < 0) return 'error';
+    if (daysUntil <= 3) return 'warning';
+    if (status === 'completed') return 'success';
+    return 'default';
   };
-
-  const upcomingDeadlines = deadlines
-    .filter(d => d.status === 'pending')
-    .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
-    .slice(0, 5);
 
   if (loading) {
     return (
@@ -185,16 +160,7 @@ export default function DeadlineReminder() {
         <Stack spacing={2}>
           <Skeleton variant="text" width={200} height={40} />
           {[...Array(3)].map((_, i) => (
-            <Card key={i}>
-              <CardContent>
-                <Skeleton variant="text" width="60%" height={24} />
-                <Skeleton variant="text" width="40%" height={20} />
-                <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-                  <Skeleton variant="rectangular" width={60} height={24} />
-                  <Skeleton variant="rectangular" width={80} height={24} />
-                </Stack>
-              </CardContent>
-            </Card>
+            <Skeleton key={i} variant="rectangular" height={120} />
           ))}
         </Stack>
       </Box>
@@ -214,6 +180,10 @@ export default function DeadlineReminder() {
     );
   }
 
+  const upcomingDeadlines = deadlines
+    .filter(d => d.status !== 'completed')
+    .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
+
   return (
     <Box sx={{ p: 3 }}>
       <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
@@ -229,109 +199,100 @@ export default function DeadlineReminder() {
         </Button>
       </Stack>
 
-      {upcomingDeadlines.length > 0 && (
-        <Card sx={{ mb: 3, bgcolor: 'warning.light', color: 'warning.contrastText' }}>
-          <CardContent>
-            <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
-              <WarningIcon />
-              <Typography variant="h6">Upcoming Deadlines</Typography>
-            </Stack>
-            <Stack spacing={1}>
-              {upcomingDeadlines.map(deadline => {
-                const daysLeft = getDaysUntilDeadline(deadline.dueDate);
-                return (
-                  <Box key={deadline.id} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Typography variant="body2">
-                      {deadline.title}
-                    </Typography>
-                    <Chip
-                      label={daysLeft === 0 ? 'Today' : daysLeft === 1 ? 'Tomorrow' : `${daysLeft} days`}
-                      size="small"
-                      color={daysLeft <= 1 ? 'error' : daysLeft <= 3 ? 'warning' : 'info'}
-                    />
-                  </Box>
-                );
-              })}
-            </Stack>
-          </CardContent>
-        </Card>
-      )}
-
-      {deadlines.length === 0 ? (
-        <Card>
-          <CardContent sx={{ textAlign: 'center', py: 6 }}>
-            <ScheduleIcon sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
-            <Typography variant="h6" color="text.secondary" gutterBottom>
-              No deadlines yet
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-              Add your first deadline to start tracking important dates
-            </Typography>
-            <Button variant="contained" onClick={() => handleOpenDialog()}>
-              Add Deadline
-            </Button>
-          </CardContent>
-        </Card>
+      {upcomingDeadlines.length === 0 ? (
+        <Alert severity="info" sx={{ display: 'flex', alignItems: 'center' }}>
+          <ScheduleIcon sx={{ mr: 1 }} />
+          No upcoming deadlines. You're all caught up!
+        </Alert>
       ) : (
-        <List>
-          {deadlines.map(deadline => {
-            const daysLeft = getDaysUntilDeadline(deadline.dueDate);
+        <Stack spacing={2}>
+          {upcomingDeadlines.map((deadline) => {
+            const daysUntil = getDaysUntilDeadline(deadline.dueDate);
+            const isUrgent = daysUntil <= 3 && daysUntil >= 0;
+            const isOverdue = daysUntil < 0;
+
             return (
-              <ListItem key={deadline.id} sx={{ px: 0 }}>
-                <Card sx={{ width: '100%' }}>
-                  <CardContent>
-                    <Stack direction="row" justifyContent="space-between" alignItems="flex-start" sx={{ mb: 2 }}>
-                      <Box sx={{ flex: 1 }}>
-                        <Typography variant="h6" gutterBottom>
+              <Card
+                key={deadline.id}
+                sx={{
+                  border: isOverdue ? '2px solid' : isUrgent ? '1px solid' : 'none',
+                  borderColor: isOverdue ? 'error.main' : isUrgent ? 'warning.main' : 'transparent',
+                  bgcolor: isOverdue ? 'error.light' : isUrgent ? 'warning.light' : 'background.paper',
+                  opacity: isOverdue ? 0.9 : 1
+                }}
+              >
+                <CardContent>
+                  <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+                    <Box sx={{ flex: 1 }}>
+                      <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
+                        <Typography variant="h6" component="h3">
                           {deadline.title}
                         </Typography>
-                        {deadline.description && (
-                          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                            {deadline.description}
-                          </Typography>
+                        {(isUrgent || isOverdue) && (
+                          <WarningIcon color={isOverdue ? 'error' : 'warning'} fontSize="small" />
                         )}
-                        <Typography variant="body2" color="text.secondary">
-                          Due: {new Date(deadline.dueDate).toLocaleDateString()}
+                      </Stack>
+
+                      {deadline.description && (
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                          {deadline.description}
                         </Typography>
-                      </Box>
-                      <Stack direction="row" spacing={1}>
-                        <IconButton size="small" onClick={() => handleOpenDialog(deadline)}>
+                      )}
+
+                      <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mb: 1 }}>
+                        <Chip
+                          label={deadline.priority.toUpperCase()}
+                          color={getPriorityColor(deadline.priority) as any}
+                          size="small"
+                        />
+                        <Chip
+                          label={
+                            isOverdue
+                              ? `${Math.abs(daysUntil)} days overdue`
+                              : daysUntil === 0
+                              ? 'Due today'
+                              : daysUntil === 1
+                              ? 'Due tomorrow'
+                              : `${daysUntil} days left`
+                          }
+                          color={getStatusColor(deadline.status, daysUntil) as any}
+                          size="small"
+                        />
+                        {deadline.category && (
+                          <Chip label={deadline.category} variant="outlined" size="small" />
+                        )}
+                      </Stack>
+
+                      <Typography variant="caption" color="text.secondary">
+                        Due: {new Date(deadline.dueDate).toLocaleDateString()}
+                      </Typography>
+                    </Box>
+
+                    <Stack direction="row" spacing={1}>
+                      <Tooltip title="Edit">
+                        <IconButton
+                          size="small"
+                          onClick={() => handleOpenDialog(deadline)}
+                        >
                           <EditIcon />
                         </IconButton>
-                        <IconButton size="small" onClick={() => handleDelete(deadline.id)}>
+                      </Tooltip>
+                      <Tooltip title="Delete">
+                        <IconButton
+                          size="small"
+                          color="error"
+                          onClick={() => handleDeleteDeadline(deadline.id)}
+                        >
                           <DeleteIcon />
                         </IconButton>
-                      </Stack>
+                      </Tooltip>
                     </Stack>
-                    <Stack direction="row" spacing={1} flexWrap="wrap">
-                      <Chip
-                        label={deadline.priority}
-                        size="small"
-                        color={getPriorityColor(deadline.priority) as any}
-                      />
-                      <Chip
-                        label={deadline.status}
-                        size="small"
-                        color={getStatusColor(deadline.status) as any}
-                      />
-                      {deadline.category && (
-                        <Chip label={deadline.category} size="small" variant="outlined" />
-                      )}
-                      {deadline.status === 'pending' && (
-                        <Chip
-                          icon={<NotificationsIcon />}
-                          label={`${deadline.reminderDays} days notice`}
-                          size="small"
-                          variant="outlined"
-                        />
-                      )}
-                    </Stack>
-                  </CardContent>
-                </Card>
-              </ListItem>
+                  </Stack>
+                </CardContent>
+              </Card>
             );
           })}
-        </List>
+        </Stack>
       )}
 
       <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
@@ -381,19 +342,15 @@ export default function DeadlineReminder() {
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
               fullWidth
             />
-            <TextField
-              label="Reminder Days"
-              type="number"
-              value={formData.reminderDays}
-              onChange={(e) => setFormData({ ...formData, reminderDays: parseInt(e.target.value) })}
-              fullWidth
-              inputProps={{ min: 0, max: 30 }}
-            />
           </Stack>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button onClick={handleSubmit} variant="contained">
+          <Button
+            onClick={handleSaveDeadline}
+            variant="contained"
+            disabled={!formData.title || !formData.dueDate}
+          >
             {editingDeadline ? 'Update' : 'Add'}
           </Button>
         </DialogActions>

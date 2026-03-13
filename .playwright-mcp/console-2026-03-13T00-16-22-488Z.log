@@ -1,0 +1,12 @@
+[  630220ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:19470/api/health:0
+[  630385ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:19470/api/terminal/5d056468-ce69-4128-bd21-b5b00927cb1c:0
+[  630385ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:19470/api/terminal/e22dd545-26dd-49b1-8fc0-dd92eb025b50:0
+[  630385ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:19470/api/terminal/ef09f09d-cdc2-4461-af0c-a5ee0c583655:0
+[  630386ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:19470/api/terminal/4f6caf32-dd13-48c6-85d1-b56b9762ea70:0
+[  634959ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:9001/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:19470/assets/index-BVtG-rP7.js:213
+[  660216ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:19470/api/health:0
+[  660383ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:19470/api/terminal/5d056468-ce69-4128-bd21-b5b00927cb1c:0
+[  660383ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:19470/api/terminal/e22dd545-26dd-49b1-8fc0-dd92eb025b50:0
+[  660383ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:19470/api/terminal/ef09f09d-cdc2-4461-af0c-a5ee0c583655:0
+[  660384ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:19470/api/terminal/4f6caf32-dd13-48c6-85d1-b56b9762ea70:0
+[  662183ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:9001/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:19470/assets/index-BVtG-rP7.js:213

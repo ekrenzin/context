@@ -1,0 +1,6 @@
+[     136ms] Error: supabaseUrl is required.
+    at validateSupabaseUrl (http://localhost:19471/@fs/Users/eankrenzin/Documents/Dev/Repos/sos-context/repos/context/tools/command-center/node_modules/.vite/deps/@supabase_supabase-js.js?v=e94436ba:12854:26)
+    at new SupabaseClient (http://localhost:19471/@fs/Users/eankrenzin/Documents/Dev/Repos/sos-context/repos/context/tools/command-center/node_modules/.vite/deps/@supabase_supabase-js.js?v=e94436ba:13059:21)
+    at createClient (http://localhost:19471/@fs/Users/eankrenzin/Documents/Dev/Repos/sos-context/repos/context/tools/command-center/node_modules/.vite/deps/@supabase_supabase-js.js?v=e94436ba:13238:10)
+    at http://localhost:19471/src/lib/supabase.ts:4:25
+[     137ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:19471/favicon.ico:0

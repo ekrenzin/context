@@ -1,7 +1,11 @@
 ---
 name: commit-format
 description: Commit message format for your organization. Apply when creating git commits to ensure consistent, parseable, and secure commit messages across all repositories.
-triggers: []
+triggers:
+  - git commit
+  - squash
+  - git push
+  - creating a PR
 related_skills:
   - git-ops
   - feature-dev

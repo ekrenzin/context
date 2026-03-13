@@ -10,7 +10,8 @@ from ctx.profiler.io import (
     SESSIONS_PATH,
     STATE_PATH,
     append_jsonl,
-    find_transcripts_dir,
+    collect_transcript_files,
+    find_transcript_dirs,
     load_json,
     save_json,
 )
@@ -19,11 +20,11 @@ from ctx.profiler.profile import build_history_snapshot, finalize_sequences, mer
 
 
 def run_scan(full: bool):
-    transcripts_dir = find_transcripts_dir()
-    if not transcripts_dir:
+    dirs = find_transcript_dirs()
+    if not dirs:
         return 1
 
-    txt_files = sorted(transcripts_dir.glob("*.txt"))
+    txt_files = collect_transcript_files(dirs)
     if not txt_files:
         return 1
 
@@ -33,7 +34,8 @@ def run_scan(full: bool):
     to_scan = []
     unchanged = []
     for fp in txt_files:
-        prev = processed.get(fp.name)
+        key = str(fp)
+        prev = processed.get(key) or processed.get(fp.name)
         if prev and prev.get("size") == fp.stat().st_size and not full:
             unchanged.append(fp)
         else:
@@ -47,7 +49,8 @@ def run_scan(full: bool):
     sessions: list[dict] = []
 
     for fp in unchanged:
-        cached = processed.get(fp.name, {})
+        key = str(fp)
+        cached = processed.get(key) or processed.get(fp.name, {})
         cached_result = cached.get("result", {})
         merge_into_profile(
             profile,
@@ -59,7 +62,7 @@ def run_scan(full: bool):
             },
             cached_result.get("file_date", ""),
         )
-        new_processed[fp.name] = cached
+        new_processed[key] = cached
         cached_session = cached.get("session")
         if cached_session:
             sessions.append(cached_session)
@@ -70,7 +73,7 @@ def run_scan(full: bool):
         file_date = datetime.fromtimestamp(fp.stat().st_mtime, tz=timezone.utc).strftime("%Y-%m-%d")
         merge_into_profile(profile, result, file_date)
 
-        new_processed[fp.name] = {
+        new_processed[str(fp)] = {
             "size": fp.stat().st_size,
             "scanned_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "session": result["session"],

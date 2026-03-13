@@ -563,7 +563,10 @@ ctx workspace check --root                       # root repo only
 1. `ctx workspace check --quick --repo <name>` passes.
 2. Relevant tests pass if the change is non-trivial.
 3. Code review checklist applied.
-4. For platform changes, visual verification confirms UI renders.
+4. For UI changes, use Playwright MCP to verify the page renders and key
+   interactions work. See `skills/playwright/SKILL.md` for the workflow.
+5. After verifying a UI flow, generate a Playwright test with
+   `browser_generate_playwright_test` to guard against regressions.
 
 ## Before Creating a PR
 
@@ -2204,6 +2207,7 @@ related_skills:
   - refactoring
   - database-ops
   - security-audit
+  - playwright
 ---
 
 # Feature Development Workflow
@@ -2419,8 +2423,6 @@ panels, details) for the nearest entity:
   for brand colors. Never hardcode hex values for brand colors. The
   authoritative palette is in `/sos-branding` -- consult it when adding new
   tokens or verifying existing ones.
-- VS Code extension webviews use `var(--vscode-*)` tokens for theme
-  compatibility. Test in both light and dark themes.
 - Responsive breakpoints: mobile at 500px, tablet at 768px.
 - Prefer CSS Grid for layout, Flexbox for alignment within rows.
 
@@ -2633,6 +2635,67 @@ When generating images for your organization's materials (announcement cards, ma
 presentations), include brand cues in the prompt: dark backgrounds
 (`#0A0A0C`), gold accents (`#C9A84C`), and the authority/protection
 aesthetic. See `/sos-branding` for the full palette and logo rules.
+## Skill: local-ai
+
+---
+name: local-ai
+description: Interact with the local Ollama model running on the MQTT bus. Use when you need zero-cost, low-latency inference -- drafting text, naming things, summarizing, brainstorming, or triaging errors. Triggers on mentions of local model, Ollama, quick draft, or free inference.
+---
+
+# Local AI
+
+A tiny Ollama model runs as an MQTT background service on the workspace bus.
+Zero cost, zero latency, runs entirely on the user's machine.
+
+## MCP Tools
+
+| Tool | Use case |
+|------|----------|
+| `cc_local_ai_prompt` | Synchronous prompt -- send text, get a response back immediately |
+| `cc_local_ai_status` | Check if the local model is running and which model is loaded |
+| `cc_local_ai_mqtt_prompt` | Async prompt via MQTT -- fire-and-forget, reply on a topic |
+
+## When to Use
+
+- **Session naming**: Handled automatically. The service listens to `ctx/session/+/started` and labels sessions.
+- **Quick drafts**: Commit messages, PR titles, short descriptions. Use `cc_local_ai_prompt`.
+- **Brainstorming**: Generate name ideas, taglines, or alternatives. Fast iteration at zero cost.
+- **Summaries**: Condense log output, error traces, or long text into a short summary.
+- **Triage**: Pipe an error message through and get a one-line explanation.
+
+## MQTT Protocol
+
+Any service on the bus can use the local AI by publishing to MQTT:
+
+**Request** -- publish to `ctx/local-ai/prompt`:
+```json
+{
+  "prompt": "Summarize this error: ...",
+  "maxTokens": 200,
+  "temperature": 0.7,
+  "replyTo": "ctx/my-service/ai-reply"
+}
+```
+
+**Response** -- arrives on `replyTo` (default `ctx/local-ai/reply`):
+```json
+{ "ok": true, "response": "..." }
+```
+
+## Limitations
+
+- Model is small (qwen2.5:0.5b by default) -- good for short generation, not complex reasoning.
+- First call after cold start has ~8s model load latency. Subsequent calls are ~100ms.
+- Max useful output is ~200 tokens. Beyond that, quality degrades.
+
+## Checking Status
+
+Use `cc_local_ai_status` or read the retained MQTT topic:
+
+```
+Topic: ctx/local-ai/status
+Payload: { "status": "online", "model": "qwen2.5:0.5b" }
+```
 ## Skill: memory
 
 ---
@@ -3052,7 +3115,6 @@ These files currently exceed limits and should be split when next touched:
 | ----------------------------------- | ----- | --------------------------------------------------- |
 | `tools/teams-bot/bot.py`            | 1864  | By feature: commands, handlers, graph-api, webhooks |
 | `tools/cloudwatch/logs.py`          | 694   | By subcommand: tail, insights, groups, formatters   |
-| `tools/vscode-ext/src/extension.ts` | 654   | Extract \_onMessage handlers into handlers.ts       |
 | `tools/profiler/analyze.py`         | 607   | Parsing, commands, anthropic-analysis               |
 | `tools/tunnel/src/server.ts`        | 458   | Route handlers, tunnel management, state            |
 | `tools/guardduty/findings.py`       | 426   | Formatters, commands, filtering                     |
@@ -3061,12 +3123,6 @@ These files currently exceed limits and should be split when next touched:
 | `tools/sos/workspace/check.py`      | -     | ctx workspace check; per-repo checks               |
 | `tools/db/format.js`                | 302   | Extract formatters by output type                   |
 | `tools/db/parse-models.js`          | 299   | Parser vs output                                    |
-
-### Recently Split (Done)
-
-- `tools/vscode-ext/src/template.ts` (435 -> 45 lines) -> `sections/{core,data,profile,stats}.ts`
-- `tools/vscode-ext/src/client/dashboard.ts` (418 -> deleted) -> `client/{init,helpers,controls,profile,sessions,stats,main}.ts`
-- `tools/vscode-ext/src/extension.ts` (887 -> 654 lines) -> `loaders.ts`, `icons.ts`
 
 ## Anti-Patterns
 
@@ -3077,6 +3133,136 @@ These files currently exceed limits and should be split when next touched:
   abstraction boundary is wrong. Re-draw it.
 - **One-export-per-file**: Going too far. Files can have multiple related
   exports. Split at responsibility boundaries, not at function boundaries.
+## Skill: playwright
+
+---
+name: playwright
+description: Browser automation and E2E testing via Playwright MCP. Triggers on UI verification, E2E tests, browser testing, visual confirmation, click-through testing, or when a user asks to verify something works in the browser.
+triggers:
+  - feature-dev
+  - test-plan
+  - frontend-patterns
+related_skills:
+  - test-plan
+  - code-review
+  - preflight
+---
+
+# Playwright
+
+Use the Playwright MCP server to drive a real browser for E2E verification,
+visual confirmation, and automated testing. The server exposes browser
+automation as MCP tools -- no Playwright API code needed.
+
+## MCP Tools (provided by `@playwright/mcp`)
+
+The Playwright MCP server provides snapshot-based and interaction tools.
+Use snapshot tools by default (faster, more reliable). Vision tools are
+available when coordinate-based interaction is needed.
+
+### Core tools
+
+| Tool | Purpose |
+|------|---------|
+| `browser_navigate` | Go to a URL |
+| `browser_click` | Click an element (by `ref` from snapshot) |
+| `browser_type` | Type into an input field |
+| `browser_snapshot` | Get accessibility tree of current page |
+| `browser_take_screenshot` | Capture a screenshot |
+| `browser_wait` | Wait for a specified duration |
+| `browser_close` | Close the current tab |
+
+### Form and interaction
+
+| Tool | Purpose |
+|------|---------|
+| `browser_select_option` | Select from dropdown |
+| `browser_hover` | Hover over element |
+| `browser_press_key` | Press keyboard key |
+| `browser_drag` | Drag element to target |
+
+### Tab and navigation
+
+| Tool | Purpose |
+|------|---------|
+| `browser_tab_list` | List open tabs |
+| `browser_tab_new` | Open new tab |
+| `browser_tab_select` | Switch to tab |
+| `browser_tab_close` | Close a tab |
+| `browser_back` | Navigate back |
+| `browser_forward` | Navigate forward |
+
+### Advanced
+
+| Tool | Purpose |
+|------|---------|
+| `browser_console_messages` | Read browser console logs |
+| `browser_evaluate` | Execute JS in page context |
+| `browser_file_upload` | Upload file to input |
+| `browser_generate_playwright_test` | Generate a `.spec.ts` from session |
+| `browser_network_requests` | View network activity |
+| `browser_pdf_save` | Save page as PDF |
+| `browser_resize` | Resize viewport |
+
+## When to use
+
+- **After UI changes**: Navigate to the affected page, take a snapshot, verify
+  elements render correctly.
+- **Form flows**: Fill out forms, submit, verify success/error states.
+- **Regression checks**: Click through adjacent features to confirm they still
+  work after a change.
+- **Visual confirmation**: Screenshot a page to verify layout, styling, or
+  responsiveness.
+- **Console errors**: Check `browser_console_messages` for JS errors after
+  navigation.
+- **Generate test files**: Use `browser_generate_playwright_test` after a
+  manual walkthrough to produce a reusable `.spec.ts`.
+
+## Verification workflow
+
+When the user asks you to verify something works, or after completing a UI
+change:
+
+1. **Navigate** to the relevant URL (`browser_navigate`).
+2. **Snapshot** the page (`browser_snapshot`) to inspect the accessibility tree.
+3. **Interact** if needed (click, type, submit).
+4. **Assert** by reading the snapshot or screenshot -- confirm expected elements
+   are present, text matches, no error banners.
+5. **Check console** (`browser_console_messages`) for errors.
+6. **Generate test** (`browser_generate_playwright_test`) if the flow should be
+   repeatable.
+
+## Test generation
+
+After verifying a flow manually, use `browser_generate_playwright_test` to
+produce a Playwright test file. Save generated tests to the repo's test
+directory (e.g., `tests/e2e/`).
+
+Generated tests serve as regression guards -- they capture the exact flow
+that was just verified and can be re-run in CI.
+
+## Configuration
+
+The Playwright MCP server runs as a stdio subprocess. Configuration is in
+`.cursor/mcp.json` (Cursor) or `.claude/mcp.json` (Claude Code).
+
+Key flags:
+
+| Flag | Purpose |
+|------|---------|
+| `--browser chromium` | Browser engine (chromium, firefox, webkit) |
+| `--caps testing` | Enable assertion and test generation tools |
+| `--viewport-size 1280,720` | Default viewport |
+| `--headless` | Run without visible browser (CI mode) |
+
+## Limitations
+
+- Snapshot-based tools use accessibility refs, not CSS selectors. Use
+  `browser_snapshot` to discover available refs before interacting.
+- The browser session persists across tool calls within a conversation but
+  resets between conversations.
+- Auth state is not preserved by default. Use `--storage-state` for persistent
+  login, or log in via `browser_click`/`browser_type` each session.
 ## Skill: pr-summary
 
 ---
@@ -3369,6 +3555,156 @@ impact: security issues first, then bugs, then cleanup, then nice-to-haves.
 - Changes outside the repo you are currently working in (use
   `/cross-repo-check` instead).
 - Anything that would derail the current task's PR scope.
+## Skill: proposals
+
+---
+name: proposals
+description: Scaffold and manage design proposals before implementation begins. Use when planning new features, architectural changes, multi-task work, or when the user says "write a proposal" or "plan this out".
+---
+
+# Proposals
+
+Design declarations that precede implementation. Every non-trivial piece of
+work gets a proposal in `docs/proposals/` before code is written.
+
+## When to Use
+
+- New features or architectural changes
+- Work that spans multiple files, systems, or repos
+- Anything requiring more than one delegatable task
+- When the user asks to "plan", "propose", or "design" something
+
+## Directory Structure
+
+Create a directory under `docs/proposals/<slug>/` with these files:
+
+```
+<slug>/
+  PROPOSAL.md        -- design declaration
+  impact.md          -- affected files, systems, risks
+  01-<task-name>.md  -- first delegatable task
+  02-<task-name>.md  -- second task
+  NN-<task-name>.md  -- as many as needed
+```
+
+## PROPOSAL.md Template
+
+```markdown
+---
+title: <Title>
+date: <YYYY-MM-DD>
+status: draft
+ticket: null
+repo: <primary repo or tool affected>
+---
+
+# <Title>
+
+## Summary
+One paragraph: what this proposal does and why.
+
+## Motivation
+Why this work is needed. What problem exists today.
+
+## Scope
+
+### In Scope
+- Bulleted list of what this proposal covers
+
+### Out of Scope
+- What it explicitly does not cover
+
+## Architecture
+How the pieces fit together. Diagrams welcome (ASCII or Mermaid).
+
+## Key Design Decisions
+Numbered list of decisions with rationale for each.
+
+## Relationship to Other Proposals
+How this relates to existing proposals (if any).
+```
+
+## impact.md Template
+
+```markdown
+# Impact Analysis
+
+## Files
+
+### New
+- `path/to/file.ts` -- what it does
+
+### Modified
+- `path/to/file.ts` -- what changes
+
+## Systems
+Which systems are affected (DB, MQTT, file system, AI backend, etc.).
+
+## Cross-Repo
+Other repos or packages affected.
+
+## Risks
+Bulleted list of risks with mitigations.
+```
+
+## Task File Template
+
+Each numbered task file has YAML frontmatter:
+
+```markdown
+---
+task: <kebab-case-name>
+agent: generalPurpose
+model: fast
+depends_on: []
+status: pending
+---
+
+# NN: <Task Title>
+
+## Objective
+What this task accomplishes.
+
+## Context
+Why this task exists and what it depends on.
+
+## Steps
+Numbered list of implementation steps. Each step ends with:
+-- validation: how to verify the step is done
+
+## Acceptance Criteria
+Bulleted list of conditions for completion.
+```
+
+### Task Frontmatter Fields
+
+| Field | Values | Purpose |
+|-------|--------|---------|
+| agent | generalPurpose, explore, plan | Sub-agent type to execute |
+| model | fast, default | fast for simple tasks, default for complex |
+| depends_on | [] or [1, 3] | Task numbers that must complete first |
+| status | pending, in-progress, completed, skipped | Lifecycle state |
+
+## Workflow
+
+1. **Analyze** the problem. Read relevant code and existing proposals.
+2. **Draft PROPOSAL.md** with summary, motivation, scope, architecture.
+3. **Write impact.md** listing all affected files, systems, and risks.
+4. **Break into tasks** -- each task should be independently delegatable.
+   Order by dependency. Keep tasks focused (one concern each).
+5. **Review** -- present the proposal to the user before implementation.
+
+## Status Lifecycle
+
+`draft` -> `in-progress` -> `completed` | `rejected`
+
+## Guidelines
+
+- Proposals are gitignored (local working docs, not committed).
+- Keep task count reasonable (3-13 tasks for most proposals).
+- Each task should take one agent session to complete.
+- Promote reusable patterns to `memory/decisions/` or `skills/` when done.
+- If a proposal is rejected, document why in the PROPOSAL.md before archiving.
 ## Skill: refactoring
 
 ---
@@ -4028,11 +4364,11 @@ For concrete bad-to-good rewrites covering the most common agent mistakes, see
 
 ---
 name: update-cursor-settings
-description: Modify Cursor/VSCode user settings in settings.json. Use when you want to change editor settings, preferences, configuration, themes, font size, tab size, format on save, auto save, keybindings, or any settings.json values.
+description: Modify Cursor user settings in settings.json. Use when you want to change editor settings, preferences, configuration, themes, font size, tab size, format on save, auto save, keybindings, or any settings.json values.
 ---
 # Updating Cursor Settings
 
-This skill guides you through modifying Cursor/VSCode user settings. Use this when you want to change editor settings, preferences, configuration, themes, keybindings, or any `settings.json` values.
+This skill guides you through modifying Cursor user settings. Use this when you want to change editor settings, preferences, configuration, themes, keybindings, or any `settings.json` values.
 
 ## Settings File Location
 
@@ -4070,7 +4406,7 @@ Common setting categories:
 ### Step 3: Update the Setting
 
 When modifying settings.json:
-1. Parse the existing JSON (handle comments - VSCode settings support JSON with comments)
+1. Parse the existing JSON (handle comments - Cursor settings support JSON with comments)
 2. Add or update the requested setting
 3. Preserve all other existing settings
 4. Write back with proper formatting (2-space indentation)
@@ -4107,17 +4443,13 @@ If user says "use dark theme" or "change my theme":
 
 ## Important Notes
 
-1. **JSON with Comments**: VSCode/Cursor settings.json supports comments (`//` and `/* */`). When reading, be aware comments may exist. When writing, preserve comments if possible.
+1. **JSON with Comments**: Cursor settings.json supports comments (`//` and `/* */`). When reading, be aware comments may exist. When writing, preserve comments if possible.
 
 2. **Restart May Be Required**: Some settings take effect immediately, others require reloading the window or restarting Cursor. Inform the user if a restart is needed.
 
 3. **Backup**: For significant changes, consider mentioning the user can undo via Ctrl/Cmd+Z in the settings file or by reverting git changes if tracked.
 
-4. **Workspace vs User Settings**:
-   - User settings (what this skill covers): Apply globally to all projects
-   - Workspace settings (`.vscode/settings.json`): Apply only to the current project
-
-5. **Commit Attribution**: When the user asks about commit attribution, clarify whether they want to edit the **CLI agent** or the **IDE agent**. For the CLI agent, modify `~/.cursor/cli-config.json`. For the IDE agent, it is controlled from the UI at **Cursor Settings > Agent > Attribution** (not settings.json).
+4. **Commit Attribution**: When the user asks about commit attribution, clarify whether they want to edit the **CLI agent** or the **IDE agent**. For the CLI agent, modify `~/.cursor/cli-config.json`. For the IDE agent, it is controlled from the UI at **Cursor Settings > Agent > Attribution** (not settings.json).
 
 ## Common User Requests → Settings
 

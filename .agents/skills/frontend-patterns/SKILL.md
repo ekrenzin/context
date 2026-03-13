@@ -95,8 +95,6 @@ panels, details) for the nearest entity:
   for brand colors. Never hardcode hex values for brand colors. The
   authoritative palette is in `/sos-branding` -- consult it when adding new
   tokens or verifying existing ones.
-- VS Code extension webviews use `var(--vscode-*)` tokens for theme
-  compatibility. Test in both light and dark themes.
 - Responsive breakpoints: mobile at 500px, tablet at 768px.
 - Prefer CSS Grid for layout, Flexbox for alignment within rows.
 

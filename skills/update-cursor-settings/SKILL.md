@@ -1,10 +1,10 @@
 ---
 name: update-cursor-settings
-description: Modify Cursor/VSCode user settings in settings.json. Use when you want to change editor settings, preferences, configuration, themes, font size, tab size, format on save, auto save, keybindings, or any settings.json values.
+description: Modify Cursor user settings in settings.json. Use when you want to change editor settings, preferences, configuration, themes, font size, tab size, format on save, auto save, keybindings, or any settings.json values.
 ---
 # Updating Cursor Settings
 
-This skill guides you through modifying Cursor/VSCode user settings. Use this when you want to change editor settings, preferences, configuration, themes, keybindings, or any `settings.json` values.
+This skill guides you through modifying Cursor user settings. Use this when you want to change editor settings, preferences, configuration, themes, keybindings, or any `settings.json` values.
 
 ## Settings File Location
 
@@ -42,7 +42,7 @@ Common setting categories:
 ### Step 3: Update the Setting
 
 When modifying settings.json:
-1. Parse the existing JSON (handle comments - VSCode settings support JSON with comments)
+1. Parse the existing JSON (handle comments - Cursor settings support JSON with comments)
 2. Add or update the requested setting
 3. Preserve all other existing settings
 4. Write back with proper formatting (2-space indentation)
@@ -79,17 +79,13 @@ If user says "use dark theme" or "change my theme":
 
 ## Important Notes
 
-1. **JSON with Comments**: VSCode/Cursor settings.json supports comments (`//` and `/* */`). When reading, be aware comments may exist. When writing, preserve comments if possible.
+1. **JSON with Comments**: Cursor settings.json supports comments (`//` and `/* */`). When reading, be aware comments may exist. When writing, preserve comments if possible.
 
 2. **Restart May Be Required**: Some settings take effect immediately, others require reloading the window or restarting Cursor. Inform the user if a restart is needed.
 
 3. **Backup**: For significant changes, consider mentioning the user can undo via Ctrl/Cmd+Z in the settings file or by reverting git changes if tracked.
 
-4. **Workspace vs User Settings**:
-   - User settings (what this skill covers): Apply globally to all projects
-   - Workspace settings (`.vscode/settings.json`): Apply only to the current project
-
-5. **Commit Attribution**: When the user asks about commit attribution, clarify whether they want to edit the **CLI agent** or the **IDE agent**. For the CLI agent, modify `~/.cursor/cli-config.json`. For the IDE agent, it is controlled from the UI at **Cursor Settings > Agent > Attribution** (not settings.json).
+4. **Commit Attribution**: When the user asks about commit attribution, clarify whether they want to edit the **CLI agent** or the **IDE agent**. For the CLI agent, modify `~/.cursor/cli-config.json`. For the IDE agent, it is controlled from the UI at **Cursor Settings > Agent > Attribution** (not settings.json).
 
 ## Common User Requests → Settings
 

@@ -102,7 +102,6 @@ These files currently exceed limits and should be split when next touched:
 | ----------------------------------- | ----- | --------------------------------------------------- |
 | `tools/teams-bot/bot.py`            | 1864  | By feature: commands, handlers, graph-api, webhooks |
 | `tools/cloudwatch/logs.py`          | 694   | By subcommand: tail, insights, groups, formatters   |
-| `tools/vscode-ext/src/extension.ts` | 654   | Extract \_onMessage handlers into handlers.ts       |
 | `tools/profiler/analyze.py`         | 607   | Parsing, commands, anthropic-analysis               |
 | `tools/tunnel/src/server.ts`        | 458   | Route handlers, tunnel management, state            |
 | `tools/guardduty/findings.py`       | 426   | Formatters, commands, filtering                     |
@@ -111,12 +110,6 @@ These files currently exceed limits and should be split when next touched:
 | `tools/sos/workspace/check.py`      | -     | ctx workspace check; per-repo checks               |
 | `tools/db/format.js`                | 302   | Extract formatters by output type                   |
 | `tools/db/parse-models.js`          | 299   | Parser vs output                                    |
-
-### Recently Split (Done)
-
-- `tools/vscode-ext/src/template.ts` (435 -> 45 lines) -> `sections/{core,data,profile,stats}.ts`
-- `tools/vscode-ext/src/client/dashboard.ts` (418 -> deleted) -> `client/{init,helpers,controls,profile,sessions,stats,main}.ts`
-- `tools/vscode-ext/src/extension.ts` (887 -> 654 lines) -> `loaders.ts`, `icons.ts`
 
 ## Anti-Patterns
 

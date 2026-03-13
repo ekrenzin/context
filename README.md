@@ -109,7 +109,6 @@ context/
     ctx/               Python CLI
     command-center/    Web dashboard (Fastify + React)
     ctx-mqtt/          Node.js MQTT client library
-    vscode-ext/        VS Code extension (MQTT bridge)
     bootstrap.py       One-command setup
     manifest.yaml      Tool registry
   repos/               Sub-repos (gitignored, managed by checkout)

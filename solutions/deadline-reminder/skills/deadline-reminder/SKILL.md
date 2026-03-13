@@ -1,15 +1,14 @@
 ```markdown
 ---
 name: deadline-reminder
-description: Manage and track upcoming deadlines with automated notifications
+description: Manage and track upcoming deadlines and milestones with automated notifications
 triggers:
-  - "remind me about deadline"
-  - "set deadline reminder"
-  - "upcoming deadlines"
-  - "deadline notification"
+  - deadline approaching
+  - milestone due
+  - project timeline update
 related_skills:
   - task-management
-  - calendar-integration
+  - project-planning
   - notification-system
 ---
 
@@ -18,50 +17,50 @@ related_skills:
 ## When to Use
 
 Use this skill when you need to:
-- Set reminders for project deadlines and milestones
-- Track multiple upcoming deadlines in one place
-- Receive automated notifications before deadlines
-- Manage deadline priorities and categories
-- Monitor overdue items and missed deadlines
+- Track project deadlines and milestones
+- Receive automated reminders before due dates
+- Monitor multiple deadline timelines
+- Ensure critical dates are not missed
+- Coordinate team deadline awareness
 
 ## Workflow
 
-1. **Create Deadline**
-   - Define deadline title, description, and due date
-   - Set priority level (low, medium, high, critical)
-   - Configure notification preferences (email, in-app, SMS)
-   - Assign categories or tags for organization
+1. **Add Deadline**
+   - Create new deadline entry with title, description, and due date
+   - Set reminder intervals (1 day, 1 week, 1 month before)
+   - Assign priority level and category tags
+   - Link to related projects or tasks
 
-2. **Schedule Notifications**
-   - Set multiple reminder intervals (1 day, 1 week, 1 month before)
-   - Configure escalation rules for critical deadlines
-   - Define notification recipients and channels
-   - Establish recurring deadline patterns if applicable
+2. **Configure Notifications**
+   - Define notification channels (email, in-app, SMS)
+   - Set custom reminder schedules for different deadline types
+   - Configure escalation rules for overdue items
+   - Enable team member notifications
 
 3. **Monitor Dashboard**
    - View upcoming deadlines in chronological order
    - Filter by priority, category, or time range
    - Track completion status and progress indicators
-   - Identify overdue items requiring immediate attention
+   - Identify potential conflicts or overlapping deadlines
 
-4. **Process Notifications**
-   - Receive automated alerts at configured intervals
-   - Update deadline status (completed, postponed, cancelled)
-   - Escalate critical deadlines to stakeholders
-   - Archive completed or cancelled deadlines
+4. **Update Status**
+   - Mark deadlines as completed, postponed, or cancelled
+   - Adjust due dates and notification schedules
+   - Add progress notes and status updates
+   - Archive completed or obsolete deadlines
 
-5. **Analyze Performance**
-   - Review deadline completion rates and patterns
-   - Identify frequently missed deadline types
-   - Adjust notification timing based on effectiveness
-   - Generate reports for stakeholder communication
+5. **Generate Reports**
+   - Export deadline summaries and timelines
+   - Analyze deadline completion patterns
+   - Review missed deadlines and causes
+   - Create team performance metrics
 
 ## Validation
 
-- Deadline dates must be in the future when created
-- Notification intervals must be positive values
-- Priority levels must be from predefined set
-- User permissions verified for deadline modification
-- Notification channels validated and accessible
-- Recurring patterns follow valid cron expressions
+- Deadline date must be in the future
+- Reminder intervals cannot exceed deadline timeframe
+- Priority levels must be within defined range (1-5)
+- Notification channels must be properly configured
+- User permissions verified for team deadline access
+- Duplicate deadline detection and prevention
 ```

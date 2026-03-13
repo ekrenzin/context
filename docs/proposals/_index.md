@@ -31,5 +31,4 @@ Each numbered task file specifies:
 - Proposals are gitignored (local working docs).
 - Promote reusable patterns to `memory/decisions/`, `.cursor/skills/`,
   or `docs/exec-plans/` when appropriate.
-- See `.cursor/rules/proposals.mdc` for the full protocol.
-- See `.cursor/skills/proposals/SKILL.md` for the scaffold workflow.
+- See `skills/proposals/SKILL.md` for the scaffold workflow.
