@@ -212,7 +212,7 @@ export async function restoreSessions(): Promise<number> {
           height: entry.height,
           socketPath: entry.socketPath,
         },
-        (phase, msg) => console.log(`[rdp] restore ${entry.id.slice(0, 8)}: ${phase} - ${msg}`),
+        (phase: string, msg: string) => console.log(`[rdp] restore ${entry.id.slice(0, 8)}: ${phase} - ${msg}`),
       );
 
       sessions.set(entry.id, {

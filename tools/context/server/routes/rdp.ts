@@ -25,7 +25,7 @@ export async function registerRdpRoutes(app: FastifyInstance): Promise<void> {
     try {
       const info = await createSession(
         { config, password, width, height },
-        (phase, message) => {
+        (phase: string, message: string) => {
           console.log(`[rdp] ${phase}: ${message}`);
         },
       );
@@ -88,7 +88,7 @@ export async function registerRdpRoutes(app: FastifyInstance): Promise<void> {
       }
 
       // Bridge -> browser
-      const unsub = bridge.onData((msg) => {
+      const unsub = bridge.onData((msg: unknown) => {
         if (socket.readyState === socket.OPEN) {
           socket.send(JSON.stringify(msg));
         }

@@ -202,7 +202,7 @@ export async function spawnSession(opts: SpawnOptions): Promise<SessionInfo> {
       reject(new Error("pty-host did not start in time"));
     }, 10_000);
 
-    child.on("message", (msg) => {
+    child.on("message", (msg: unknown) => {
       if (msg === "READY") {
         clearTimeout(timeout);
         resolve();
