@@ -81,6 +81,7 @@ export function registerRoutes(
   registerAiRoutes(app);
   registerKnowledgeRoutes(app, root);
   registerAgentEventRoutes(app, mqttClient);
+  registerDeployRoutes(app);
   if (mcpSync) registerMcpRegistryRoutes(app, mcpSync);
   if (mcpSync) registerProjectMcpRoutes(app, mcpSync);
 }
