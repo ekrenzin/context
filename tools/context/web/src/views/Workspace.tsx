@@ -30,7 +30,6 @@ export default function Workspace() {
       <Tabs
         value={tabIndex}
         onChange={(_, idx) => setParams({ tab: TAB_KEYS[idx] })}
-        variant="fullWidth"
         sx={{ mb: 2 }}
       >
         <Tab label="Projects" />
