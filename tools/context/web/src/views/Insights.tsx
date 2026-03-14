@@ -84,7 +84,7 @@ export default function Dashboard() {
             <Tab label="System" />
           </Tabs>
 
-          <Box sx={{ display: "flex", flex: 1, minHeight: 0 }}>
+          <Box sx={{ display: "flex", flex: 1, minHeight: 0, width: "100%" }}>
             <Suspense fallback={<Loading />}>
               {tab === "overview" && <Overview generation={generation} />}
               {tab === "skills" && <SkillGraph />}
