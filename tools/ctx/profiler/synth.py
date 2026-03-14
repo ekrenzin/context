@@ -16,7 +16,7 @@ def agents(
     days: int = typer.Option(30, "--days", help="Lookback window in days"),
     dry_run: bool = typer.Option(False, "--dry-run", help="Print actions without writing"),
     stage: bool = typer.Option(False, "--stage", help="Write candidates JSON instead of applying"),
-    model: str = typer.Option("gemini-3-flash", "--model", help="LLM model"),
+    model: str = typer.Option("claude-haiku-4-5-20251001", "--model", help="LLM model"),
     min_confidence: float = typer.Option(0.5, "--min-confidence", help="Min confidence threshold"),
 ) -> None:
     raise typer.Exit(run_agents(top, min_sessions, days, dry_run, stage, model, min_confidence))
@@ -28,7 +28,7 @@ def skills(
     skill: str = typer.Option("", "--skill", help="Evolve a specific skill by name"),
     dry_run: bool = typer.Option(False, "--dry-run", help="Print actions without writing"),
     stage: bool = typer.Option(False, "--stage", help="Write candidates JSON instead of applying"),
-    model: str = typer.Option("gemini-3-flash", "--model", help="LLM model"),
+    model: str = typer.Option("gpt-4.1-mini", "--model", help="LLM model"),
 ) -> None:
     raise typer.Exit(run_skills(top, skill, dry_run, stage, model))
 
@@ -37,6 +37,6 @@ def skills(
 def memory(
     dry_run: bool = typer.Option(False, "--dry-run", help="Print actions without writing"),
     days: int = typer.Option(7, "--days", help="Lookback window for analyses"),
-    model: str = typer.Option("gemini-3-flash", "--model", help="LLM model"),
+    model: str = typer.Option("gpt-4.1-mini", "--model", help="LLM model"),
 ) -> None:
     raise typer.Exit(run_memory(dry_run, days, model))

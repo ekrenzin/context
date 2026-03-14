@@ -17,7 +17,7 @@ CODEBASE_SCAN = root_dir() / "playground" / "output" / "codebase-scan.json"
 CANDIDATES_OUT = root_dir() / "playground" / "output" / "memory-candidates.json"
 LOCAL_CATEGORIES = {"observations", "progress", "preferences", "environment"}
 STAGED_CATEGORIES = {"decisions", "known-issues"}
-SYNTHESIS_MODEL = "gemini-3-flash"
+SYNTHESIS_MODEL = "gpt-4.1-mini"
 
 
 def load_recent_analyses(days: int) -> list[dict]:

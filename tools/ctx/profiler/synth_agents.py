@@ -11,7 +11,7 @@ from ctx.config import root_dir
 from ctx.profiler.cluster import cluster, load_analyses, load_sessions
 from ctx.profiler.llm import call_agent
 
-AGENTS_DIR = root_dir() / ".cursor" / "skills" / "agents"
+AGENTS_DIR = root_dir() / "skills" / "agents"
 CANDIDATES_PATH = root_dir() / "playground" / "output" / "agent-candidates.json"
 SYNTHESIS_MODEL = "claude-haiku-4-5-20251001"
 DEFAULT_LOOKBACK_DAYS = 30
@@ -43,7 +43,7 @@ def build_prompt(c: dict, analyses: list[dict]) -> str:
     return f"""\
 You are an autonomous agent-builder for the Context development environment.
 
-Analysis of {c["frequency"]} Cursor AI agent sessions has revealed a recurring workflow
+Analysis of {c["frequency"]} AI agent sessions has revealed a recurring workflow
 cluster. Sessions in this cluster consistently invoke the following skills together:
   {skill_list}
 

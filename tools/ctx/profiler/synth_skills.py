@@ -15,7 +15,7 @@ from ctx.profiler.skill_synth_io import (
     load_top_skills,
 )
 
-SYNTHESIS_MODEL = "gemini-3-flash"
+SYNTHESIS_MODEL = "gpt-4.1-mini"
 
 
 def _auto_index_skill(file_paths: list[str]) -> None:
