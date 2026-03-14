@@ -13,7 +13,7 @@
       "last_seen": "2026-03-05"
     },
     "feature-dev": {
-      "count": 56,
+      "count": 55,
       "last_seen": "2026-03-12"
     },
     "pr-summary": {
@@ -206,15 +206,15 @@
     }
   },
   "tools": {
-    "Read": 7889,
-    "Shell": 6465,
+    "Read": 7882,
+    "Shell": 6460,
     "StrReplace": 3966,
     "Grep": 2414,
-    "TodoWrite": 1909,
-    "Write": 1698,
-    "Edit": 1409,
-    "Bash": 1353,
-    "Glob": 1230,
+    "TodoWrite": 1908,
+    "Write": 1701,
+    "Edit": 1410,
+    "Bash": 1354,
+    "Glob": 1222,
     "cursor": 428,
     "Task": 397,
     "ReadLints": 313,
@@ -223,8 +223,8 @@
     "ReadFile": 177,
     "WebFetch": 121,
     "WebSearch": 113,
-    "AskQuestion": 111,
-    "CreatePlan": 97,
+    "AskQuestion": 110,
+    "CreatePlan": 96,
     "ToolSearch": 88,
     "read_file": 86,
     "ApplyPatch": 85,
@@ -258,7 +258,7 @@
     "Subagent": 1
   },
   "sequences": {
-    "Read -> Read": 2026,
+    "Read -> Read": 2024,
     "Shell -> Shell": 985,
     "Read -> Read -> Read": 919,
     "Grep -> Grep": 400,
@@ -267,8 +267,8 @@
     "Glob -> Glob": 248,
     "Write -> Write": 248,
     "StrReplace -> StrReplace -> StrReplace": 213,
-    "Read -> Glob": 158,
-    "Read -> Shell": 157,
+    "Read -> Glob": 157,
+    "Read -> Shell": 155,
     "TodoWrite -> Shell": 155,
     "Write -> Write -> Write": 139,
     "Read -> Grep": 131,
@@ -277,15 +277,15 @@
     "Delete -> Delete": 129,
     "Grep -> Grep -> Grep": 116,
     "Delete -> Delete -> Delete": 99,
-    "Glob -> Read": 90,
+    "Glob -> Read": 87,
     "ReadFile -> ReadFile": 86,
     "TodoWrite -> Read": 82,
     "Grep -> Read": 78,
     "TodoWrite -> StrReplace": 56,
     "Grep -> Glob": 55,
-    "Shell -> Glob": 53,
     "ReadFile -> ReadFile -> ReadFile": 53,
     "Glob -> Glob -> Glob": 52,
+    "Shell -> Glob": 50,
     "Glob -> Grep": 45,
     "Glob -> Shell": 43,
     "Task -> Task -> Task": 40,
@@ -309,6 +309,6 @@
     "list_dir -> list_dir": 18,
     "Shell -> Shell -> Read": 18
   },
-  "last_scan": "2026-03-14T19:11:16+00:00",
+  "last_scan": "2026-03-14T19:14:46+00:00",
   "transcripts_scanned": 2495
 }
