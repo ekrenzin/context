@@ -43,6 +43,10 @@ jobs:
         run: npm install
         working-directory: tools/ctx-mqtt
 
+      - name: Install context-rdp
+        run: npm install
+        working-directory: tools/context-rdp
+
       - name: Install command-center
         run: npm install
         working-directory: tools/context
