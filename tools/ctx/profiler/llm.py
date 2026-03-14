@@ -18,7 +18,7 @@ def resolve_agent_cmd() -> list[str]:
 
 
 def call_agent(prompt: str, model: str, timeout: int = 240) -> str | None:
-    cmd = [*resolve_agent_cmd(), "--print", "--mode", "ask", "--model", model, prompt]
+    cmd = [*resolve_agent_cmd(), "--print", "--trust", "--mode", "ask", "--model", model, prompt]
     try:
         proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
     except FileNotFoundError:
