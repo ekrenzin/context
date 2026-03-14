@@ -206,15 +206,15 @@
     }
   },
   "tools": {
-    "Read": 7876,
+    "Read": 7884,
     "Shell": 6465,
     "StrReplace": 3966,
     "Grep": 2413,
     "TodoWrite": 1909,
     "Write": 1697,
-    "Edit": 1393,
-    "Bash": 1337,
-    "Glob": 1229,
+    "Edit": 1401,
+    "Bash": 1349,
+    "Glob": 1230,
     "cursor": 428,
     "Task": 397,
     "ReadLints": 313,
@@ -247,12 +247,12 @@
     "mcp_cursor": 6,
     "mcp__playwright__browser_snapshot": 5,
     "codebase_search": 5,
+    "mcp__playwright__browser_console_messages": 4,
     "mcp__playwright__browser_evaluate": 4,
     "SemanticSearch": 4,
-    "mcp__playwright__browser_console_messages": 4,
+    "AskUserQuestion": 3,
     "TaskOutput": 3,
     "read_lints": 3,
-    "AskUserQuestion": 3,
     "user": 2,
     "List_dir": 1,
     "Subagent": 1
@@ -309,6 +309,6 @@
     "list_dir -> list_dir": 18,
     "Shell -> Shell -> Read": 18
   },
-  "last_scan": "2026-03-14T19:01:11+00:00",
+  "last_scan": "2026-03-14T19:05:01+00:00",
   "transcripts_scanned": 2495
 }
