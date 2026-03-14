@@ -1,5 +1,6 @@
-import { spawn, type ChildProcess } from "child_process";
+import { spawn, execSync, type ChildProcess } from "child_process";
 import net from "net";
+import os from "os";
 
 let child: ChildProcess | null = null;
 
@@ -20,39 +21,81 @@ async function isListening(host: string, port: number): Promise<boolean> {
   });
 }
 
-export async function ensureGuacd(): Promise<void> {
-  if (await isListening(GUACD_HOST, GUACD_PORT)) return;
-
-  if (child) return;
-
+function which(cmd: string): boolean {
   try {
-    child = spawn("guacd", ["-f", "-b", GUACD_HOST, "-l", String(GUACD_PORT)], {
-      stdio: "pipe",
-    });
+    execSync(`which ${cmd}`, { stdio: "ignore" });
+    return true;
   } catch {
-    child = null;
-    throw new Error(
-      "guacd not found. Install it: brew install guacamole-server (macOS) or apt install guacd (Linux)",
-    );
+    return false;
+  }
+}
+
+function installGuacd(): void {
+  const platform = os.platform();
+
+  if (platform === "darwin") {
+    if (!which("brew")) {
+      throw new Error("Homebrew not found. Install it first: https://brew.sh");
+    }
+    console.log("[rdp] installing guacamole-server via brew...");
+    execSync("brew install guacamole-server", { stdio: "inherit", timeout: 300_000 });
+    return;
   }
 
-  // Catch spawn errors (ENOENT etc.) so they don't crash the process
-  const spawnError = await new Promise<Error | null>((resolve) => {
-    child!.on("error", (err) => {
-      child = null;
-      resolve(err);
-    });
-    child!.on("exit", () => {
-      child = null;
-    });
-    // If no error within 500ms, assume spawn succeeded
+  if (platform === "linux") {
+    // Try apt first (Debian/Ubuntu), then yum (RHEL/Amazon Linux)
+    if (which("apt-get")) {
+      console.log("[rdp] installing guacd via apt...");
+      execSync("sudo apt-get update && sudo apt-get install -y guacd", {
+        stdio: "inherit",
+        timeout: 300_000,
+      });
+      return;
+    }
+    if (which("yum")) {
+      console.log("[rdp] installing guacd via yum...");
+      execSync("sudo yum install -y guacd", {
+        stdio: "inherit",
+        timeout: 300_000,
+      });
+      return;
+    }
+    throw new Error("No supported package manager found (apt-get, yum)");
+  }
+
+  throw new Error(`Unsupported platform: ${platform}. Install guacd manually.`);
+}
+
+function spawnGuacd(): ChildProcess {
+  const proc = spawn("guacd", ["-f", "-b", GUACD_HOST, "-l", String(GUACD_PORT)], {
+    stdio: "pipe",
+  });
+  proc.on("error", () => { /* handled below via spawnError check */ });
+  proc.on("exit", () => { child = null; });
+  return proc;
+}
+
+async function waitForSpawnError(proc: ChildProcess): Promise<Error | null> {
+  return new Promise((resolve) => {
+    proc.on("error", (err) => resolve(err));
     setTimeout(() => resolve(null), 500);
   });
+}
 
-  if (spawnError) {
-    throw new Error(
-      "guacd not found. Install it: brew install guacamole-server (macOS) or apt install guacd (Linux)",
-    );
+export async function ensureGuacd(): Promise<void> {
+  if (await isListening(GUACD_HOST, GUACD_PORT)) return;
+  if (child) return;
+
+  // If guacd binary is missing, install it
+  if (!which("guacd")) {
+    installGuacd();
+  }
+
+  child = spawnGuacd();
+  const err = await waitForSpawnError(child);
+  if (err) {
+    child = null;
+    throw new Error(`Failed to start guacd: ${err.message}`);
   }
 
   // Wait for guacd to start listening
@@ -61,9 +104,7 @@ export async function ensureGuacd(): Promise<void> {
     if (await isListening(GUACD_HOST, GUACD_PORT)) return;
   }
 
-  throw new Error(
-    "guacd did not start. Install it: brew install guacamole-server (macOS) or apt install guacd (Linux)",
-  );
+  throw new Error("guacd spawned but never started listening on port 4822");
 }
 
 export function stopGuacd(): void {
