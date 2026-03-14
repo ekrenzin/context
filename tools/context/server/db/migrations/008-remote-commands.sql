@@ -1,0 +1,4 @@
+-- Supabase-only migration: remote command relay support
+-- The `commands` table lives in Supabase, not in the local SQLite database.
+-- This file is intentionally a no-op for local so the migration tracker
+-- marks it as applied and doesn't attempt the ALTER TABLE.

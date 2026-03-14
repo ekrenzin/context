@@ -21,7 +21,7 @@ Thumbs.db
 .npmrc
 
 # Generated context (schema introspection, model parsing, etc.)
-context/
+/context/
 
 # Knowledge vector index (derived artifact, rebuilt via `ctx knowledge index`)
 knowledge/

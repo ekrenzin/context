@@ -238,6 +238,8 @@ async def run_socket_bridge(
     settings.video_bpp_min = 15
     settings.video_bpp_max = 24
     settings.video_out_format = VIDEO_FORMAT.PIL
+    # Disable clipboard channel -- aardwolf RDPECLIP crashes on Ctrl+V
+    settings.channels = [ch for ch in settings.channels if ch.__name__ != "RDPECLIPChannel"]
 
     result = await try_connect(host, port, username, password, domain, settings)
     if isinstance(result, str):
@@ -343,6 +345,8 @@ async def run_bridge(
     settings.video_bpp_min = 15
     settings.video_bpp_max = 24
     settings.video_out_format = VIDEO_FORMAT.PIL
+    # Disable clipboard channel -- aardwolf RDPECLIP crashes on Ctrl+V
+    settings.channels = [ch for ch in settings.channels if ch.__name__ != "RDPECLIPChannel"]
 
     result = await try_connect(host, port, username, password, domain, settings)
     if isinstance(result, str):

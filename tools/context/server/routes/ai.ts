@@ -69,7 +69,7 @@ async function fetchAnthropicModels(apiKey: string): Promise<ModelOption[]> {
         provider: "anthropic",
       });
     }
-    return latestPerFamily(models);
+    return latestPerTier(models);
   } catch {
     return FALLBACK_ANTHROPIC;
   }
@@ -89,48 +89,58 @@ async function fetchOpenAIModels(apiKey: string): Promise<ModelOption[]> {
         provider: "openai",
       });
     }
-    return latestPerFamily(models);
+    return latestPerTier(models);
   } catch {
     return FALLBACK_OPENAI;
   }
 }
 
 function isChatModel(id: string): boolean {
-  const prefixes = ["gpt-4", "gpt-3.5", "o1", "o3", "o4", "chatgpt"];
-  return prefixes.some((p) => id.startsWith(p)) && !id.includes("instruct");
+  const prefixes = ["gpt-5", "gpt-4.1", "gpt-4o", "o1", "o3", "o4", "chatgpt"];
+  const excluded = [
+    "codex", "audio", "realtime", "tts", "transcribe",
+    "search", "image", "instruct", "chat-latest",
+  ];
+  if (!prefixes.some((p) => id.startsWith(p))) return false;
+  if (excluded.some((e) => id.includes(e))) return false;
+  // Skip dated variants (e.g. gpt-5.4-2026-03-05) -- keep only canonical IDs
+  if (/\d{4}-\d{2}-\d{2}$/.test(id)) return false;
+  return true;
 }
 
 /**
- * Extract model family from an ID.
- * "claude-sonnet-4-6"          -> "claude-sonnet"
- * "claude-sonnet-4-20250514"   -> "claude-sonnet"
- * "gpt-4o-mini-2024-07-18"    -> "gpt-4o-mini"
- * "o3-mini"                    -> "o3-mini"
- * "o4-mini-2025-04-16"        -> "o4-mini"
+ * Extract a tier key so all generations of the same role collapse together.
+ * "gpt-5.4"       -> "gpt-flagship"
+ * "gpt-5.4-pro"   -> "gpt-pro"
+ * "gpt-5-mini"    -> "gpt-mini"
+ * "gpt-4.1-nano"  -> "gpt-nano"
+ * "o3-pro"        -> "o-pro"
+ * "o4-mini"       -> "o-mini"
+ * "o3"            -> "o-reasoning"
+ * "claude-sonnet-4-6" -> "claude-sonnet"
  */
-function modelFamily(id: string): string {
-  // Anthropic: claude-<tier>-<version>[-date]
+function modelTier(id: string): string {
   const anthropicMatch = id.match(/^(claude-[a-z]+)/);
   if (anthropicMatch) return anthropicMatch[1];
 
-  // OpenAI: strip trailing date stamps (-YYYY-MM-DD) and version suffixes
-  return id.replace(/-\d{4}-\d{2}-\d{2}$/, "").replace(/-\d{4,}$/, "");
+  const suffix = id.match(/-(mini|nano|pro)$/)?.[1];
+  if (id.startsWith("o")) return suffix ? `o-${suffix}` : "o-reasoning";
+  return suffix ? `gpt-${suffix}` : "gpt-flagship";
 }
 
-/** Keep only the latest N models per family. */
-function latestPerFamily(models: ModelOption[], n = 2): ModelOption[] {
-  const families = new Map<string, ModelOption[]>();
+/** Keep only the latest model per tier. */
+function latestPerTier(models: ModelOption[]): ModelOption[] {
+  const tiers = new Map<string, ModelOption[]>();
   for (const m of models) {
-    const fam = modelFamily(m.id);
-    const list = families.get(fam) ?? [];
+    const tier = modelTier(m.id);
+    const list = tiers.get(tier) ?? [];
     list.push(m);
-    families.set(fam, list);
+    tiers.set(tier, list);
   }
   const result: ModelOption[] = [];
-  for (const members of families.values()) {
-    // Sort newest first (higher ID = newer for both providers)
+  for (const members of tiers.values()) {
     members.sort((a, b) => b.id.localeCompare(a.id));
-    result.push(...members.slice(0, n));
+    result.push(members[0]);
   }
   return result;
 }
@@ -161,9 +171,10 @@ const FALLBACK_ANTHROPIC: ModelOption[] = [
 ];
 
 const FALLBACK_OPENAI: ModelOption[] = [
-  { id: "gpt-4o", label: "GPT-4o", provider: "openai" },
-  { id: "gpt-4o-mini", label: "GPT-4o Mini", provider: "openai" },
+  { id: "gpt-5.4", label: "GPT 5.4", provider: "openai" },
+  { id: "gpt-5.4-pro", label: "GPT 5.4 Pro", provider: "openai" },
   { id: "o3", label: "o3", provider: "openai" },
+  { id: "o4-mini", label: "o4 Mini", provider: "openai" },
 ];
 
 // -- Route registration ------------------------------------------------------
@@ -220,6 +231,7 @@ export function registerAiRoutes(app: FastifyInstance): void {
         prompt: lastUser?.content ?? "",
         system: system || undefined,
         model: selected.id,
+        provider: selected.provider,
       });
 
       return { content: result.text, model: result.model, provider: result.provider };

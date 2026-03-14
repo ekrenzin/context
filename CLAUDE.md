@@ -30,6 +30,7 @@ Use these tools directly. See `skills/<name>/SKILL.md` for usage guidance.
 Read `skills/<name>/SKILL.md` for details on any skill.
 
 - api-design
+- aws
 - code-review
 - commit-format
 - contribute

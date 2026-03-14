@@ -106,10 +106,10 @@ def history(limit: int | None = typer.Option(None, "--limit", "-n", help="Number
 def analyze(
     chat_id: str | None = typer.Option(None, "--chat-id", help="Analyze a single session by chat ID"),
     limit: int | None = typer.Option(None, "--limit", "-n", help="Max sessions to analyze"),
-    model: str | None = typer.Option(None, "--model", "-m", help="Cursor Agent model"),
+    model: str | None = typer.Option(None, "--model", "-m", help="Anthropic model ID"),
     force: bool = typer.Option(False, "--force", help="Re-analyze sessions that already have analyses"),
 ) -> None:
-    typer.echo(f"Analyzing sessions via Cursor Agent CLI (model: {model or ANALYZE_MODEL})...")
+    typer.echo(f"Analyzing sessions (model: {model or ANALYZE_MODEL})...")
     result = run_analyze(chat_id, limit, model, force)
     if result is None:
         if not find_transcript_dirs():
@@ -122,9 +122,9 @@ def analyze(
 
     analyzed, total = result
     if analyzed == 0 and total > 0:
-        typer.echo(f"All {total} sessions already analyzed.")
+        typer.echo(f"0 new analyses produced ({total} sessions total).")
         return
 
-    typer.echo(f"Analyzed {analyzed} session(s).")
+    typer.echo(f"Analyzed {analyzed}/{total} session(s).")
     typer.echo(f"Analyses -> {ANALYSES_DIR}/ ({analyzed} files)")
     typer.echo(f"Sessions -> {SESSIONS_PATH} (updated)")

@@ -17,13 +17,14 @@ export interface AiRequestOptions {
   prompt: string;
   system?: string;
   model?: string;
+  provider?: AiProvider;
   maxTokens?: number;
   temperature?: number;
 }
 
 const DEFAULT_MODELS: Record<AiProvider, string> = {
   anthropic: "claude-sonnet-4-6",
-  openai: "gpt-4o",
+  openai: "gpt-5.4",
 };
 
 function resolveApiKey(provider: AiProvider): string {
@@ -91,7 +92,7 @@ async function callOpenAI(opts: AiRequestOptions, apiKey: string): Promise<AiRes
 }
 
 export async function complete(opts: AiRequestOptions): Promise<AiResponse> {
-  const provider = resolveProvider();
+  const provider = opts.provider ?? resolveProvider();
   const apiKey = resolveApiKey(provider);
 
   const limiter = getRateLimiter();
@@ -194,7 +195,7 @@ async function streamOpenAI(
 }
 
 export async function stream(opts: AiRequestOptions, cb: StreamCallbacks): Promise<void> {
-  const provider = resolveProvider();
+  const provider = opts.provider ?? resolveProvider();
   const apiKey = resolveApiKey(provider);
 
   const limiter = getRateLimiter();
