@@ -25,6 +25,7 @@
     "@modelcontextprotocol/sdk": "^1.27.1",
     "@supabase/supabase-js": "^2.99.1",
     "better-sqlite3": "^12.6.2",
+    "context-rdp": "file:../context-rdp",
     "ctx-mqtt": "file:../ctx-mqtt",
     "cytoscape": "^3.33.1",
     "fastify": "^5.2.0",
