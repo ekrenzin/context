@@ -55,6 +55,8 @@ def status(phase: str, message: str) -> None:
 
 
 def encode_frame(img: Image.Image, quality: int = 60) -> str:
+    if img.mode != "RGB":
+        img = img.convert("RGB")
     buf = io.BytesIO()
     img.save(buf, format="JPEG", quality=quality)
     return base64.b64encode(buf.getvalue()).decode("ascii")
@@ -93,7 +95,7 @@ async def frame_loop(conn, width: int, height: int) -> None:
             img = conn.get_desktop_buffer(VIDEO_FORMAT.PIL)
             if img is not None:
                 if frame_count == 0:
-                    log(f"first frame received ({img.size[0]}x{img.size[1]})")
+                    log(f"first frame: {img.size[0]}x{img.size[1]} mode={img.mode}")
                 b64 = encode_frame(img)
                 emit({"type": "frame", "data": b64, "w": width, "h": height})
                 frame_count += 1
