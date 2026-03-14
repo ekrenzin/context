@@ -45,13 +45,6 @@
         "--viewport-size",
         "1280,720"
       ]
-    },
-    "desktop": {
-      "command": "npx",
-      "args": [
-        "tsx",
-        "tools/desktop-mcp/src/index.ts"
-      ]
     }
   }
 }
