@@ -140,7 +140,12 @@ export async function spawnBridge(
         proc.stdin!.write(JSON.stringify(msg) + "\n");
       }
     },
-    onLine: (cb) => { lineCb = cb; },
+    onLine: (cb) => {
+      lineCb = cb;
+      // Replay any messages that arrived before the callback was set
+      for (const msg of pendingMessages) cb(msg);
+      pendingMessages.length = 0;
+    },
     kill: () => {
       if (!proc.killed) {
         proc.stdin!.write(JSON.stringify({ type: "disconnect" }) + "\n");
