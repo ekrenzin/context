@@ -153,7 +153,7 @@ export async function start(): Promise<void> {
 
   registerRoutes(app, ROOT, scheduler, transcriptDir, updateChecker, mqttClient, autoCommit, mcpSync);
   registerTerminalRoutes(app);
-  registerRdpRoutes(app);
+  await registerRdpRoutes(app);
   registerActionRoutes(app);
   registerTunnelAuth(app, mqttClient);
   registerTunnelRoutes(app);
