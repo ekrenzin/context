@@ -15,6 +15,7 @@ import base64
 import io
 import json
 import sys
+import traceback
 from urllib.parse import quote as urlquote
 
 from aardwolf.commons.factory import RDPConnectionFactory
@@ -32,11 +33,21 @@ BUTTON_MAP = {
     "wheel_down": MOUSEBUTTON.MOUSEBUTTON_WHEEL_DOWN,
 }
 
+# Auth schemes to try in order (plain first for AWS EC2, then CredSSP/NTLM)
+AUTH_SCHEMES = [
+    "rdp+ntlm-password",
+    "rdp+plain",
+]
+
 
 def emit(msg: dict) -> None:
     line = json.dumps(msg, separators=(",", ":"))
     sys.stdout.write(line + "\n")
     sys.stdout.flush()
+
+
+def log(message: str) -> None:
+    print(f"[rdp-bridge] {message}", file=sys.stderr, flush=True)
 
 
 def status(phase: str, message: str) -> None:
@@ -55,15 +66,18 @@ async def read_stdin_lines() -> asyncio.Queue:
     loop = asyncio.get_event_loop()
 
     def reader():
-        for line in sys.stdin:
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                msg = json.loads(line)
-                loop.call_soon_threadsafe(queue.put_nowait, msg)
-            except json.JSONDecodeError:
-                pass
+        try:
+            for line in sys.stdin:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    msg = json.loads(line)
+                    loop.call_soon_threadsafe(queue.put_nowait, msg)
+                except json.JSONDecodeError:
+                    pass
+        except Exception:
+            pass
         loop.call_soon_threadsafe(queue.put_nowait, None)
 
     loop.run_in_executor(None, reader)
@@ -72,14 +86,27 @@ async def read_stdin_lines() -> asyncio.Queue:
 
 async def frame_loop(conn, width: int, height: int) -> None:
     """Periodically capture the desktop buffer and emit as JPEG frames."""
+    frame_count = 0
+    empty_count = 0
     while True:
         try:
             img = conn.get_desktop_buffer(VIDEO_FORMAT.PIL)
             if img is not None:
+                if frame_count == 0:
+                    log(f"first frame received ({img.size[0]}x{img.size[1]})")
                 b64 = encode_frame(img)
                 emit({"type": "frame", "data": b64, "w": width, "h": height})
-        except Exception:
-            pass
+                frame_count += 1
+                empty_count = 0
+            else:
+                empty_count += 1
+                if empty_count == 50:  # ~5 seconds of no frames
+                    log("no frames received for 5 seconds")
+                if empty_count > 300:  # ~30 seconds
+                    emit({"type": "error", "message": "No frames received for 30 seconds"})
+                    return
+        except Exception as exc:
+            log(f"frame error: {exc}")
         await asyncio.sleep(0.1)  # ~10 fps
 
 
@@ -107,7 +134,35 @@ async def input_loop(conn, queue: asyncio.Queue) -> None:
             elif msg["type"] == "disconnect":
                 break
         except Exception as exc:
-            emit({"type": "error", "message": str(exc)})
+            log(f"input error: {exc}")
+
+
+async def try_connect(host, port, username, password, domain, settings):
+    """Try connecting with each auth scheme until one works."""
+    user_part = urlquote(username, safe="")
+    pass_part = urlquote(password, safe="")
+    domain_part = f"{urlquote(domain, safe='')}%5C" if domain else ""
+    last_err = None
+
+    for scheme in AUTH_SCHEMES:
+        url = f"{scheme}://{domain_part}{user_part}:{pass_part}@{host}:{port}"
+        log(f"trying {scheme}...")
+        status("connecting", f"Trying {scheme.split('+')[1]} auth...")
+
+        try:
+            factory = RDPConnectionFactory.from_url(url, settings)
+            conn = factory.get_connection(settings)
+            _, err = await conn.connect()
+            if err is None:
+                log(f"connected via {scheme}")
+                return conn
+            last_err = str(err)
+            log(f"{scheme} failed: {err}")
+        except Exception as exc:
+            last_err = str(exc)
+            log(f"{scheme} failed: {exc}")
+
+    return last_err
 
 
 async def run_bridge(
@@ -119,6 +174,7 @@ async def run_bridge(
     width: int = 1280,
     height: int = 720,
 ) -> None:
+    log(f"starting bridge to {host}:{port} as {username}")
     status("connecting", f"Connecting to {host}:{port}...")
 
     settings = RDPIOSettings()
@@ -128,29 +184,15 @@ async def run_bridge(
     settings.video_bpp_max = 24
     settings.video_out_format = VIDEO_FORMAT.PIL
 
-    # Build connection URL: rdp+ntlm-password://domain\user:pass@host:port
-    user_part = urlquote(username, safe="")
-    pass_part = urlquote(password, safe="")
-    domain_part = f"{urlquote(domain, safe='')}%5C" if domain else ""
-    url = f"rdp+ntlm-password://{domain_part}{user_part}:{pass_part}@{host}:{port}"
+    result = await try_connect(host, port, username, password, domain, settings)
 
-    try:
-        factory = RDPConnectionFactory.from_url(url, settings)
-        conn = factory.get_connection(settings)
-    except Exception as exc:
-        emit({"type": "error", "message": f"Failed to create connection: {exc}"})
+    if isinstance(result, str):
+        emit({"type": "error", "message": f"All auth methods failed. Last error: {result}"})
         return
 
-    try:
-        _, err = await conn.connect()
-        if err is not None:
-            emit({"type": "error", "message": f"Connection failed: {err}"})
-            return
-    except Exception as exc:
-        emit({"type": "error", "message": f"Connection failed: {exc}"})
-        return
-
+    conn = result
     status("connected", f"Connected to {host}")
+    log("connection established, starting frame loop")
 
     stdin_queue = await read_stdin_lines()
 
@@ -158,12 +200,20 @@ async def run_bridge(
     input_task = asyncio.create_task(input_loop(conn, stdin_queue))
 
     try:
-        await asyncio.gather(frame_task, input_task, return_exceptions=True)
+        done, pending = await asyncio.wait(
+            [frame_task, input_task],
+            return_when=asyncio.FIRST_COMPLETED,
+        )
+        for task in done:
+            exc = task.exception()
+            if exc:
+                log(f"task error: {exc}\n{traceback.format_exception(exc)}")
+        for task in pending:
+            task.cancel()
     finally:
-        frame_task.cancel()
-        input_task.cancel()
         try:
             await conn.send_disconnect()
         except Exception:
             pass
         status("disconnected", "Disconnected")
+        log("bridge exiting")
