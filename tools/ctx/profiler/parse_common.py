@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 TOOL_CALL_RE = re.compile(r"^\[Tool call\]\s+(\w+)")
-SKILL_PATH_RE = re.compile(r"\.cursor/skills/([^/]+)/SKILL\.md$")
+SKILL_PATH_RE = re.compile(r"(?:\.cursor/)?skills/([^/]+)/SKILL\.md$")
 USER_QUERY_TAG_RE = re.compile(r"</?user_query>")
 
 

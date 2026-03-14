@@ -94,6 +94,10 @@ def parse_jsonl(filepath: Path) -> dict:
                             sm = SKILL_PATH_RE.search(p)
                             if sm:
                                 skills[sm.group(1)] += 1
+                        elif name == "Skill":
+                            sk = inp.get("skill", "")
+                            if sk:
+                                skills[sk] += 1
 
                 elif btype == "thinking":
                     thinking_blocks += 1

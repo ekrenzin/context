@@ -34,7 +34,7 @@ def spawn(
 @app.command("list")
 def list_instances() -> None:
     """List ctx-swarm EC2 instances."""
-    from ctx.aws.core import run_aws
+    from ctx.aws.cli import run_aws
     from ctx.aws.credentials import aws_env
 
     env = aws_env()
@@ -67,7 +67,7 @@ def terminate(
     force: bool = typer.Option(False, "--force", "-f", help="Skip confirmation"),
 ) -> None:
     """Terminate swarm EC2 instances."""
-    from ctx.aws.core import run_aws
+    from ctx.aws.cli import run_aws
     from ctx.aws.credentials import aws_env
 
     if not force:

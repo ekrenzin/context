@@ -32,6 +32,7 @@ import { registerMcpRegistryRoutes } from "./mcp-registry.js";
 import { registerProjectMcpRoutes } from "./project-mcp.js";
 import { registerKnowledgeRoutes } from "./knowledge.js";
 import { registerAgentEventRoutes } from "./agent-events.js";
+import { registerAwsRoutes } from "./aws.js";
 import { registerDeployRoutes } from "./deploy.js";
 import type { McpSync } from "../mcp-sync/index.js";
 
@@ -81,6 +82,7 @@ export function registerRoutes(
   registerAiRoutes(app);
   registerKnowledgeRoutes(app, root);
   registerAgentEventRoutes(app, mqttClient);
+  registerAwsRoutes(app);
   registerDeployRoutes(app);
   if (mcpSync) registerMcpRegistryRoutes(app, mcpSync);
   if (mcpSync) registerProjectMcpRoutes(app, mcpSync);

@@ -30,6 +30,7 @@ const EXEMPT_PREFIXES = [
   "/api/rdp",
   "/api/mcp",
   "/api/deploy",
+  "/api/knowledge",
 ];
 const EXEMPT_EXACT = new Set(["/api/health"]);
 
