@@ -60,7 +60,7 @@ function fingerprintTranscripts(transcriptDir: string): string {
 
 function fingerprintRepos(root: string): string {
   const parts: string[] = [];
-  for (const name of KNOWN_REPOS) {
+  for (const name of discoverRepos(root)) {
     const repoPath = path.join(root, "repos", name);
     try {
       const sha = execSync(`git -C "${repoPath}" rev-parse HEAD 2>/dev/null`, {
@@ -388,9 +388,7 @@ export function createAgentScheduler(
         return;
       }
 
-      const reposPresent = KNOWN_REPOS.some((n) =>
-        fs.existsSync(path.join(root, "repos", n)),
-      );
+      const reposPresent = discoverRepos(root).length > 0;
       if (!reposPresent) {
         skipJob(j3, "no repos present");
       } else {
