@@ -206,19 +206,19 @@
     }
   },
   "tools": {
-    "Read": 7949,
+    "Read": 7955,
     "Shell": 6460,
     "StrReplace": 3966,
-    "Grep": 2433,
+    "Grep": 2440,
     "TodoWrite": 1908,
     "Write": 1732,
-    "Edit": 1442,
-    "Bash": 1440,
-    "Glob": 1226,
+    "Edit": 1450,
+    "Bash": 1448,
+    "Glob": 1228,
     "cursor": 428,
     "Task": 397,
     "ReadLints": 313,
-    "Agent": 247,
+    "Agent": 248,
     "Delete": 191,
     "ReadFile": 177,
     "WebFetch": 129,
@@ -309,6 +309,6 @@
     "list_dir -> list_dir": 18,
     "Shell -> Shell -> Read": 18
   },
-  "last_scan": "2026-03-14T20:15:21+00:00",
+  "last_scan": "2026-03-14T20:22:26+00:00",
   "transcripts_scanned": 2501
 }
