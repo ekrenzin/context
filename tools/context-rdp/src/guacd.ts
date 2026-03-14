@@ -98,6 +98,7 @@ export async function spawnBridge(
   });
 
   let lineCb: ((msg: Record<string, unknown>) => void) | null = null;
+  const pendingMessages: Record<string, unknown>[] = [];
   let buffer = "";
 
   proc.stdout!.on("data", (chunk: Buffer) => {
@@ -108,7 +109,11 @@ export async function spawnBridge(
       if (!line.trim()) continue;
       try {
         const msg = JSON.parse(line);
-        if (lineCb) lineCb(msg);
+        if (lineCb) {
+          lineCb(msg);
+        } else {
+          pendingMessages.push(msg);
+        }
       } catch { /* skip malformed */ }
     }
   });
