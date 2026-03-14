@@ -14,17 +14,20 @@ def connect_cmd(
     domain: str = typer.Option("", "--domain", help="Domain"),
     width: int = typer.Option(1280, "--width", help="Screen width"),
     height: int = typer.Option(720, "--height", help="Screen height"),
+    socket: str = typer.Option("", "--socket", help="Unix socket path (persistent mode)"),
 ) -> None:
-    """Connect to an RDP host and stream frames as JSON lines on stdout."""
+    """Connect to an RDP host and stream frames."""
     import asyncio
-    from ctx.rdp.bridge import run_bridge
 
-    asyncio.run(run_bridge(
-        host=host,
-        port=port,
-        username=username,
-        password=password,
-        domain=domain,
-        width=width,
-        height=height,
-    ))
+    if socket:
+        from ctx.rdp.bridge import run_socket_bridge
+        asyncio.run(run_socket_bridge(
+            host=host, port=port, username=username, password=password,
+            domain=domain, width=width, height=height, socket_path=socket,
+        ))
+    else:
+        from ctx.rdp.bridge import run_bridge
+        asyncio.run(run_bridge(
+            host=host, port=port, username=username, password=password,
+            domain=domain, width=width, height=height,
+        ))

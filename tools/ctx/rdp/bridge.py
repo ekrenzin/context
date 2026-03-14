@@ -1,19 +1,23 @@
-"""RDP bridge: connects to an RDP host, streams frames on stdout, reads input on stdin.
+"""RDP bridge: connects to an RDP host, streams frames to clients.
 
-Protocol (JSON lines over stdio):
-  stdout -> {"type":"frame","data":"<base64 jpeg>","w":1280,"h":720}
-  stdout -> {"type":"status","phase":"connected","message":"..."}
-  stdout -> {"type":"error","message":"..."}
-  stdin  <- {"type":"mouse","x":100,"y":200,"button":"left","pressed":true}
-  stdin  <- {"type":"mouse","x":100,"y":200,"button":"move"}
-  stdin  <- {"type":"key","scancode":28,"pressed":true,"extended":false}
-  stdin  <- {"type":"disconnect"}
+Supports two modes:
+  1. stdio  -- JSON lines over stdin/stdout (legacy, for testing)
+  2. socket -- Unix domain socket server (for persistent sessions)
+
+Protocol (JSON lines):
+  out -> {"type":"frame","data":"<base64 jpeg>","w":1280,"h":720}
+  out -> {"type":"status","phase":"connected","message":"..."}
+  out -> {"type":"error","message":"..."}
+  in  <- {"type":"mouse","x":100,"y":200,"button":"left","pressed":true}
+  in  <- {"type":"key","scancode":28,"pressed":true,"extended":false}
+  in  <- {"type":"disconnect"}
 """
 
 import asyncio
 import base64
 import io
 import json
+import os
 import sys
 import traceback
 from urllib.parse import quote as urlquote
@@ -33,25 +37,14 @@ BUTTON_MAP = {
     "wheel_down": MOUSEBUTTON.MOUSEBUTTON_WHEEL_DOWN,
 }
 
-# Auth schemes to try in order (plain first for AWS EC2, then CredSSP/NTLM)
 AUTH_SCHEMES = [
     "rdp+ntlm-password",
     "rdp+plain",
 ]
 
 
-def emit(msg: dict) -> None:
-    line = json.dumps(msg, separators=(",", ":"))
-    sys.stdout.write(line + "\n")
-    sys.stdout.flush()
-
-
 def log(message: str) -> None:
     print(f"[rdp-bridge] {message}", file=sys.stderr, flush=True)
-
-
-def status(phase: str, message: str) -> None:
-    emit({"type": "status", "phase": phase, "message": message})
 
 
 def encode_frame(img: Image.Image, quality: int = 60) -> str:
@@ -62,8 +55,228 @@ def encode_frame(img: Image.Image, quality: int = 60) -> str:
     return base64.b64encode(buf.getvalue()).decode("ascii")
 
 
+async def try_connect(host, port, username, password, domain, settings):
+    """Try connecting with each auth scheme until one works."""
+    user_part = urlquote(username, safe="")
+    pass_part = urlquote(password, safe="")
+    domain_part = f"{urlquote(domain, safe='')}%5C" if domain else ""
+    last_err = None
+
+    for scheme in AUTH_SCHEMES:
+        url = f"{scheme}://{domain_part}{user_part}:{pass_part}@{host}:{port}"
+        log(f"trying {scheme}...")
+        last_err_scheme = scheme.split("+")[1]
+
+        try:
+            factory = RDPConnectionFactory.from_url(url, settings)
+            conn = factory.get_connection(settings)
+            _, err = await conn.connect()
+            if err is None:
+                log(f"connected via {scheme}")
+                return conn
+            last_err = str(err)
+            log(f"{scheme} failed: {err}")
+        except Exception as exc:
+            last_err = str(exc)
+            log(f"{scheme} failed: {exc}")
+
+    return last_err
+
+
+# -- Broadcaster: fan-out frames/status to multiple socket clients ----------
+
+class Broadcaster:
+    """Manages multiple client connections and fans out messages."""
+
+    def __init__(self):
+        self._clients: dict[asyncio.StreamWriter, asyncio.Queue] = {}
+
+    def add(self, writer: asyncio.StreamWriter) -> asyncio.Queue:
+        q: asyncio.Queue = asyncio.Queue(maxsize=5)
+        self._clients[writer] = q
+        return q
+
+    def remove(self, writer: asyncio.StreamWriter) -> None:
+        self._clients.pop(writer, None)
+
+    @property
+    def count(self) -> int:
+        return len(self._clients)
+
+    def broadcast(self, msg: dict) -> None:
+        line = json.dumps(msg, separators=(",", ":")) + "\n"
+        dead = []
+        for writer in self._clients:
+            try:
+                writer.write(line.encode())
+            except Exception:
+                dead.append(writer)
+        for w in dead:
+            self.remove(w)
+
+
+# -- Frame loop (shared across all clients) ---------------------------------
+
+async def frame_loop(conn, width: int, height: int, bc: Broadcaster) -> None:
+    frame_count = 0
+    empty_count = 0
+    while True:
+        try:
+            img = conn.get_desktop_buffer(VIDEO_FORMAT.PIL)
+            if img is not None:
+                if frame_count == 0:
+                    log(f"first frame: {img.size[0]}x{img.size[1]}")
+                b64 = encode_frame(img)
+                bc.broadcast({"type": "frame", "data": b64, "w": width, "h": height})
+                frame_count += 1
+                empty_count = 0
+            else:
+                empty_count += 1
+                if empty_count == 50:
+                    log("no frames received for 5 seconds")
+                if empty_count > 300:
+                    bc.broadcast({"type": "error", "message": "No frames for 30s"})
+                    return
+        except Exception as exc:
+            log(f"frame error: {exc}")
+        await asyncio.sleep(0.1)
+
+
+# -- Input processing -------------------------------------------------------
+
+async def process_input(conn, msg: dict) -> bool:
+    """Process a single input message. Returns False if disconnect requested."""
+    try:
+        if msg["type"] == "mouse":
+            button = BUTTON_MAP.get(msg.get("button", "move"), MOUSEBUTTON.MOUSEBUTTON_HOVER)
+            await conn.send_mouse(button, int(msg.get("x", 0)), int(msg.get("y", 0)), msg.get("pressed", False))
+        elif msg["type"] == "key":
+            await conn.send_key_scancode(int(msg["scancode"]), msg.get("pressed", True), msg.get("extended", False))
+        elif msg["type"] == "disconnect":
+            return False
+    except Exception as exc:
+        log(f"input error: {exc}")
+    return True
+
+
+# -- Socket server mode ------------------------------------------------------
+
+async def handle_client(
+    reader: asyncio.StreamReader,
+    writer: asyncio.StreamWriter,
+    conn,
+    bc: Broadcaster,
+) -> None:
+    """Handle a single socket client: relay input, receive broadcast frames."""
+    q = bc.add(writer)
+    log(f"client connected (total: {bc.count})")
+
+    # Send current status
+    writer.write(json.dumps({"type": "status", "phase": "connected", "message": "Attached"}).encode() + b"\n")
+
+    async def drain_writer():
+        """Periodically drain the writer to flush buffered frames."""
+        while True:
+            try:
+                await writer.drain()
+            except Exception:
+                return
+            await asyncio.sleep(0.05)
+
+    drain_task = asyncio.create_task(drain_writer())
+    buf = b""
+
+    try:
+        while True:
+            data = await reader.read(4096)
+            if not data:
+                break
+            buf += data
+            while b"\n" in buf:
+                line, buf = buf.split(b"\n", 1)
+                if not line.strip():
+                    continue
+                try:
+                    msg = json.loads(line)
+                    if not await process_input(conn, msg):
+                        return
+                except json.JSONDecodeError:
+                    pass
+    except (asyncio.CancelledError, ConnectionResetError):
+        pass
+    finally:
+        drain_task.cancel()
+        bc.remove(writer)
+        writer.close()
+        log(f"client disconnected (remaining: {bc.count})")
+
+
+async def run_socket_bridge(
+    host: str,
+    port: int,
+    username: str,
+    password: str,
+    domain: str,
+    width: int,
+    height: int,
+    socket_path: str,
+) -> None:
+    """Run bridge in socket server mode. Multiple clients can attach/detach."""
+    log(f"socket mode: {socket_path}")
+    bc = Broadcaster()
+
+    # Emit status to stdout for the spawner to read the READY signal
+    def emit_stdout(msg: dict) -> None:
+        sys.stdout.write(json.dumps(msg, separators=(",", ":")) + "\n")
+        sys.stdout.flush()
+
+    emit_stdout({"type": "status", "phase": "connecting", "message": f"Connecting to {host}:{port}..."})
+
+    settings = RDPIOSettings()
+    settings.video_width = width
+    settings.video_height = height
+    settings.video_bpp_min = 15
+    settings.video_bpp_max = 24
+    settings.video_out_format = VIDEO_FORMAT.PIL
+
+    result = await try_connect(host, port, username, password, domain, settings)
+    if isinstance(result, str):
+        emit_stdout({"type": "error", "message": f"All auth methods failed: {result}"})
+        return
+
+    conn = result
+    emit_stdout({"type": "status", "phase": "connected", "message": f"Connected to {host}"})
+    # Signal ready for the Node spawner
+    emit_stdout({"type": "ready"})
+
+    # Start the Unix socket server
+    server = await asyncio.start_unix_server(
+        lambda r, w: handle_client(r, w, conn, bc),
+        path=socket_path,
+    )
+    os.chmod(socket_path, 0o600)
+    log(f"listening on {socket_path}")
+
+    # Run frame loop until RDP connection drops
+    try:
+        await frame_loop(conn, width, height, bc)
+    finally:
+        server.close()
+        await server.wait_closed()
+        try:
+            await conn.send_disconnect()
+        except Exception:
+            pass
+        try:
+            os.unlink(socket_path)
+        except OSError:
+            pass
+        log("bridge exiting")
+
+
+# -- Stdio mode (legacy) -----------------------------------------------------
+
 async def read_stdin_lines() -> asyncio.Queue:
-    """Read JSON lines from stdin in a background thread."""
     queue: asyncio.Queue = asyncio.Queue()
     loop = asyncio.get_event_loop()
 
@@ -86,85 +299,30 @@ async def read_stdin_lines() -> asyncio.Queue:
     return queue
 
 
-async def frame_loop(conn, width: int, height: int) -> None:
-    """Periodically capture the desktop buffer and emit as JPEG frames."""
-    frame_count = 0
-    empty_count = 0
-    while True:
-        try:
-            img = conn.get_desktop_buffer(VIDEO_FORMAT.PIL)
-            if img is not None:
-                if frame_count == 0:
-                    log(f"first frame: {img.size[0]}x{img.size[1]} mode={img.mode}")
-                b64 = encode_frame(img)
-                emit({"type": "frame", "data": b64, "w": width, "h": height})
-                frame_count += 1
-                empty_count = 0
-            else:
-                empty_count += 1
-                if empty_count == 50:  # ~5 seconds of no frames
-                    log("no frames received for 5 seconds")
-                if empty_count > 300:  # ~30 seconds
-                    emit({"type": "error", "message": "No frames received for 30 seconds"})
-                    return
-        except Exception as exc:
-            log(f"frame error: {exc}")
-        await asyncio.sleep(0.1)  # ~10 fps
-
-
-async def input_loop(conn, queue: asyncio.Queue) -> None:
-    """Process input messages from stdin and forward to the RDP connection."""
+async def stdio_input_loop(conn, queue: asyncio.Queue) -> None:
     while True:
         msg = await queue.get()
         if msg is None:
             break
-
-        try:
-            if msg["type"] == "mouse":
-                button = BUTTON_MAP.get(msg.get("button", "move"), MOUSEBUTTON.MOUSEBUTTON_HOVER)
-                pressed = msg.get("pressed", False)
-                x = int(msg.get("x", 0))
-                y = int(msg.get("y", 0))
-                await conn.send_mouse(button, x, y, pressed)
-
-            elif msg["type"] == "key":
-                scancode = int(msg["scancode"])
-                pressed = msg.get("pressed", True)
-                extended = msg.get("extended", False)
-                await conn.send_key_scancode(scancode, pressed, extended)
-
-            elif msg["type"] == "disconnect":
-                break
-        except Exception as exc:
-            log(f"input error: {exc}")
+        if not await process_input(conn, msg):
+            break
 
 
-async def try_connect(host, port, username, password, domain, settings):
-    """Try connecting with each auth scheme until one works."""
-    user_part = urlquote(username, safe="")
-    pass_part = urlquote(password, safe="")
-    domain_part = f"{urlquote(domain, safe='')}%5C" if domain else ""
-    last_err = None
+def emit(msg: dict) -> None:
+    line = json.dumps(msg, separators=(",", ":"))
+    sys.stdout.write(line + "\n")
+    sys.stdout.flush()
 
-    for scheme in AUTH_SCHEMES:
-        url = f"{scheme}://{domain_part}{user_part}:{pass_part}@{host}:{port}"
-        log(f"trying {scheme}...")
-        status("connecting", f"Trying {scheme.split('+')[1]} auth...")
 
-        try:
-            factory = RDPConnectionFactory.from_url(url, settings)
-            conn = factory.get_connection(settings)
-            _, err = await conn.connect()
-            if err is None:
-                log(f"connected via {scheme}")
-                return conn
-            last_err = str(err)
-            log(f"{scheme} failed: {err}")
-        except Exception as exc:
-            last_err = str(exc)
-            log(f"{scheme} failed: {exc}")
+def status(phase: str, message: str) -> None:
+    emit({"type": "status", "phase": phase, "message": message})
 
-    return last_err
+
+class StdioBroadcaster:
+    """Broadcaster that writes to stdout (single-client legacy mode)."""
+
+    def broadcast(self, msg: dict) -> None:
+        emit(msg)
 
 
 async def run_bridge(
@@ -187,7 +345,6 @@ async def run_bridge(
     settings.video_out_format = VIDEO_FORMAT.PIL
 
     result = await try_connect(host, port, username, password, domain, settings)
-
     if isinstance(result, str):
         emit({"type": "error", "message": f"All auth methods failed. Last error: {result}"})
         return
@@ -197,9 +354,10 @@ async def run_bridge(
     log("connection established, starting frame loop")
 
     stdin_queue = await read_stdin_lines()
+    bc = StdioBroadcaster()
 
-    frame_task = asyncio.create_task(frame_loop(conn, width, height))
-    input_task = asyncio.create_task(input_loop(conn, stdin_queue))
+    frame_task = asyncio.create_task(frame_loop(conn, width, height, bc))
+    input_task = asyncio.create_task(stdio_input_loop(conn, stdin_queue))
 
     try:
         done, pending = await asyncio.wait(
