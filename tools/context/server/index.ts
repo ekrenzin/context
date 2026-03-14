@@ -1,7 +1,7 @@
 import Fastify from "fastify";
 import fastifyStatic from "@fastify/static";
 import websocket from "@fastify/websocket";
-import { execFileSync } from "child_process";
+import { execFileSync, execSync } from "child_process";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -92,7 +92,29 @@ function resolveCursorProjectDir(): string {
   return base;
 }
 
+function killStaleServers(): void {
+  try {
+    const out = execSync("ps -eo pid,command", { encoding: "utf-8" });
+    const myPid = process.pid;
+    const parentPid = process.ppid;
+    for (const line of out.split("\n")) {
+      if (!line.includes("server/index.ts")) continue;
+      const pid = parseInt(line.trim(), 10);
+      if (isNaN(pid) || pid === myPid || pid === parentPid) continue;
+      try {
+        process.kill(pid, "SIGTERM");
+        console.log(`[server] killed stale server process ${pid}`);
+      } catch {
+        // already dead
+      }
+    }
+  } catch {
+    // ps not available or failed -- not critical
+  }
+}
+
 export async function start(): Promise<void> {
+  killStaleServers();
   ensureCtxEnv();
 
   const db = openDb(ROOT);
