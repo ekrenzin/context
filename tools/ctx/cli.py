@@ -31,6 +31,7 @@ app.add_typer(knowledge_app, name="knowledge", help="Knowledge base vector searc
 app.add_typer(security_app, name="security", help="CVE scanning and patching.")
 app.add_typer(workspace_app, name="workspace", help="Workspace setup and validation.")
 app.add_typer(proposals_app, name="proposals", help="Proposal management and agent dispatch.")
+app.add_typer(rdp_app, name="rdp", help="Remote Desktop bridge.")
 app.add_typer(skills_app, name="skills", help="External skills sync.")
 
 
