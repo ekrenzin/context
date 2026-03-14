@@ -1,0 +1,196 @@
+[   12651ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:19471/favicon.ico:0
+[   13270ms] [ERROR] Warning: validateDOMNesting(...): %s cannot appear as a descendant of <%s>.%s <button> button 
+    at button
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at ButtonBase2 (http://127.0.0.1:19471/node_modules/.vite/deps/@mui_material.js?v=6bd0873f:3335:17)
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at IconButton2 (http://127.0.0.1:19471/node_modules/.vite/deps/@mui_material.js?v=6bd0873f:4410:17)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at Tooltip2 (http://127.0.0.1:19471/node_modules/.vite/deps/@mui_material.js?v=6bd0873f:36054:17)
+    at button
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at ButtonBase2 (http://127.0.0.1:19471/node_modules/.vite/deps/@mui_material.js?v=6bd0873f:3335:17)
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Tab2 (http://127.0.0.1:19471/node_modules/.vite/deps/@mui_material.js?v=6bd0873f:39736:17)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Tabs2 (http://127.0.0.1:19471/node_modules/.vite/deps/@mui_material.js?v=6bd0873f:42331:17)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at TerminalDrawerContent (http://127.0.0.1:19471/src/components/TerminalDrawerContent.tsx?t=1773528335325:41:3)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at TerminalDrawer2 (http://127.0.0.1:19471/src/components/TerminalDrawer.tsx?t=1773528335325:58:80)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at AppLayout (http://127.0.0.1:19471/src/App.tsx?t=1773529020705:132:22)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at ActiveProjectProvider (http://127.0.0.1:19471/src/hooks/useActiveProject.tsx?t=1773528058795:45:41)
+    at MqttProvider (http://127.0.0.1:19471/src/hooks/useMqtt.tsx:36:32)
+    at AuthProvider (http://127.0.0.1:19471/src/hooks/useAuth.tsx:21:32)
+    at TunnelAuthProvider (http://127.0.0.1:19471/src/hooks/useTunnelAuth.tsx:36:38)
+    at DefaultPropsProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5977:3)
+    at RtlProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5953:3)
+    at ThemeProvider2 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5909:5)
+    at ThemeProvider3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:6104:5)
+    at ThemeProviderNoVars (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:277:10)
+    at ThemeProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:359:3)
+    at App (http://127.0.0.1:19471/src/App.tsx?t=1773529020705:528:27)
+    at Router (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7152:13)
+    at BrowserRouter (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:10363:3) @ http://127.0.0.1:19471/node_modules/.vite/deps/chunk-SXRIVT2P.js?v=6bd0873f:520
+[   13332ms] [WARNING] WebSocket connection to 'ws://127.0.0.1:19471/ws/terminal/ab1bd28c-5f5b-43c6-aad4-2282bb99b840' failed: WebSocket is closed before the connection is established. @ http://127.0.0.1:19471/src/components/TerminalPanel.tsx?t=1773528335325:191
+[   13333ms] [WARNING] WebSocket connection to 'ws://127.0.0.1:19471/ws/terminal/7a84c9f6-d220-408e-9821-aee5fd983ffc' failed: WebSocket is closed before the connection is established. @ http://127.0.0.1:19471/src/components/TerminalPanel.tsx?t=1773528335325:191
+[   13333ms] [WARNING] WebSocket connection to 'ws://127.0.0.1:19471/ws/terminal/f4d89652-8df1-4e9a-a02e-22a2ee05c9f2' failed: WebSocket is closed before the connection is established. @ http://127.0.0.1:19471/src/components/TerminalPanel.tsx?t=1773528335325:191
+[   13333ms] [WARNING] WebSocket connection to 'ws://127.0.0.1:19471/ws/terminal/07d7fddb-acf5-49ba-bef8-c61ec9ca43a9' failed: WebSocket is closed before the connection is established. @ http://127.0.0.1:19471/src/components/TerminalPanel.tsx?t=1773528335325:191
+[   13333ms] [WARNING] WebSocket connection to 'ws://127.0.0.1:19471/ws/terminal/e1a2b069-b0da-44f7-9d9c-ca0f80a3c20e' failed: WebSocket is closed before the connection is established. @ http://127.0.0.1:19471/src/components/TerminalPanel.tsx?t=1773528335325:191
+[   13333ms] [WARNING] WebSocket connection to 'ws://127.0.0.1:19471/ws/terminal/5d3cc13d-7903-41b7-84e0-2c30c57c885e' failed: WebSocket is closed before the connection is established. @ http://127.0.0.1:19471/src/components/TerminalPanel.tsx?t=1773528335325:191
+[   13334ms] [WARNING] WebSocket connection to 'ws://127.0.0.1:19471/ws/terminal/c2791eea-f457-41e0-b7e6-92d93c7d732a' failed: WebSocket is closed before the connection is established. @ http://127.0.0.1:19471/src/components/TerminalPanel.tsx?t=1773528335325:191
+[   13334ms] [WARNING] WebSocket connection to 'ws://127.0.0.1:19471/ws/terminal/9272b4fb-f2d4-4bc4-afc7-6ddd33c7bfea' failed: WebSocket is closed before the connection is established. @ http://127.0.0.1:19471/src/components/TerminalPanel.tsx?t=1773528335325:191
+[   13334ms] [WARNING] WebSocket connection to 'ws://127.0.0.1:19471/ws/terminal/37085603-fa32-4af2-a6f8-963ea694f661' failed: WebSocket is closed before the connection is established. @ http://127.0.0.1:19471/src/components/TerminalPanel.tsx?t=1773528335325:191
+[   13334ms] [WARNING] WebSocket connection to 'ws://127.0.0.1:19471/ws/terminal/42ff3da9-3b25-4a92-86fa-98efdbc49de8' failed: WebSocket is closed before the connection is established. @ http://127.0.0.1:19471/src/components/TerminalPanel.tsx?t=1773528335325:191
+[   13334ms] [WARNING] WebSocket connection to 'ws://127.0.0.1:19471/ws/terminal/f72bdfe4-b9e6-4893-9491-fd1973124f51' failed: WebSocket is closed before the connection is established. @ http://127.0.0.1:19471/src/components/TerminalPanel.tsx?t=1773528335325:191
+[   13334ms] [WARNING] WebSocket connection to 'ws://127.0.0.1:19471/ws/terminal/0f6c1f9b-9455-406a-bf7c-91f904f5a82f' failed: WebSocket is closed before the connection is established. @ http://127.0.0.1:19471/src/components/TerminalPanel.tsx?t=1773528335325:191
+[   13334ms] [WARNING] WebSocket connection to 'ws://127.0.0.1:19471/ws/terminal/fcfd53ac-1fb5-45cb-b206-195d333156db' failed: WebSocket is closed before the connection is established. @ http://127.0.0.1:19471/src/components/TerminalPanel.tsx?t=1773528335325:191
+[   13334ms] [WARNING] WebSocket connection to 'ws://127.0.0.1:19471/ws/terminal/9af5194b-8cdb-453b-adb4-fc7c1ca176f4' failed: WebSocket is closed before the connection is established. @ http://127.0.0.1:19471/src/components/TerminalPanel.tsx?t=1773528335325:191
+[   13552ms] [ERROR] Warning: Failed %s type: %s%s prop The prop `sm` of `Grid` can only be used together with the `item` prop. 
+    at Grid2 (http://127.0.0.1:19471/node_modules/.vite/deps/@mui_material.js?v=6bd0873f:21640:22)
+    at Dashboard (http://127.0.0.1:19471/src/components/viz/Dashboard.tsx?t=1773529020705:87:37)
+    at Suspense
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at PageLayout (http://127.0.0.1:19471/src/components/PageLayout.tsx:20:3)
+    at Dashboard (http://127.0.0.1:19471/src/views/Insights.tsx?t=1773529020705:65:31)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at RenderedRoute (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:6355:26)
+    at Routes (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7222:3)
+    at Suspense
+    at main
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at AppLayout (http://127.0.0.1:19471/src/App.tsx?t=1773529020705:132:22)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at ActiveProjectProvider (http://127.0.0.1:19471/src/hooks/useActiveProject.tsx?t=1773528058795:45:41)
+    at MqttProvider (http://127.0.0.1:19471/src/hooks/useMqtt.tsx:36:32)
+    at AuthProvider (http://127.0.0.1:19471/src/hooks/useAuth.tsx:21:32)
+    at TunnelAuthProvider (http://127.0.0.1:19471/src/hooks/useTunnelAuth.tsx:36:38)
+    at DefaultPropsProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5977:3)
+    at RtlProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5953:3)
+    at ThemeProvider2 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5909:5)
+    at ThemeProvider3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:6104:5)
+    at ThemeProviderNoVars (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:277:10)
+    at ThemeProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:359:3)
+    at App (http://127.0.0.1:19471/src/App.tsx?t=1773529020705:528:27)
+    at Router (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7152:13)
+    at BrowserRouter (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:10363:3) @ http://127.0.0.1:19471/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=6bd0873f:63
+[   13552ms] [ERROR] Warning: Failed %s type: %s%s prop The prop `xs` of `Grid` can only be used together with the `item` prop. 
+    at Grid2 (http://127.0.0.1:19471/node_modules/.vite/deps/@mui_material.js?v=6bd0873f:21640:22)
+    at Dashboard (http://127.0.0.1:19471/src/components/viz/Dashboard.tsx?t=1773529020705:87:37)
+    at Suspense
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at PageLayout (http://127.0.0.1:19471/src/components/PageLayout.tsx:20:3)
+    at Dashboard (http://127.0.0.1:19471/src/views/Insights.tsx?t=1773529020705:65:31)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at RenderedRoute (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:6355:26)
+    at Routes (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7222:3)
+    at Suspense
+    at main
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at AppLayout (http://127.0.0.1:19471/src/App.tsx?t=1773529020705:132:22)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at ActiveProjectProvider (http://127.0.0.1:19471/src/hooks/useActiveProject.tsx?t=1773528058795:45:41)
+    at MqttProvider (http://127.0.0.1:19471/src/hooks/useMqtt.tsx:36:32)
+    at AuthProvider (http://127.0.0.1:19471/src/hooks/useAuth.tsx:21:32)
+    at TunnelAuthProvider (http://127.0.0.1:19471/src/hooks/useTunnelAuth.tsx:36:38)
+    at DefaultPropsProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5977:3)
+    at RtlProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5953:3)
+    at ThemeProvider2 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5909:5)
+    at ThemeProvider3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:6104:5)
+    at ThemeProviderNoVars (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:277:10)
+    at ThemeProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:359:3)
+    at App (http://127.0.0.1:19471/src/App.tsx?t=1773529020705:528:27)
+    at Router (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7152:13)
+    at BrowserRouter (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:10363:3) @ http://127.0.0.1:19471/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=6bd0873f:63
+[   13602ms] [ERROR] Warning: Failed %s type: %s%s prop The prop `md` of `Grid` can only be used together with the `item` prop. 
+    at Grid2 (http://127.0.0.1:19471/node_modules/.vite/deps/@mui_material.js?v=6bd0873f:21640:22)
+    at Dashboard (http://127.0.0.1:19471/src/components/viz/Dashboard.tsx?t=1773529020705:87:37)
+    at Suspense
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at PageLayout (http://127.0.0.1:19471/src/components/PageLayout.tsx:20:3)
+    at Dashboard (http://127.0.0.1:19471/src/views/Insights.tsx?t=1773529020705:65:31)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at RenderedRoute (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:6355:26)
+    at Routes (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7222:3)
+    at Suspense
+    at main
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at AppLayout (http://127.0.0.1:19471/src/App.tsx?t=1773529020705:132:22)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at ActiveProjectProvider (http://127.0.0.1:19471/src/hooks/useActiveProject.tsx?t=1773528058795:45:41)
+    at MqttProvider (http://127.0.0.1:19471/src/hooks/useMqtt.tsx:36:32)
+    at AuthProvider (http://127.0.0.1:19471/src/hooks/useAuth.tsx:21:32)
+    at TunnelAuthProvider (http://127.0.0.1:19471/src/hooks/useTunnelAuth.tsx:36:38)
+    at DefaultPropsProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5977:3)
+    at RtlProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5953:3)
+    at ThemeProvider2 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5909:5)
+    at ThemeProvider3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:6104:5)
+    at ThemeProviderNoVars (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:277:10)
+    at ThemeProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:359:3)
+    at App (http://127.0.0.1:19471/src/App.tsx?t=1773529020705:528:27)
+    at Router (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7152:13)
+    at BrowserRouter (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:10363:3) @ http://127.0.0.1:19471/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=6bd0873f:63
+[   13680ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://127.0.0.1:19471/api/knowledge/narrative?days=7:0
+[   13918ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://127.0.0.1:19471/api/knowledge/narrative?days=7:0
+[   16723ms] [WARNING] WebSocket connection to 'ws://127.0.0.1:19471/ws/terminal/c2791eea-f457-41e0-b7e6-92d93c7d732a' failed: WebSocket is closed before the connection is established. @ http://127.0.0.1:19471/src/components/TerminalPanel.tsx?t=1773528335325:191
+[   16724ms] [WARNING] WebSocket connection to 'ws://127.0.0.1:19471/ws/terminal/37085603-fa32-4af2-a6f8-963ea694f661' failed: WebSocket is closed before the connection is established. @ http://127.0.0.1:19471/src/components/TerminalPanel.tsx?t=1773528335325:191
+[   16724ms] [WARNING] WebSocket connection to 'ws://127.0.0.1:19471/ws/terminal/42ff3da9-3b25-4a92-86fa-98efdbc49de8' failed: WebSocket is closed before the connection is established. @ http://127.0.0.1:19471/src/components/TerminalPanel.tsx?t=1773528335325:191
+[   16724ms] [WARNING] WebSocket connection to 'ws://127.0.0.1:19471/ws/terminal/0f6c1f9b-9455-406a-bf7c-91f904f5a82f' failed: WebSocket is closed before the connection is established. @ http://127.0.0.1:19471/src/components/TerminalPanel.tsx?t=1773528335325:191
+[   16724ms] [WARNING] WebSocket connection to 'ws://127.0.0.1:19471/ws/terminal/9af5194b-8cdb-453b-adb4-fc7c1ca176f4' failed: WebSocket is closed before the connection is established. @ http://127.0.0.1:19471/src/components/TerminalPanel.tsx?t=1773528335325:191
