@@ -17,6 +17,9 @@ Thumbs.db
 .env.*
 !.env.example
 
+# npm auth tokens (never commit)
+.npmrc
+
 # Generated context (schema introspection, model parsing, etc.)
 context/
 

@@ -72,6 +72,34 @@ export function registerTerminalRoutes(app: FastifyInstance): void {
     },
   );
 
+  app.post<{ Params: { id: string } }>(
+    "/api/terminal/:id/detach",
+    async (req, reply) => {
+      const info = getInfo(req.params.id);
+      if (!info) return reply.code(404).send({ error: "Not found" });
+
+      const cwd = info.cwd || process.env.HOME || "/";
+      const cmd = info.command || "";
+
+      const { exec } = await import("child_process");
+      const script = cmd
+        ? `cd ${JSON.stringify(cwd)} && ${cmd}`
+        : `cd ${JSON.stringify(cwd)}`;
+      const osa = `tell app "Terminal" to do script ${JSON.stringify(script)}`;
+
+      return new Promise((resolve) => {
+        exec(`osascript -e ${JSON.stringify(osa)}`, (err) => {
+          if (err) {
+            reply.code(500).send({ error: err.message });
+            resolve(undefined);
+          } else {
+            resolve({ ok: true });
+          }
+        });
+      });
+    },
+  );
+
   app.delete<{ Params: { id: string } }>(
     "/api/terminal/:id",
     async (req, reply) => {

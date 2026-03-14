@@ -21,6 +21,7 @@ The following MCP servers are configured and available as tools:
 
 - **playwright**: `npx @playwright/mcp@latest --caps testing --viewport-size 1280,720`
 - **file-preview**: `node tools/file-preview-mcp/dist/index.js` (standalone) or auto-registered in Command Center MCP
+- **desktop-mcp**: `npx tsx tools/desktop-mcp/src/index.ts` (native desktop automation via nut.js/nib -- 45 tools for mouse, keyboard, screen, windows, accessibility, OCR)
 
 Use these tools directly. See `skills/<name>/SKILL.md` for usage guidance.
 
@@ -39,6 +40,7 @@ Read `skills/<name>/SKILL.md` for details on any skill.
 - database-ops
 - debug
 - deploy
+- desktop-automation
 - deploy-site
 - feature-dev
 - file-analysis

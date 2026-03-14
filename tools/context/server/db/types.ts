@@ -125,6 +125,15 @@ export interface McpServerRow {
   updated_at: string;
 }
 
+export interface ProjectMcpServerRow {
+  project_id: string;
+  server_id: string;
+  enabled: number;
+  env: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface ConfigField {
   key: string;
   label: string;

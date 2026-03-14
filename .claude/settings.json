@@ -1,4 +1,24 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(mkdir *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(git *)",
+      "Bash(npm *)",
+      "Bash(npx *)",
+      "Bash(node *)",
+      "Bash(python *)",
+      "Bash(ctx *)",
+      "Edit",
+      "Write",
+      "Read",
+      "Glob",
+      "Grep",
+      "WebFetch",
+      "Agent"
+    ]
+  },
   "hooks": {
     "PostToolUse": [
       {

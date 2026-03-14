@@ -214,6 +214,13 @@ tools:
     risk: write
     agent_usage: Run after ctx security scan finds fixable vulnerabilities
     skill: security-scanner
+  - path: tools/desktop-mcp
+    language: typescript
+    category: dev
+    description: MCP server for native desktop automation via nut.js and nib (mouse, keyboard, screen, windows, accessibility, OCR)
+    risk: write
+    skill: desktop-automation
+    agent_usage: Use for automating native desktop apps, E2E testing Electron, and computer-use agent loops
 
 actions: []
 

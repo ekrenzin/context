@@ -1,0 +1,31 @@
+{
+  "name": "desktop-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "desktop-mcp": "./dist/index.js"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "@nut-tree/nut-js": "*",
+    "@nut-tree/bolt": "*",
+    "@nut-tree/nl-matcher": "*",
+    "@nut-tree/plugin-ocr": "*",
+    "@nut-tree/element-inspector": "*",
+    "@nut-tree/nib": "*",
+    "@nut-tree/plugin-screenrecording": "*",
+    "@nut-tree/plugin-ai-sdk": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}
