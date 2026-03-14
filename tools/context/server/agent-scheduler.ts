@@ -18,7 +18,23 @@ const INTERVAL_MS = 60 * 60 * 1000;
 const MAX_JOBS = 100;
 const LOG_TAIL_LINES = 20;
 
-const KNOWN_REPOS: string[] = [];
+function discoverRepos(root: string): string[] {
+  const reposDir = path.join(root, "repos");
+  try {
+    return fs
+      .readdirSync(reposDir)
+      .filter((name) => {
+        if (name.startsWith(".")) return false;
+        const dir = path.join(reposDir, name);
+        return (
+          fs.statSync(dir).isDirectory() &&
+          fs.existsSync(path.join(dir, ".git"))
+        );
+      });
+  } catch {
+    return [];
+  }
+}
 
 function makeId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
