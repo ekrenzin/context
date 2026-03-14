@@ -29,10 +29,15 @@ def check_python() -> None:
         sys.exit(1)
 
 
-def create_venv() -> None:
-    if VENV_DIR.exists():
+def create_venv(force: bool = False) -> None:
+    if VENV_DIR.exists() and not force:
         print(f"Virtual environment exists: {VENV_DIR}")
         return
+    if VENV_DIR.exists():
+        import shutil
+
+        print(f"Removing stale virtual environment: {VENV_DIR}")
+        shutil.rmtree(VENV_DIR)
     print(f"Creating virtual environment: {VENV_DIR} ...")
     venv.create(str(VENV_DIR), with_pip=True)
 
@@ -60,10 +65,15 @@ def main() -> None:
         default=None,
         help="Optional dependency groups (e.g. image, knowledge, all)",
     )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Recreate the virtual environment even if it exists",
+    )
     args = parser.parse_args()
 
     check_python()
-    create_venv()
+    create_venv(force=args.force)
     install_package(args.extras)
 
     scripts = "Scripts" if sys.platform == "win32" else "bin"

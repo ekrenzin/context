@@ -42,7 +42,14 @@ function ensureCtxEnv(): void {
     ? path.join(ROOT, "tools", ".venv", "Scripts", "ctx.exe")
     : path.join(ROOT, "tools", ".venv", "bin", "ctx");
 
-  if (fs.existsSync(ctxBin)) return;
+  if (fs.existsSync(ctxBin)) {
+    try {
+      execFileSync(ctxBin, ["--help"], { timeout: 10_000, stdio: "ignore" });
+      return;
+    } catch {
+      console.warn("[ctx-env] CLI exists but is broken -- rebuilding...");
+    }
+  }
 
   const bootstrap = path.join(ROOT, "tools", "bootstrap.py");
   if (!fs.existsSync(bootstrap)) {
@@ -51,9 +58,9 @@ function ensureCtxEnv(): void {
   }
 
   const python = isWin ? "python" : "python3";
-  console.log("[ctx-env] CLI not found -- running bootstrap...");
+  console.log("[ctx-env] running bootstrap...");
   try {
-    execFileSync(python, [bootstrap], {
+    execFileSync(python, [bootstrap, "--force"], {
       cwd: ROOT,
       stdio: "inherit",
       timeout: 120_000,
