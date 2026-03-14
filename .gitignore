@@ -32,6 +32,12 @@ tools/**/node_modules/
 # Build artifacts
 dist/
 
+# Electron build output
+tools/context/release/
+
+# Bundled CLI binaries
+tools/context/bin/
+
 # TypeScript compiled output (in-place next to .ts sources)
 # The canonical build goes to dist/; these are stale if present.
 tools/**/*.js
