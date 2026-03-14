@@ -206,14 +206,14 @@
     }
   },
   "tools": {
-    "Read": 7947,
+    "Read": 7949,
     "Shell": 6460,
     "StrReplace": 3966,
-    "Grep": 2432,
+    "Grep": 2433,
     "TodoWrite": 1908,
     "Write": 1732,
-    "Edit": 1441,
-    "Bash": 1438,
+    "Edit": 1442,
+    "Bash": 1440,
     "Glob": 1226,
     "cursor": 428,
     "Task": 397,
@@ -309,6 +309,6 @@
     "list_dir -> list_dir": 18,
     "Shell -> Shell -> Read": 18
   },
-  "last_scan": "2026-03-14T20:14:15+00:00",
+  "last_scan": "2026-03-14T20:15:21+00:00",
   "transcripts_scanned": 2501
 }
