@@ -20,6 +20,9 @@ const ALLOWED_KEYS = [
   "ui.colorMode",
   "terminal.open",
   "terminal.activeTab",
+  "terminal.gridColumns",
+  "terminal.gridSpans",
+  "terminal.drawerWidth",
   "cloudflare_api_token",
   "cloudflare_account_id",
 ];
