@@ -47,11 +47,13 @@
       ]
     },
     "desktop": {
+      "type": "stdio",
       "command": "npx",
       "args": [
         "tsx",
         "tools/desktop-mcp/src/index.ts"
-      ]
+      ],
+      "env": {}
     }
   }
 }
