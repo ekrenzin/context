@@ -29,6 +29,21 @@ The loop should terminate after at most 3 iterations. If issues persist after
 
 ## Delegation Patterns
 
+### Headless Dispatch
+
+Use `ctx claude run` or the `cc_claude_run` MCP tool to dispatch Claude as
+an autonomous sub-agent. Claude runs in `-p` (print) mode, works until the
+task is done, and exits. If it fails, it escalates to the user via the
+Command Center terminal action FAB.
+
+```bash
+ctx claude run "Implement the auth middleware from proposal auth-rework"
+ctx claude run -e --budget 5.0 "Fix test failures in repos/context-ui"
+```
+
+Use `--embedded` (`-e`) to run in the Command Center so the user can watch.
+Use `--budget` to set cost guardrails on autonomous work.
+
 ### Parallel Exploration
 
 When investigating a problem that spans multiple files or repos, spawn parallel

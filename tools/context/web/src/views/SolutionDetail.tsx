@@ -95,7 +95,7 @@ export default function SolutionDetailView() {
     setActionLoading(true);
     try {
       await fetchJson(`/api/solutions/${solution.id}`, { method: "DELETE" });
-      navigate("/solutions");
+      navigate("/workspace?tab=solutions");
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
       setActionLoading(false);
@@ -114,7 +114,7 @@ export default function SolutionDetailView() {
   if (error || !solution) {
     return (
       <Box sx={{ pt: 3, maxWidth: 900, mx: "auto" }}>
-        <Button startIcon={<ArrowBackIcon />} onClick={() => navigate("/solutions")} sx={{ mb: 2 }}>
+        <Button startIcon={<ArrowBackIcon />} onClick={() => navigate("/workspace?tab=solutions")} sx={{ mb: 2 }}>
           Back
         </Button>
         <Alert severity="error">{error ?? "Solution not found"}</Alert>
@@ -127,7 +127,7 @@ export default function SolutionDetailView() {
 
   return (
     <Box sx={{ pt: 2, maxWidth: 900, mx: "auto" }}>
-      <Button startIcon={<ArrowBackIcon />} onClick={() => navigate("/solutions")} size="small" sx={{ mb: 1 }}>
+      <Button startIcon={<ArrowBackIcon />} onClick={() => navigate("/workspace?tab=solutions")} size="small" sx={{ mb: 1 }}>
         Back
       </Button>
 

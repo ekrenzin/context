@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { Box, Typography, Button, Paper, Stack } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
@@ -7,14 +8,33 @@ interface TourStep {
   title: string;
   what: string;
   why: string;
+  /** Route to navigate to before showing this step. */
+  navigateTo?: string;
+  /** Called when transitioning TO this step (e.g. close/open drawers). */
+  onEnter?: string;
 }
 
 const STEPS: TourStep[] = [
+  {
+    target: "tour-terminal",
+    title: "Terminal Drawer",
+    what: "Agent sessions, shells, and CLI tools all live here. The proposal you just kicked off is running in this drawer right now.",
+    why: "One place for every terminal session -- they persist across refreshes and can be opened from anywhere in the app.",
+  },
   {
     target: "tour-workspace",
     title: "Workspace",
     what: "Projects, solutions, and proposals all in one place -- your command center for ongoing work.",
     why: "Everything you're building lives here. No bouncing between pages.",
+    navigateTo: "/workspace",
+    onEnter: "closeTerminal",
+  },
+  {
+    target: "tour-proposals-tab",
+    title: "Proposals",
+    what: "When your proposal finishes, it will appear here. Proposals break problems into numbered tasks that agents can pick up.",
+    why: "This is how Context turns ideas into buildable plans -- from problem statement to implementation tasks.",
+    navigateTo: "/workspace?tab=proposals",
   },
   {
     target: "tour-dashboard",
@@ -23,22 +43,10 @@ const STEPS: TourStep[] = [
     why: "Review past sessions, monitor system health, and spot issues you'd miss on your own.",
   },
   {
-    target: "tour-ai",
-    title: "AI",
-    what: "Chat with cloud or local AI models directly from your workspace.",
-    why: "Quick access to AI assistance without leaving the app -- use your API keys or a local Ollama model.",
-  },
-  {
     target: "tour-settings",
     title: "Settings",
     what: "Configure AI providers, integrations, appearance, and workspace preferences.",
     why: "Every team and workflow is different -- this is where you make the workspace truly yours.",
-  },
-  {
-    target: "tour-terminal",
-    title: "Terminal",
-    what: "A built-in terminal with persistent, shareable sessions.",
-    why: "Run commands without context-switching. Sessions survive refreshes and can be attached from anywhere in the app.",
   },
 ];
 
@@ -58,7 +66,6 @@ function computePlacement(
   const spaceRight = vw - r.right - SPOTLIGHT_PAD;
   const spaceLeft = r.left - SPOTLIGHT_PAD;
   const spaceTop = r.top - SPOTLIGHT_PAD;
-  const spaceBottom = vh - r.bottom - SPOTLIGHT_PAD;
   const neededH = CARD_W + CARD_GAP + VIEWPORT_PAD;
   const neededV = cardH + CARD_GAP + VIEWPORT_PAD;
 
@@ -118,25 +125,51 @@ function arrowSx(placement: Placement) {
 interface Props {
   active: boolean;
   onComplete: () => void;
+  onCloseTerminal?: () => void;
 }
 
-export function GuidedTour({ active, onComplete }: Props) {
+export function GuidedTour({ active, onComplete, onCloseTerminal }: Props) {
   const [step, setStep] = useState(0);
   const [rect, setRect] = useState<DOMRect | null>(null);
   const [cardH, setCardH] = useState(280);
   const cardRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   const current = STEPS[step];
 
+  // Navigate and fire onEnter when step changes
   useEffect(() => {
     if (!active || !current) return;
-    function measure() {
-      const el = document.querySelector(`[data-tour="${current.target}"]`);
-      if (el) setRect(el.getBoundingClientRect());
+    if (current.onEnter === "closeTerminal") {
+      onCloseTerminal?.();
     }
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
+    if (current.navigateTo) {
+      navigate(current.navigateTo);
+    }
+  }, [step, active]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Measure target element position
+  useEffect(() => {
+    if (!active || !current) return;
+    // Small delay to let navigation + render settle
+    const delay = current.navigateTo ? 300 : 0;
+    let cancelled = false;
+    const timeout = setTimeout(() => {
+      function measure() {
+        if (cancelled) return;
+        const el = document.querySelector(`[data-tour="${current.target}"]`);
+        if (el) {
+          setRect(el.getBoundingClientRect());
+        } else {
+          // Element not yet rendered, retry
+          requestAnimationFrame(measure);
+        }
+      }
+      measure();
+      window.addEventListener("resize", measure);
+      return () => window.removeEventListener("resize", measure);
+    }, delay);
+    return () => { cancelled = true; clearTimeout(timeout); };
   }, [active, step, current]);
 
   useEffect(() => {
@@ -149,6 +182,7 @@ export function GuidedTour({ active, onComplete }: Props) {
     if (step >= STEPS.length - 1) {
       onComplete();
     } else {
+      setRect(null);
       setStep((s) => s + 1);
     }
   }, [step, onComplete]);

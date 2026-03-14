@@ -11,22 +11,38 @@ import {
   Typography,
   Chip,
   Stack,
+  Tooltip,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import TerminalIcon from "@mui/icons-material/Terminal";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import CodeIcon from "@mui/icons-material/Code";
-import { TerminalPanel } from "../components/TerminalPanel";
+import { TerminalPanel, type SessionState } from "../components/TerminalPanel";
 import { api } from "../lib/api";
+import { randomWord } from "../lib/random-word";
+
+function commandName(command: string) {
+  if (command === "claude") return "Claude";
+  if (command === "codex") return "Codex";
+  return "Terminal";
+}
 import { useDefaultCwd } from "../lib/use-default-cwd";
 
 interface TerminalTab {
   id: string;
   label: string;
   command: string;
+  nickname: string;
   exitCode?: number;
+  state?: SessionState;
 }
+
+const STATE_COLORS: Record<SessionState, string> = {
+  running: "#4caf50",
+  waiting: "#ff9800",
+  idle: "#9e9e9e",
+};
 
 const PRESETS = [
   { label: "Claude Code", command: "claude", args: ["--dangerously-skip-permissions"], icon: <SmartToyIcon /> },
@@ -78,8 +94,22 @@ function TabLabel({
   onClose: () => void;
 }) {
   return (
+    <Tooltip title={tab.label} enterDelay={300}>
     <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-      <span>{tab.label}</span>
+      {tab.state && (
+        <Box
+          component="span"
+          sx={{
+            width: 8,
+            height: 8,
+            borderRadius: "50%",
+            bgcolor: STATE_COLORS[tab.state],
+            flexShrink: 0,
+            transition: "background-color 0.3s ease",
+          }}
+        />
+      )}
+      <span>{commandName(tab.command)} {tab.nickname}</span>
       {tab.exitCode !== undefined && (
         <Chip
           size="small"
@@ -99,6 +129,7 @@ function TabLabel({
         <CloseIcon sx={{ fontSize: 14 }} />
       </IconButton>
     </Box>
+    </Tooltip>
   );
 }
 
@@ -125,7 +156,7 @@ export default function Terminal() {
         return prev;
       }
       setActiveTab(prev.length);
-      return [...prev, { id: sessionId, label, command: label }];
+      return [...prev, { id: sessionId, label, command: label, nickname: randomWord() }];
     });
   }, [searchParams, setSearchParams]);
 
@@ -136,9 +167,12 @@ export default function Terminal() {
       for (const tab of tabs) {
         if (tab.exitCode !== undefined) continue;
         api.getTerminal(tab.id).then((info) => {
-          if (info.label && info.label !== tab.label) {
+          const updates: Partial<TerminalTab> = {};
+          if (info.label && info.label !== tab.label) updates.label = info.label;
+          if (info.state && info.state !== tab.state) updates.state = info.state as SessionState;
+          if (Object.keys(updates).length > 0) {
             setTabs((prev) =>
-              prev.map((t) => (t.id === tab.id ? { ...t, label: info.label! } : t)),
+              prev.map((t) => (t.id === tab.id ? { ...t, ...updates } : t)),
             );
           }
         }).catch(() => {});
@@ -151,7 +185,7 @@ export default function Terminal() {
     async (command: string, args: string[], label: string) => {
       setMenuAnchor(null);
       const result = await api.spawnTerminal(command, args, defaultCwd);
-      const tab: TerminalTab = { id: result.id, label: "NEW SESSION", command };
+      const tab: TerminalTab = { id: result.id, label: "NEW SESSION", command, nickname: randomWord() };
       setTabs((prev) => {
         setActiveTab(prev.length);
         return [...prev, tab];
@@ -173,6 +207,12 @@ export default function Terminal() {
   const handleExit = useCallback((index: number, code: number) => {
     setTabs((prev) =>
       prev.map((t, i) => (i === index ? { ...t, exitCode: code } : t)),
+    );
+  }, []);
+
+  const handleStateChange = useCallback((index: number, state: SessionState) => {
+    setTabs((prev) =>
+      prev.map((t, i) => (i === index ? { ...t, state } : t)),
     );
   }, []);
 
@@ -230,6 +270,7 @@ export default function Terminal() {
               sessionId={tab.id}
               active={i === activeTab}
               onExit={(code) => handleExit(i, code)}
+              onStateChange={(state) => handleStateChange(i, state)}
             />
           </Box>
         ))}

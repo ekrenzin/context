@@ -153,25 +153,60 @@ export function BrandingCard() {
           Pick a mood, describe your own, or generate one with AI. Changes preview instantly.
         </Typography>
 
-        <Stack direction="row" spacing={3} alignItems="center" sx={{ mb: 2 }} flexWrap="wrap">
-          <Stack direction="row" spacing={1} alignItems="center">
-            <Typography variant="body2" fontWeight={600}>Mode</Typography>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: 2,
+            mb: 3,
+          }}
+        >
+          <Box
+            sx={{
+              p: 2,
+              borderRadius: 2,
+              border: "1px solid",
+              borderColor: "divider",
+              bgcolor: "background.paper",
+            }}
+          >
+            <Typography variant="body2" fontWeight={700} sx={{ mb: 0.5 }}>
+              Mode
+            </Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ mb: 1.5, display: "block" }}>
+              Light or dark base
+            </Typography>
             <ToggleButtonGroup
               value={mode}
               exclusive
               onChange={() => toggleColorMode()}
               size="small"
+              fullWidth
             >
-              <ToggleButton value="light">
-                <LightModeIcon sx={{ fontSize: 18, mr: 0.5 }} /> Light
+              <ToggleButton value="light" sx={{ gap: 0.5 }}>
+                <LightModeIcon sx={{ fontSize: 16 }} /> Light
               </ToggleButton>
-              <ToggleButton value="dark">
-                <DarkModeIcon sx={{ fontSize: 18, mr: 0.5 }} /> Dark
+              <ToggleButton value="dark" sx={{ gap: 0.5 }}>
+                <DarkModeIcon sx={{ fontSize: 16 }} /> Dark
               </ToggleButton>
             </ToggleButtonGroup>
-          </Stack>
-          <Stack direction="row" spacing={1} alignItems="center">
-            <Typography variant="body2" fontWeight={600}>Depth</Typography>
+          </Box>
+
+          <Box
+            sx={{
+              p: 2,
+              borderRadius: 2,
+              border: "1px solid",
+              borderColor: "divider",
+              bgcolor: "background.paper",
+            }}
+          >
+            <Typography variant="body2" fontWeight={700} sx={{ mb: 0.5 }}>
+              Depth
+            </Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ mb: 1.5, display: "block" }}>
+              Shadow intensity on cards
+            </Typography>
             <ToggleButtonGroup
               value={preview.elevation ?? "subtle"}
               exclusive
@@ -181,14 +216,46 @@ export function BrandingCard() {
                 applyAndSave(next);
               }}
               size="small"
+              fullWidth
             >
-              <ToggleButton value="flat">Flat</ToggleButton>
-              <ToggleButton value="subtle">Subtle</ToggleButton>
-              <ToggleButton value="raised">Raised</ToggleButton>
+              {(["flat", "subtle", "raised"] as const).map((level) => (
+                <ToggleButton key={level} value={level} sx={{ gap: 0.75, textTransform: "capitalize" }}>
+                  <Box
+                    sx={{
+                      width: 14,
+                      height: 14,
+                      borderRadius: "3px",
+                      bgcolor: "text.secondary",
+                      opacity: 0.25,
+                      boxShadow:
+                        level === "flat"
+                          ? "none"
+                          : level === "subtle"
+                            ? "0 1px 3px rgba(0,0,0,0.3)"
+                            : "0 3px 8px rgba(0,0,0,0.5)",
+                    }}
+                  />
+                  {level}
+                </ToggleButton>
+              ))}
             </ToggleButtonGroup>
-          </Stack>
-          <Stack direction="row" spacing={1} alignItems="center">
-            <Typography variant="body2" fontWeight={600}>Accent</Typography>
+          </Box>
+
+          <Box
+            sx={{
+              p: 2,
+              borderRadius: 2,
+              border: "1px solid",
+              borderColor: "divider",
+              bgcolor: "background.paper",
+            }}
+          >
+            <Typography variant="body2" fontWeight={700} sx={{ mb: 0.5 }}>
+              Accent
+            </Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ mb: 1.5, display: "block" }}>
+              Button and highlight style
+            </Typography>
             <ToggleButtonGroup
               value={preview.useGradient ? "gradient" : "solid"}
               exclusive
@@ -198,12 +265,33 @@ export function BrandingCard() {
                 applyAndSave(next);
               }}
               size="small"
+              fullWidth
             >
-              <ToggleButton value="solid">Solid</ToggleButton>
-              <ToggleButton value="gradient">Gradient</ToggleButton>
+              <ToggleButton value="solid" sx={{ gap: 0.75 }}>
+                <Box
+                  sx={{
+                    width: 14,
+                    height: 14,
+                    borderRadius: "3px",
+                    bgcolor: preview[mode].primary,
+                  }}
+                />
+                Solid
+              </ToggleButton>
+              <ToggleButton value="gradient" sx={{ gap: 0.75 }}>
+                <Box
+                  sx={{
+                    width: 14,
+                    height: 14,
+                    borderRadius: "3px",
+                    background: preview.accentGradient,
+                  }}
+                />
+                Gradient
+              </ToggleButton>
             </ToggleButtonGroup>
-          </Stack>
-        </Stack>
+          </Box>
+        </Box>
 
         {error && (
           <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>

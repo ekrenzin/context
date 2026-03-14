@@ -15,17 +15,10 @@ interface Props {
   testProvider: "anthropic" | "openai";
   placeholder: string;
   saveSettings: (apiKey: string) => Record<string, string>;
-  completeProvider?: string;
-  onComplete: (provider: string) => void;
+  onConnected: () => void;
 }
 
-export function ApiKeyForm({
-  testProvider,
-  placeholder,
-  saveSettings,
-  completeProvider,
-  onComplete,
-}: Props) {
+export function ApiKeyForm({ testProvider, placeholder, saveSettings, onConnected }: Props) {
   const [apiKey, setApiKey] = useState("");
   const [testing, setTesting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -71,7 +64,7 @@ export function ApiKeyForm({
       });
 
       setConnected(true);
-      setTimeout(() => onComplete(completeProvider ?? testProvider), 800);
+      onConnected();
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -80,13 +73,14 @@ export function ApiKeyForm({
   }
 
   return (
-    <Stack spacing={2}>
+    <Stack spacing={2} onClick={(e) => e.stopPropagation()}>
       <TextField
         label="API Key"
         type={showKey ? "text" : "password"}
         value={apiKey}
         onChange={(e) => setApiKey(e.target.value)}
         fullWidth
+        size="small"
         placeholder={placeholder}
         slotProps={{
           input: {
@@ -112,7 +106,8 @@ export function ApiKeyForm({
         onClick={handleTest}
         disabled={!apiKey.trim() || testing || connected}
         disableElevation
-        startIcon={testing ? <CircularProgress size={18} /> : undefined}
+        size="small"
+        startIcon={testing ? <CircularProgress size={16} /> : undefined}
       >
         {testing ? "Testing..." : "Test Connection"}
       </Button>

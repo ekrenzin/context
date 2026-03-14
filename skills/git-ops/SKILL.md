@@ -15,6 +15,25 @@ Apply these patterns for git operations across your organization's repositories.
 under `repos/` has its own git history and remote. The root repo tracks only
 workspace-level config.
 
+## Workspace-Wide Git Commands
+
+Use `ctx workspace git` for coordinated operations across all sub-repos:
+
+```bash
+ctx workspace git status                  # branch, dirty/clean, ahead/behind
+ctx workspace git fetch                   # fetch --all --prune per repo
+ctx workspace git pull                    # ff-only pull (skips dirty repos)
+ctx workspace git branch create <name>    # create branch in all repos
+ctx workspace git branch delete <name>    # delete branch in all repos
+ctx workspace git branch list             # list branches per repo
+ctx workspace git switch <branch>         # switch branch (skips dirty repos)
+```
+
+All commands accept `--repos repo1,repo2` to scope to specific repos.
+
+The root repo is included in `status` but excluded from branch/switch/pull/fetch
+(the root is the workspace coordinator, not a sub-repo).
+
 ## Branching
 
 - Feature branches: `feature/<ticket-id>-<short-description>`

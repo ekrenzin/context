@@ -1,25 +1,17 @@
 import { Box, Typography, Card, Chip, Button, Stack } from "@mui/material";
 
-interface SolutionInfo {
-  name: string;
-  problem: string;
-  components: Array<{ type: string }>;
+interface ProposalInfo {
+  slug: string;
+  title: string;
+  taskCount: number;
+  tasksByStatus: Record<string, number>;
 }
 
 interface Props {
-  solution: SolutionInfo;
-  insight: string;
-  onExplore: () => void;
-  onSolveAnother: () => void;
+  proposal: ProposalInfo;
+  onViewProposal: () => void;
+  onFinish: () => void;
 }
-
-const TYPE_LABELS: Record<string, string> = {
-  service: "Backend",
-  view: "Dashboard",
-  rule: "AI Rules",
-  skill: "Workflow",
-  memory: "Knowledge",
-};
 
 const CONFETTI_COLORS = ["#3b82f6", "#8b5cf6", "#f59e0b", "#10b981", "#ef4444", "#ec4899"];
 
@@ -34,7 +26,7 @@ const confettiKeyframes = `
 }
 `;
 
-export function FirstWin({ solution, insight, onExplore, onSolveAnother }: Props) {
+export function FirstWin({ proposal, onViewProposal, onFinish }: Props) {
   return (
     <Box sx={{ maxWidth: 520, mx: "auto", py: 6, px: 3, position: "relative", overflow: "hidden" }}>
       <style>{confettiKeyframes}</style>
@@ -58,8 +50,12 @@ export function FirstWin({ solution, insight, onExplore, onSolveAnother }: Props
       ))}
 
       <Box sx={{ animation: "slide-up 0.5s ease-out" }}>
-        <Typography variant="h4" sx={{ fontWeight: 700, mb: 4 }}>
-          Problem solved.
+        <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
+          Your first proposal is ready.
+        </Typography>
+        <Typography color="text.secondary" sx={{ mb: 4 }}>
+          You just watched an AI agent turn a problem into a structured plan.
+          Now you can review it and kick off the build whenever you're ready.
         </Typography>
 
         <Card
@@ -71,19 +67,20 @@ export function FirstWin({ solution, insight, onExplore, onSolveAnother }: Props
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1 }}>
-            <Typography variant="h6" fontWeight={600}>{solution.name}</Typography>
-            <Chip label="Active" color="success" size="small" />
+            <Typography variant="h6" fontWeight={600}>{proposal.title}</Typography>
+            <Chip label="Draft" color="info" size="small" />
           </Box>
 
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            {solution.problem}
-          </Typography>
-
           <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-            {solution.components.map((c, i) => (
+            <Chip
+              label={`${proposal.taskCount} task${proposal.taskCount !== 1 ? "s" : ""}`}
+              size="small"
+              variant="outlined"
+            />
+            {Object.entries(proposal.tasksByStatus).map(([status, count]) => (
               <Chip
-                key={i}
-                label={TYPE_LABELS[c.type] ?? c.type}
+                key={status}
+                label={`${count} ${status}`}
                 size="small"
                 variant="outlined"
               />
@@ -91,26 +88,12 @@ export function FirstWin({ solution, insight, onExplore, onSolveAnother }: Props
           </Stack>
         </Card>
 
-        {insight && (
-          <Typography
-            variant="body1"
-            sx={{
-              fontStyle: "italic",
-              color: "text.secondary",
-              mb: 4,
-              animation: "slide-up 0.7s ease-out",
-            }}
-          >
-            {insight}
-          </Typography>
-        )}
-
-        <Stack spacing={1.5}>
-          <Button variant="contained" fullWidth onClick={onExplore} disableElevation size="large">
-            Explore Your Solution
+        <Stack spacing={1.5} sx={{ animation: "slide-up 0.7s ease-out" }}>
+          <Button variant="contained" fullWidth onClick={onViewProposal} disableElevation size="large">
+            View Proposal
           </Button>
-          <Button variant="outlined" fullWidth onClick={onSolveAnother} size="large">
-            Solve Another Problem
+          <Button variant="outlined" fullWidth onClick={onFinish} size="large">
+            Go to Dashboard
           </Button>
         </Stack>
       </Box>

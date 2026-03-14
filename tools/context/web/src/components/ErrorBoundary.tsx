@@ -6,11 +6,14 @@ import { CheckpointPicker } from "./CheckpointPicker";
 
 interface Props {
   children: ReactNode;
+  /** Label shown in the crash screen so the user knows which view broke. */
+  label?: string;
 }
 
 interface State {
   hasError: boolean;
   error: Error | null;
+  errorInfo: { componentStack?: string | null } | null;
   retryCount: number;
 }
 
@@ -23,14 +26,15 @@ export class ErrorBoundary extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    this.state = { hasError: false, error: null, retryCount: 0 };
+    this.state = { hasError: false, error: null, errorInfo: null, retryCount: 0 };
   }
 
   static getDerivedStateFromError(error: Error): Partial<State> {
     return { hasError: true, error };
   }
 
-  componentDidCatch() {
+  componentDidCatch(_error: Error, info: React.ErrorInfo) {
+    this.setState({ errorInfo: info });
     // Start auto-retry — HMR may push a fix while we're showing the error screen
     if (!this.retryTimer) {
       this.retryTimer = setInterval(() => {
@@ -88,7 +92,7 @@ export class ErrorBoundary extends Component<Props, State> {
           >
             <BuildCircleIcon sx={{ fontSize: 56, color: "warning.main", mb: 2 }} />
             <Typography variant="h5" fontWeight={700} gutterBottom>
-              View crashed
+              {this.props.label ? `"${this.props.label}" crashed` : "View crashed"}
             </Typography>
             <Typography color="text.secondary" sx={{ mb: 1 }}>
               An agent is probably editing code right now. The fix will land via hot reload automatically.
@@ -101,11 +105,11 @@ export class ErrorBoundary extends Component<Props, State> {
               <Paper
                 variant="outlined"
                 sx={{
-                  bgcolor: "grey.900",
+                  bgcolor: "background.default",
                   color: "error.light",
                   p: 1.5,
                   mb: 3,
-                  maxHeight: 120,
+                  maxHeight: 200,
                   overflow: "auto",
                   textAlign: "left",
                 }}
@@ -116,6 +120,9 @@ export class ErrorBoundary extends Component<Props, State> {
                   sx={{ fontFamily: "monospace", whiteSpace: "pre-wrap", m: 0 }}
                 >
                   {this.state.error.message}
+                  {this.state.errorInfo?.componentStack && (
+                    `\n\nComponent stack:${this.state.errorInfo.componentStack}`
+                  )}
                 </Typography>
               </Paper>
             )}

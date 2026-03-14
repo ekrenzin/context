@@ -19,6 +19,7 @@ Read and follow these rules in every session:
 - `rules/name-things-once.md` -- No redundant naming
 - `rules/quality-gates.md` -- Validation-first development
 - `rules/playground.md` -- Git-ignored scratch space
+- `rules/self-bootstrapping.md` -- Build missing capabilities, never give up
 
 ## Conditional Rules
 

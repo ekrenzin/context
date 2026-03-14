@@ -9,6 +9,8 @@ import {
   Stack,
   CircularProgress,
   Alert,
+  ToggleButtonGroup,
+  ToggleButton,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
@@ -19,9 +21,12 @@ interface Example {
   icon: string;
 }
 
+type CliTool = "claude" | "codex";
+
 interface Props {
   persona: "non-technical" | "power-user";
-  onSolve: (problem: string, name: string) => void;
+  availableTools: { claude: boolean; codex: boolean };
+  onPropose: (problem: string, name: string, tool: CliTool) => void;
   onBack: () => void;
 }
 
@@ -39,11 +44,15 @@ function toKebab(text: string): string {
     .replace(/[^a-z0-9-]/g, "");
 }
 
-export function ProblemStep({ persona, onSolve, onBack }: Props) {
+export function ProblemStep({ persona, availableTools, onPropose, onBack }: Props) {
   const [examples, setExamples] = useState<Example[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [freeform, setFreeform] = useState("");
+
+  const defaultTool: CliTool = availableTools.claude ? "claude" : "codex";
+  const [tool, setTool] = useState<CliTool>(defaultTool);
+  const bothAvailable = availableTools.claude && availableTools.codex;
 
   useEffect(() => {
     let cancelled = false;
@@ -63,10 +72,14 @@ export function ProblemStep({ persona, onSolve, onBack }: Props) {
     return () => { cancelled = true; };
   }, [persona]);
 
+  function submit(problem: string, name: string) {
+    onPropose(problem, name, tool);
+  }
+
   function handleFreeformSubmit() {
     const text = freeform.trim();
     if (!text) return;
-    onSolve(text, toKebab(text));
+    submit(text, toKebab(text));
   }
 
   return (
@@ -79,8 +92,25 @@ export function ProblemStep({ persona, onSolve, onBack }: Props) {
         {TITLES[persona]}
       </Typography>
       <Typography color="text.secondary" sx={{ mb: 4 }}>
-        Pick one below, or describe your own.
+        Pick one below, or describe your own. We'll create a proposal you can build from.
       </Typography>
+
+      {bothAvailable && (
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+            Generate with:
+          </Typography>
+          <ToggleButtonGroup
+            value={tool}
+            exclusive
+            onChange={(_, v) => v && setTool(v)}
+            size="small"
+          >
+            <ToggleButton value="claude">Claude Code</ToggleButton>
+            <ToggleButton value="codex">Codex</ToggleButton>
+          </ToggleButtonGroup>
+        </Box>
+      )}
 
       {loading && (
         <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
@@ -95,7 +125,7 @@ export function ProblemStep({ persona, onSolve, onBack }: Props) {
           {examples.map((ex) => (
             <Card key={ex.name} variant="outlined">
               <CardActionArea
-                onClick={() => onSolve(ex.problem, ex.name)}
+                onClick={() => submit(ex.problem, ex.name)}
                 sx={{ p: 2, display: "flex", justifyContent: "space-between", alignItems: "center" }}
               >
                 <Typography variant="body1" sx={{ flex: 1 }}>{ex.problem}</Typography>
@@ -104,7 +134,7 @@ export function ProblemStep({ persona, onSolve, onBack }: Props) {
                   variant="text"
                   sx={{ ml: 2, textTransform: "none", pointerEvents: "none" }}
                 >
-                  Solve This
+                  Go
                 </Button>
               </CardActionArea>
             </Card>

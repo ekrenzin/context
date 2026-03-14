@@ -1,72 +1,71 @@
+---
+apply: conditional
+when: Developing or debugging the Command Center (UI, pages, components, engine SDK)
+---
+
 # Command Center Development
 
-The Command Center is a Fastify + Vite + React app in `tools/command-center/`.
-It has a backend server (TypeScript, port 19471) and a frontend (React + MUI).
+The Command Center UI is a standalone repo (`context-ui`) cloned into
+`repos/context-ui/`. It is a Vite + React + MUI application that communicates
+with the engine through REST API and MQTT.
 
-## Running the Dev Server
+The engine backend (Fastify server, SQLite, AI, profiler) lives in
+`tools/command-center/server/`. The engine serves the UI from the workspace
+directory specified by `uiSource` in `workspace.yaml`.
 
-The server must be running to test any backend or frontend changes. The AI
-should **never start or restart the server directly** -- prompt the user.
+## Running
 
-### Start / restart commands
+The engine server must be running for the UI to work. The AI should **never
+start or restart the server directly** -- prompt the user.
 
-All commands run from `tools/command-center/`:
+### Engine (backend)
+
+Commands run from `tools/command-center/`:
 
 | Command | What it does |
 |---------|-------------|
-| `npm run dev` | Start both server (tsx watch) and web (vite) with hot reload |
+| `npm run dev` | Start server (tsx watch) with hot reload |
 | `npm run dev:server` | Start only the backend with file-watch auto-restart |
-| `npm run dev:web` | Start only the Vite frontend dev server |
 | `npm run start:server` | Start backend without file watching |
+
+### UI (frontend)
+
+Commands run from `repos/context-ui/`:
+
+| Command | What it does |
+|---------|-------------|
+| `npm run dev` | Start Vite dev server with hot reload |
+| `npm run build` | Production build to `dist/` |
 
 ### When to prompt for a restart
 
-Prompt the user to restart the server when:
+Prompt the user to restart the engine when:
 
 - A new route file is registered in `server/routes/index.ts`
-- Auth middleware exemptions change (`server/auth/middleware.ts`)
-- Server-side module imports change (new files, renamed exports)
+- Auth middleware exemptions change
 - Database schema or migration changes
-- The `package.json` scripts or dependencies change
+- The engine `package.json` changes
 
-The `dev:server` script uses `tsx watch`, which auto-restarts on file saves.
-If the user is running `npm run dev`, most TypeScript changes take effect
-automatically. However, **new file additions and import graph changes may
-require a manual restart**.
+The UI hot-reloads automatically via Vite -- no restart needed for frontend
+changes.
 
-### Quick restart one-liner
-
-If the server is already running in a terminal, the user can:
+## Architecture
 
 ```
-# Kill whatever is on port 19471 and restart
-lsof -ti :19471 | xargs kill -9 2>/dev/null; npm run dev
-```
-
-This is also what `npm run prestart` does (the kill part).
-
-## Project structure
-
-```
-server/           -- Fastify backend
-  ai/             -- AI provider clients (Anthropic, OpenAI, Ollama)
-  auth/           -- Token auth middleware
-  db/             -- SQLite database layer
-  routes/         -- Route registration modules
-  terminal/       -- Persistent terminal session management
-web/              -- Vite + React frontend
-  src/components/ -- Reusable UI components
-  src/views/      -- Top-level page views
-  src/lib/        -- API client, theme, utilities
+Engine (tools/command-center/server/)    UI (repos/context-ui/)
+  routes/          REST API        -->     lib/engine-sdk/client.ts
+  MQTT broker      WebSocket       -->     lib/engine-sdk/mqtt.ts
+  db/              SQLite                  pages/
+  ai/              AI providers            components/
+  auth/            Token auth              theme/
 ```
 
 ## Key conventions
 
 - Route modules export `registerXxxRoutes(app, ...)` and are wired in
   `server/routes/index.ts`.
-- New routes that should be accessible without auth must be added to
-  `EXEMPT_PREFIXES` in `server/auth/middleware.ts`.
-- The frontend API client lives in `web/src/lib/api.ts` -- add endpoints there,
-  not as raw `fetch()` calls in components.
+- The UI API client lives in `repos/context-ui/src/lib/engine-sdk/` -- add
+  types and client methods there, not as raw `fetch()` calls in components.
+- The UI repo has its own `CLAUDE.md` with full API documentation.
 - Settings are whitelist-gated: add new keys to `ALLOWED_KEYS` in
   `server/routes/settings.ts`.

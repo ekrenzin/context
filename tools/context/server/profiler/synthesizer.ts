@@ -52,7 +52,11 @@ export async function synthesizeSkillEvolution(
     type: "evolution",
     source: skillName,
     content: result.skill_md,
-    metadata: JSON.stringify({ resources: result.resources, sessionCount: relevant.length }),
+    metadata: JSON.stringify({
+      resources: result.resources,
+      sessionCount: relevant.length,
+      sourceSessionIds: relevant.map((s) => s.chat_id),
+    }),
   });
 
   if (projectId) {
@@ -104,7 +108,11 @@ export async function synthesizeMemory(projectId?: string): Promise<MemoryCandid
       type: "recommendation",
       source: "memory-synthesis",
       content: JSON.stringify(c),
-      metadata: JSON.stringify({ category: c.category, filename: c.filename }),
+      metadata: JSON.stringify({
+        category: c.category,
+        filename: c.filename,
+        sourceSessionIds: analyzed.map((s) => s.chat_id),
+      }),
     });
 
     if (projectId) {

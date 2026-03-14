@@ -29,6 +29,8 @@ import { registerPreviewRoutes } from "./preview.js";
 import { registerCheckpointRoutes } from "./checkpoints.js";
 import { registerAiRoutes } from "./ai.js";
 import { registerMcpRegistryRoutes } from "./mcp-registry.js";
+import { registerKnowledgeRoutes } from "./knowledge.js";
+import { registerAgentEventRoutes } from "./agent-events.js";
 import type { McpSync } from "../mcp-sync/index.js";
 
 import type { AgentScheduler } from "../agent-scheduler.js";
@@ -75,5 +77,7 @@ export function registerRoutes(
   registerPreviewRoutes(app, mqttClient);
   registerCheckpointRoutes(app, root);
   registerAiRoutes(app);
+  registerKnowledgeRoutes(app, root);
+  registerAgentEventRoutes(app, mqttClient);
   if (mcpSync) registerMcpRegistryRoutes(app, mcpSync);
 }

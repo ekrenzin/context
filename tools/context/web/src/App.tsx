@@ -1,5 +1,5 @@
 import { useState, useRef, useMemo, useEffect, Suspense, lazy } from "react";
-import { Routes, Route, Navigate, useSearchParams, useNavigate } from "react-router-dom";
+import { Routes, Route, useSearchParams, useNavigate } from "react-router-dom";
 import { ThemeProvider, CssBaseline, Box, CircularProgress } from "@mui/material";
 import { buildThemes, getInitialMode } from "./lib/theme";
 import { BrandingContext, SetBrandingContext, DEFAULT_BRANDING, fetchBranding, type BrandingConfig } from "./lib/branding";
@@ -10,7 +10,10 @@ import { AppHeader } from "./components/AppHeader";
 import { NavDrawer } from "./components/NavDrawer";
 import { TerminalDrawer, type TerminalDrawerHandle } from "./components/TerminalDrawer";
 import { MediaFab } from "./components/MediaFab";
+import { TerminalActionFab } from "./components/TerminalActionFab";
+import { TerminalActionModal } from "./components/TerminalActionModal";
 import { usePreviewEntries } from "./hooks/usePreviewEntries";
+import { useTerminalActions } from "./hooks/useTerminalActions";
 import { views } from "./views/registry";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { GuidedTour } from "./components/GuidedTour";
@@ -19,13 +22,13 @@ import { TunnelAuthProvider } from "./hooks/useTunnelAuth";
 import { TunnelPinModal } from "./components/TunnelPinModal";
 
 const Onboarding = lazy(() => import("./views/Onboarding"));
+import type { PendingSession } from "./views/Onboarding";
 const CreateProject = lazy(() => import("./views/CreateProject"));
 const ProjectDashboard = lazy(() => import("./views/ProjectDashboard"));
 const Feed = lazy(() => import("./views/Feed"));
 const ProjectApprovals = lazy(() => import("./views/Approvals"));
 const SolutionDetail = lazy(() => import("./views/SolutionDetail"));
 const ProposalDetail = lazy(() => import("./views/ProposalDetail"));
-const ProjectFiles = lazy(() => import("./views/ProjectFiles"));
 
 function ViewFallback() {
   return (
@@ -73,10 +76,23 @@ function TerminalRedirect({ onOpen, onToggle }: { onOpen: (id: string, label: st
   return null;
 }
 
-function AppLayout({ onResetOnboarding, showTour, onTourComplete }: { onResetOnboarding: () => void; showTour: boolean; onTourComplete: () => void }) {
+function AppLayout({ onResetOnboarding, showTour, onTourComplete, pendingSession }: { onResetOnboarding: () => void; showTour: boolean; onTourComplete: () => void; pendingSession?: PendingSession | null }) {
   const [terminalOpen, setTerminalOpen] = useState(false);
   const terminalRef = useRef<TerminalDrawerHandle>(null);
+
+  // Auto-open terminal drawer if a session was handed off from onboarding
+  useEffect(() => {
+    if (!pendingSession) return;
+    // Small delay so the drawer mounts first
+    const timer = setTimeout(() => {
+      setTerminalOpen(true);
+      setTimeout(() => terminalRef.current?.attachSession(pendingSession.id, pendingSession.label), 100);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const { entries: previewEntries, unseenCount, shaking, markSeen } = usePreviewEntries();
+  const { actions: terminalActions, completeAction } = useTerminalActions();
+  const [actionModalOpen, setActionModalOpen] = useState(false);
 
   /** Opens the terminal drawer and optionally attaches a session (used by /terminal route redirect). */
   function openTerminalSession(sessionId: string, label: string) {
@@ -105,37 +121,39 @@ function AppLayout({ onResetOnboarding, showTour, onTourComplete }: { onResetOnb
           <Routes>
             <Route path="/" element={<RestoreRoute />} />
             {views.map((v) => (
-              <Route key={v.path} path={v.path} element={<v.component />} />
+              <Route key={v.path} path={v.path} element={<ErrorBoundary label={v.label ?? v.path}><v.component /></ErrorBoundary>} />
             ))}
             {/* Detail routes */}
-            <Route path="/solutions/:id" element={<SolutionDetail />} />
-            <Route path="/proposals/:slug" element={<ProposalDetail />} />
-            <Route path="/projects/new" element={<CreateProject />} />
-            <Route path="/projects/:projectId" element={<ProjectProvider><ProjectDashboard /></ProjectProvider>} />
-            <Route path="/projects/:projectId/feed" element={<ProjectProvider><Feed /></ProjectProvider>} />
-            <Route path="/projects/:projectId/approvals" element={<ProjectProvider><ProjectApprovals /></ProjectProvider>} />
-            <Route path="/projects/:projectId/files" element={<ProjectProvider><ProjectFiles /></ProjectProvider>} />
+            <Route path="/solutions/:id" element={<ErrorBoundary label="Solution Detail"><SolutionDetail /></ErrorBoundary>} />
+            <Route path="/proposals/:slug" element={<ErrorBoundary label="Proposal Detail"><ProposalDetail /></ErrorBoundary>} />
+            <Route path="/projects/new" element={<ErrorBoundary label="Create Project"><CreateProject /></ErrorBoundary>} />
+            <Route path="/projects/:projectId" element={<ProjectProvider><ErrorBoundary label="Project Dashboard"><ProjectDashboard /></ErrorBoundary></ProjectProvider>} />
+            <Route path="/projects/:projectId/feed" element={<ProjectProvider><ErrorBoundary label="Feed"><Feed /></ErrorBoundary></ProjectProvider>} />
+            <Route path="/projects/:projectId/approvals" element={<ProjectProvider><ErrorBoundary label="Approvals"><ProjectApprovals /></ErrorBoundary></ProjectProvider>} />
             <Route path="/terminal" element={<TerminalRedirect onOpen={openTerminalSession} onToggle={() => setTerminalOpen(true)} />} />
-            {/* Legacy redirects */}
-            <Route path="/solutions" element={<Navigate to="/workspace?tab=solutions" replace />} />
-            <Route path="/projects" element={<Navigate to="/workspace?tab=projects" replace />} />
-            <Route path="/proposals" element={<Navigate to="/workspace?tab=proposals" replace />} />
-            <Route path="/insights" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/session-logs" element={<Navigate to="/dashboard?tab=logs" replace />} />
-            <Route path="/local-ai" element={<Navigate to="/ai?tab=local" replace />} />
-            <Route path="/processes" element={<Navigate to="/dashboard?tab=system" replace />} />
           </Routes>
         </Suspense>
       </Box>
 
-      <TerminalDrawer ref={terminalRef} open={terminalOpen} onClose={() => setTerminalOpen(false)} />
+      <TerminalDrawer ref={terminalRef} open={terminalOpen} onClose={() => setTerminalOpen(false)} highlight={!!pendingSession && terminalOpen} />
       <MediaFab entries={previewEntries} unseenCount={unseenCount} shaking={shaking} onOpen={markSeen} />
-      <GuidedTour active={showTour} onComplete={onTourComplete} />
+      <TerminalActionFab
+        count={terminalActions.length}
+        hasMediaFab={previewEntries.length > 0}
+        onClick={() => setActionModalOpen(true)}
+      />
+      <TerminalActionModal
+        action={terminalActions[0] ?? null}
+        open={actionModalOpen}
+        onClose={() => setActionModalOpen(false)}
+        onDone={(id) => { completeAction(id); setActionModalOpen(false); }}
+      />
+      <GuidedTour active={showTour} onComplete={onTourComplete} onCloseTerminal={() => setTerminalOpen(false)} />
     </Box>
   );
 }
 
-function OnboardingShell({ onComplete, onBrandingChange }: { onComplete: () => void; onBrandingChange: (cfg: BrandingConfig) => void }) {
+function OnboardingShell({ onComplete, onBrandingChange }: { onComplete: (session?: PendingSession) => void; onBrandingChange: (cfg: BrandingConfig) => void }) {
   return (
     <Suspense fallback={<ViewFallback />}>
       <Onboarding onComplete={onComplete} onBrandingChange={onBrandingChange} />
@@ -150,6 +168,7 @@ export function App() {
   );
   const [firstRun, setFirstRun] = useState<boolean | null>(null);
   const [showTour, setShowTour] = useState(false);
+  const [pendingSession, setPendingSession] = useState<PendingSession | null>(null);
 
   useEffect(() => {
     fetchBranding().then(setBranding);
@@ -191,7 +210,7 @@ export function App() {
               <ErrorBoundary>
                 {firstRun ? (
                   <OnboardingShell
-                    onComplete={() => { setFirstRun(false); setShowTour(true); }}
+                    onComplete={(session) => { setPendingSession(session ?? null); setFirstRun(false); setShowTour(true); }}
                     onBrandingChange={setBranding}
                   />
                 ) : (
@@ -199,6 +218,7 @@ export function App() {
                     onResetOnboarding={() => setFirstRun(true)}
                     showTour={showTour}
                     onTourComplete={() => setShowTour(false)}
+                    pendingSession={pendingSession}
                   />
                 )}
               </ErrorBoundary>

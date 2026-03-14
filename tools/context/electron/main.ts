@@ -3,20 +3,27 @@ import { spawn, execSync, ChildProcess } from "child_process";
 import { existsSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { ensureUi, updateUi, resetUiToDefaults, VITE_PORT, type UiBootstrapResult } from "./ui-bootstrap.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = parseInt(process.env.CTX_DASHBOARD_PORT ?? "19470", 10);
-const VITE_PORT = 19471;
-const USE_VITE = !!process.env.CTX_VITE || !!process.env.CTX_DEV;
 
 let mainWindow: BrowserWindow | null = null;
 let tray: Tray | null = null;
 let serverProcess: ChildProcess | null = null;
+let uiResult: UiBootstrapResult | null = null;
+
+function resolveCommandCenterRoot(): string {
+  return path.resolve(__dirname, "..", "..");
+}
+
+function resolveWorkspaceRoot(): string {
+  const ccRoot = resolveCommandCenterRoot();
+  return path.resolve(ccRoot, "..", "..");
+}
 
 function killExistingInstances(): void {
   try {
-    const appName = "Electron";
-    // Find other Electron processes running from this project's node_modules
     const ccRoot = resolveCommandCenterRoot();
     const result = execSync(`pgrep -f "${ccRoot}/node_modules/electron"`, {
       encoding: "utf-8",
@@ -38,18 +45,17 @@ function killExistingInstances(): void {
     }
 
     if (pids.length > 0) {
-      // Give the old process a moment to release the lock
       execSync("sleep 1");
     }
   } catch {
-    // pgrep returns non-zero when no matches — that's fine
+    // pgrep returns non-zero when no matches
   }
 }
 
 function enforceSingleInstance(): boolean {
   const gotLock = app.requestSingleInstanceLock();
   if (!gotLock) {
-    console.log("[electron] Lock held by another instance — killing it and retrying…");
+    console.log("[electron] Lock held by another instance -- killing it and retrying...");
     killExistingInstances();
 
     const retryLock = app.requestSingleInstanceLock();
@@ -88,17 +94,11 @@ async function waitForServer(timeoutMs = 30_000): Promise<void> {
   throw new Error(`Server did not become ready within ${timeoutMs}ms`);
 }
 
-function resolveCommandCenterRoot(): string {
-  // dist/electron/ → command-center root (compiled)
-  // electron/ → command-center root (source, unused today)
-  return path.resolve(__dirname, "..", "..");
-}
-
 async function ensureServer(): Promise<void> {
   if (await isServerReady()) return;
 
   const ccRoot = resolveCommandCenterRoot();
-  const ctxRoot = path.resolve(ccRoot, "..", "..");
+  const ctxRoot = resolveWorkspaceRoot();
 
   const tsx = path.join(ccRoot, "node_modules", ".bin", "tsx");
   const tsSource = path.join(ccRoot, "server", "index.ts");
@@ -132,6 +132,28 @@ function killServer(): void {
   serverProcess = null;
 }
 
+function killUi(): void {
+  if (uiResult?.viteProcess) {
+    uiResult.viteProcess.kill("SIGTERM");
+    uiResult.viteProcess = null;
+  }
+}
+
+function loadFallback(error: string): void {
+  if (!mainWindow) return;
+  const fallbackPath = path.join(__dirname, "fallback.html");
+  if (existsSync(fallbackPath)) {
+    mainWindow.loadFile(fallbackPath).then(() => {
+      mainWindow?.webContents.executeJavaScript(
+        `document.getElementById('error').textContent = ${JSON.stringify(error)};`,
+      );
+    });
+  } else {
+    // Inline minimal fallback if the HTML file is missing
+    mainWindow.loadURL(`data:text/html,<html><body style="background:#0a0a0f;color:#fff;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh"><div><h1>UI Error</h1><p>${error}</p></div></body></html>`);
+  }
+}
+
 function createWindow(): void {
   mainWindow = new BrowserWindow({
     width: 1280,
@@ -144,21 +166,24 @@ function createWindow(): void {
     },
   });
 
-  const url = USE_VITE ? `http://127.0.0.1:${VITE_PORT}` : `http://127.0.0.1:${PORT}`;
-
-  // Retry loading until the dev server is ready (Vite may start after Electron)
-  const loadWithRetry = async (retries = 20, delayMs = 500) => {
-    for (let i = 0; i < retries; i++) {
-      try {
-        await mainWindow!.loadURL(url);
-        return;
-      } catch {
-        if (i < retries - 1) await new Promise((r) => setTimeout(r, delayMs));
+  if (uiResult?.ready) {
+    const url = `http://127.0.0.1:${VITE_PORT}`;
+    const loadWithRetry = async (retries = 20, delayMs = 500) => {
+      for (let i = 0; i < retries; i++) {
+        try {
+          await mainWindow!.loadURL(url);
+          return;
+        } catch {
+          if (i < retries - 1) await new Promise((r) => setTimeout(r, delayMs));
+        }
       }
-    }
-    console.error(`[electron] Failed to load ${url} after ${retries} attempts`);
-  };
-  loadWithRetry();
+      console.error(`[electron] Failed to load ${url} after ${retries} attempts`);
+      loadFallback("UI server started but failed to respond. Try restarting the app.");
+    };
+    loadWithRetry();
+  } else {
+    loadFallback(uiResult?.error ?? "UI could not be loaded.");
+  }
 
   mainWindow.on("close", (event) => {
     if (process.platform === "darwin") {
@@ -207,6 +232,11 @@ function createTray(): void {
 app.whenReady().then(async () => {
   if (!enforceSingleInstance()) return;
 
+  const wsRoot = resolveWorkspaceRoot();
+
+  // IPC handlers
+  ipcMain.handle("get-version", () => app.getVersion());
+
   ipcMain.handle("pick-directory", async () => {
     const result = await dialog.showOpenDialog({
       properties: ["openDirectory", "createDirectory"],
@@ -216,7 +246,38 @@ app.whenReady().then(async () => {
     return result.filePaths[0];
   });
 
+  ipcMain.handle("get-ui-error", () => uiResult?.error ?? null);
+
+  ipcMain.handle("repair-ui", async () => {
+    killUi();
+    uiResult = await ensureUi(wsRoot);
+    if (uiResult.ready) {
+      mainWindow?.loadURL(`http://127.0.0.1:${VITE_PORT}`);
+      return { success: true };
+    }
+    return { success: false, error: uiResult.error };
+  });
+
+  ipcMain.handle("reset-ui", async () => {
+    killUi();
+    const result = await resetUiToDefaults(wsRoot);
+    if (result.success) {
+      uiResult = await ensureUi(wsRoot);
+      if (uiResult.ready) {
+        mainWindow?.loadURL(`http://127.0.0.1:${VITE_PORT}`);
+        return { success: true };
+      }
+    }
+    return { success: false, error: result.error ?? uiResult?.error };
+  });
+
+  ipcMain.handle("update-ui", async () => {
+    return updateUi(wsRoot);
+  });
+
+  // Boot sequence: server first, then UI, then window
   await ensureServer();
+  uiResult = await ensureUi(wsRoot);
   createWindow();
   createTray();
 
@@ -230,5 +291,6 @@ app.on("window-all-closed", () => {
 });
 
 app.on("will-quit", () => {
+  killUi();
   killServer();
 });

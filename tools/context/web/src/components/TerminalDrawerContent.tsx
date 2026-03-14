@@ -9,15 +9,23 @@ import {
   Chip,
   Stack,
   Button,
+  Tooltip,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import { TerminalPanel } from "./TerminalPanel";
 
+function commandName(command: string) {
+  if (command === "claude") return "Claude";
+  if (command === "codex") return "Codex";
+  return "Terminal";
+}
+
 export interface TerminalTab {
   id: string;
   label: string;
   command: string;
+  nickname: string;
   exitCode?: number;
 }
 
@@ -115,8 +123,9 @@ export function TerminalDrawerContent({
             <Tab
               key={tab.id}
               label={
+                <Tooltip title={tab.label} enterDelay={300}>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                  <span>{tab.label}</span>
+                  <span>{commandName(tab.command)} {tab.nickname}</span>
                   {tab.exitCode !== undefined && (
                     <Chip
                       size="small"
@@ -136,6 +145,7 @@ export function TerminalDrawerContent({
                     <CloseIcon sx={{ fontSize: 14 }} />
                   </IconButton>
                 </Box>
+                </Tooltip>
               }
             />
           ))}

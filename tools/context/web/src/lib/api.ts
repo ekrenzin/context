@@ -335,7 +335,7 @@ export const api = {
     ),
 
   getTerminal: (id: string) =>
-    get<{ id: string; command: string; cwd: string; startedAt: string; exitCode?: number; label?: string }>(
+    get<{ id: string; command: string; cwd: string; startedAt: string; exitCode?: number; label?: string; state?: string }>(
       `/api/terminal/${id}`,
     ),
 
@@ -343,6 +343,18 @@ export const api = {
     patchJson<{ ok: boolean; label: string }>(`/api/terminal/${id}/label`, { label }),
 
   killTerminal: (id: string) => del<{ killed: boolean }>(`/api/terminal/${id}`),
+
+  // Terminal actions
+  requestTerminalAction: (command: string, args: string[], title: string, description?: string, cwd?: string) =>
+    postJson<{ id: string; sessionId: string }>("/api/terminal/action", { command, args, title, description, cwd }),
+
+  listTerminalActions: () =>
+    get<Array<{ id: string; sessionId: string; command: string; args?: string[]; title: string; description?: string; createdAt: string }>>(
+      "/api/terminal/actions",
+    ),
+
+  completeTerminalAction: (id: string) =>
+    patchJson<{ ok: boolean }>(`/api/terminal/action/${id}/complete`, {}),
 
   // Ollama
   ollamaStatus: () =>
@@ -438,8 +450,15 @@ export const api = {
       return r.json() as Promise<{ ok: boolean; slug: string }>;
     }),
 
+  setProposalStatus: (slug: string, status: string) =>
+    patchJson<{ ok: boolean; slug: string; status: string }>(`/api/proposals/${slug}`, { status }),
+
   evaluateProposal: (slug: string) =>
     postJson<{ slug: string; topic: string }>(`/api/proposals/${slug}/evaluate`, {}),
+
+  // Onboarding
+  onboardingPropose: (problem: string, name: string, tool: "claude" | "codex") =>
+    postJson<{ sessionId: string; slug: string }>("/api/onboarding/propose", { problem, name, tool }),
 
   // AI
   aiModels: () =>

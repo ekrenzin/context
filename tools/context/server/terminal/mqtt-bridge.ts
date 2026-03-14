@@ -15,12 +15,14 @@ import {
   spawnSession,
   connectSession,
   killSession,
+  setSessionState,
   registerTap,
 } from "./manager.js";
 import { logSessionStarted, tapSession } from "./session-logger.js";
 
 const INPUT_PATTERN = "ctx/session/+/input";
 const KILL_PATTERN = "ctx/session/+/kill";
+const STATE_PATTERN = "ctx/session/+/state";
 
 function extractSessionId(topic: string): string {
   // ctx/session/<id>/input or ctx/session/<id>/kill
@@ -76,6 +78,17 @@ export function initTerminalBridge(mqtt: CtxMqttClient): void {
     const ok = killSession(id);
     inputPtys.delete(id);
     console.log(`[mqtt-bridge] kill ${id}: ${ok ? "done" : "not found"}`);
+  });
+
+  mqtt.subscribe(STATE_PATTERN, (_topic, buf) => {
+    const id = extractSessionId(_topic);
+    try {
+      const { state } = JSON.parse(buf.toString());
+      const ok = setSessionState(id, state);
+      if (!ok) console.warn(`[mqtt-bridge] invalid state for ${id}: ${state}`);
+    } catch {
+      console.warn(`[mqtt-bridge] bad state payload for ${id}`);
+    }
   });
 
   console.log("[mqtt-bridge] terminal MQTT bridge active");

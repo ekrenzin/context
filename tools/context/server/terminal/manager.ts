@@ -12,6 +12,8 @@ const MANIFEST_DIR = path.join(os.tmpdir(), "ctx-terminals");
 const MANIFEST_PATH = path.join(MANIFEST_DIR, "sessions.json");
 const SOCKET_DIR = path.join(os.tmpdir(), "ctx-terminals");
 
+export type SessionState = "running" | "waiting" | "idle";
+
 export interface SessionInfo {
   id: string;
   command: string;
@@ -19,6 +21,7 @@ export interface SessionInfo {
   startedAt: string;
   exitCode?: number;
   label?: string;
+  state?: SessionState;
 }
 
 interface PersistedSession {
@@ -29,6 +32,7 @@ interface PersistedSession {
   cwd: string;
   startedAt: string;
   label?: string;
+  state?: SessionState;
 }
 
 export interface SpawnOptions {
@@ -141,6 +145,7 @@ function saveManifest(): void {
     cwd: s.cwd,
     startedAt: s.startedAt,
     label: s.label,
+    state: s.state,
   }));
   fs.writeFileSync(MANIFEST_PATH, JSON.stringify({ sessions: entries }, null, 2));
 }
@@ -226,6 +231,7 @@ export async function spawnSession(opts: SpawnOptions): Promise<SessionInfo> {
     command,
     cwd,
     startedAt: new Date().toISOString(),
+    state: "running",
   };
 
   sessions.set(id, session);
@@ -323,6 +329,7 @@ export async function restoreSessions(): Promise<number> {
       cwd: entry.cwd,
       startedAt: entry.startedAt,
       label: entry.label,
+      state: entry.state,
     });
     restored++;
   }
@@ -339,6 +346,17 @@ export function setSessionLabel(id: string, label: string): boolean {
   return true;
 }
 
+const VALID_STATES: SessionState[] = ["running", "waiting", "idle"];
+
+export function setSessionState(id: string, state: string): boolean {
+  if (!VALID_STATES.includes(state as SessionState)) return false;
+  const s = sessions.get(id);
+  if (!s) return false;
+  s.state = state as SessionState;
+  saveManifest();
+  return true;
+}
+
 function toInfo(s: LiveSession): SessionInfo {
   return {
     id: s.id,
@@ -347,5 +365,6 @@ function toInfo(s: LiveSession): SessionInfo {
     startedAt: s.startedAt,
     exitCode: s.exitCode,
     label: s.label,
+    state: s.state,
   };
 }

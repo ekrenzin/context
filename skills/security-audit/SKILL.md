@@ -15,6 +15,22 @@ related_skills:
 Apply this checklist when writing or modifying code that touches authentication,
 authorization, encryption, secrets, or sensitive data flows.
 
+## Dependency Vulnerabilities (Run First)
+
+Before the code-level checklist, scan for known CVEs in dependencies:
+
+```bash
+ctx security scan --severity critical,high
+```
+
+If vulnerabilities are found, review and patch before proceeding:
+
+```bash
+ctx security patch --dry-run
+```
+
+See `skills/security-scanner/SKILL.md` for full scanner details.
+
 ## Authentication and Authorization
 
 - Every API endpoint has an explicit auth check. No endpoint should be

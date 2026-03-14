@@ -23,15 +23,19 @@ interface DayBucket {
   unanalyzed: number;
 }
 
-const VERDICT_COLORS: Record<string, string> = {
-  productive: "#4caf50",
-  mixed: "#ff9800",
-  struggling: "#f44336",
-  unanalyzed: "#9e9e9e",
-};
+function useVerdictColors(): Record<string, string> {
+  const theme = useTheme();
+  return {
+    productive: theme.palette.success.main,
+    mixed: theme.palette.warning.main,
+    struggling: theme.palette.error.main,
+    unanalyzed: theme.palette.text.disabled,
+  };
+}
 
 export default function ProductivityTrend({ sessions }: Props) {
   const theme = useTheme();
+  const verdictColors = useVerdictColors();
 
   const data = useMemo(() => {
     const buckets = new Map<string, DayBucket>();
@@ -100,8 +104,8 @@ export default function ProductivityTrend({ sessions }: Props) {
                 type="monotone"
                 dataKey={key}
                 stackId="1"
-                stroke={VERDICT_COLORS[key]}
-                fill={VERDICT_COLORS[key]}
+                stroke={verdictColors[key]}
+                fill={verdictColors[key]}
                 fillOpacity={0.6}
               />
             ),

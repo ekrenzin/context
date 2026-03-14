@@ -21,6 +21,7 @@ import { registerTerminalRoutes } from "./terminal/routes.js";
 import { closeAll as closeTerminals, restoreSessions } from "./terminal/manager.js";
 import { initSessionLogger } from "./terminal/session-logger.js";
 import { initTerminalBridge } from "./terminal/mqtt-bridge.js";
+import { registerActionRoutes, initActionBridge } from "./terminal/action-routes.js";
 import { createLocalAi } from "./ai/local-ai.js";
 import { createAutoCommit } from "./auto-commit.js";
 import { createMcpSync } from "./mcp-sync/index.js";
@@ -122,10 +123,12 @@ export async function start(): Promise<void> {
 
   registerRoutes(app, ROOT, scheduler, transcriptDir, updateChecker, mqttClient, autoCommit, mcpSync);
   registerTerminalRoutes(app);
-  registerTunnelAuth(app);
+  registerActionRoutes(app);
+  registerTunnelAuth(app, mqttClient);
   registerTunnelRoutes(app);
   initSessionLogger(mqttClient, ROOT);
   initTerminalBridge(mqttClient);
+  initActionBridge(mqttClient);
   initBroadcastRelay(ROOT);
 
   const remoteBridge = startRemoteBridge();
@@ -157,24 +160,26 @@ export async function start(): Promise<void> {
     }
   });
 
-  const isCompiledRun = __dirname.includes(path.sep + "dist" + path.sep);
-  const distWeb = isCompiledRun
-    ? path.resolve(__dirname, "..", "web")
-    : path.resolve(__dirname, "..", "dist", "web");
-  try {
-    await app.register(fastifyStatic, {
-      root: distWeb,
-      prefix: "/",
-    });
-    app.setNotFoundHandler((req, reply) => {
-      if (req.url.startsWith("/api/") || req.url.startsWith("/ws")) {
-        reply.code(404).send({ error: "Not found" });
-        return;
-      }
-      reply.sendFile("index.html", distWeb);
-    });
-  } catch {
-    // Dev mode -- Vite serves the frontend
+  // UI is served by Vite (dev) or from the external context-ui repo's dist/ (prod).
+  // The Electron bootstrap handles starting Vite. The server only serves static
+  // files as a fallback for non-Electron production deployments.
+  const uiDist = path.resolve(ROOT, "repos", "context-ui", "dist");
+  if (fs.existsSync(uiDist)) {
+    try {
+      await app.register(fastifyStatic, {
+        root: uiDist,
+        prefix: "/",
+      });
+      app.setNotFoundHandler((req, reply) => {
+        if (req.url.startsWith("/api/") || req.url.startsWith("/ws")) {
+          reply.code(404).send({ error: "Not found" });
+          return;
+        }
+        reply.sendFile("index.html", uiDist);
+      });
+    } catch {
+      // Vite serves the frontend in dev mode
+    }
   }
 
   await app.listen({ port: PORT, host: "127.0.0.1" });

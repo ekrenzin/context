@@ -191,9 +191,22 @@ export default function ProposalDetailView() {
     }
   }
 
+  async function handleSetStatus(status: string) {
+    if (!slug) return;
+    setBusy(true);
+    try {
+      await api.setProposalStatus(slug, status);
+      load();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function handleDelete() {
     if (!slug) return;
-    if (!window.confirm(`Delete proposal "${proposal.title}"? This cannot be undone.`)) return;
+    if (!proposal || !window.confirm(`Delete proposal "${proposal.title}"? This cannot be undone.`)) return;
     setBusy(true);
     try {
       await api.deleteProposal(slug);

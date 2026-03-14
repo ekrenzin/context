@@ -27,11 +27,13 @@ export function registerPreviewRoutes(
   mqttClient: CtxMqttClient,
 ): void {
   // Collect entries from MQTT
-  mqttClient.subscribe("ctx/preview/opened", (payload: unknown) => {
-    const entry = payload as PreviewEntry;
-    if (entry?.id && !entries.find((e) => e.id === entry.id)) {
-      entries.push(entry);
-    }
+  mqttClient.subscribe("ctx/preview/opened", (_topic: string, payload: Buffer) => {
+    try {
+      const entry = JSON.parse(payload.toString()) as PreviewEntry;
+      if (entry?.id && !entries.find((e) => e.id === entry.id)) {
+        entries.push(entry);
+      }
+    } catch { /* ignore malformed messages */ }
   });
 
   // Serve preview files
@@ -63,14 +65,16 @@ export function registerPreviewRoutes(
     }
 
     // Stream new entries
-    const handler = (payload: unknown) => {
-      const entry = payload as PreviewEntry;
-      reply.raw.write(`data: ${JSON.stringify(entry)}\n\n`);
+    const handler = (_topic: string, payload: Buffer) => {
+      try {
+        const entry = JSON.parse(payload.toString()) as PreviewEntry;
+        reply.raw.write(`data: ${JSON.stringify(entry)}\n\n`);
+      } catch { /* ignore */ }
     };
 
     mqttClient.subscribe("ctx/preview/opened", handler);
     req.raw.on("close", () => {
-      mqttClient.unsubscribe?.("ctx/preview/opened", handler);
+      // CtxMqttClient has no unsubscribe -- subscriptions last for client lifetime
     });
   });
 

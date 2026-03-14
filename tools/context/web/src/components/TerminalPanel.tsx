@@ -7,14 +7,20 @@ import { WebLinksAddon } from "@xterm/addon-web-links";
 import "@xterm/xterm/css/xterm.css";
 import { createTerminalTheme } from "../lib/xterm-theme";
 
+export type SessionState = "running" | "waiting" | "idle";
+
+/** Regex matching OSC escape: \x1b]ctx:state=<state>\x07 */
+const OSC_STATE_RE = /\x1b\]ctx:state=(running|waiting|idle)\x07/g;
+
 interface Props {
   sessionId: string;
   active?: boolean;
   suspendResize?: boolean;
   onExit?: (code: number) => void;
+  onStateChange?: (state: SessionState) => void;
 }
 
-export function TerminalPanel({ sessionId, active = true, suspendResize, onExit }: Props) {
+export function TerminalPanel({ sessionId, active = true, suspendResize, onExit, onStateChange }: Props) {
   const theme = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
   const termRef = useRef<Terminal | null>(null);
@@ -22,6 +28,8 @@ export function TerminalPanel({ sessionId, active = true, suspendResize, onExit 
   const fitRef = useRef<FitAddon | null>(null);
   const onExitRef = useRef(onExit);
   onExitRef.current = onExit;
+  const onStateChangeRef = useRef(onStateChange);
+  onStateChangeRef.current = onStateChange;
   const suspendResizeRef = useRef(suspendResize);
   suspendResizeRef.current = suspendResize;
   const [dragOver, setDragOver] = useState(false);
@@ -44,7 +52,9 @@ export function TerminalPanel({ sessionId, active = true, suspendResize, onExit 
     termRef.current = term;
 
     term.loadAddon(fit);
-    term.loadAddon(new WebLinksAddon());
+    term.loadAddon(new WebLinksAddon((_event, uri) => {
+      window.open(uri, "_blank", "noopener");
+    }));
     term.open(el);
     fit.fit();
     term.focus();
@@ -59,7 +69,15 @@ export function TerminalPanel({ sessionId, active = true, suspendResize, onExit 
       try {
         const msg = JSON.parse(event.data);
         if (msg.type === "output") {
-          term.write(msg.data);
+          // Extract OSC state markers before writing to terminal
+          let outData = msg.data as string;
+          let stateMatch: RegExpExecArray | null;
+          while ((stateMatch = OSC_STATE_RE.exec(outData)) !== null) {
+            onStateChangeRef.current?.(stateMatch[1] as SessionState);
+          }
+          OSC_STATE_RE.lastIndex = 0;
+          outData = outData.replace(OSC_STATE_RE, "");
+          if (outData) term.write(outData);
         } else if (msg.type === "exit") {
           term.write(`\r\n\x1b[90m[process exited with code ${msg.code}]\x1b[0m\r\n`);
           onExitRef.current?.(msg.code);
@@ -221,6 +239,7 @@ export function TerminalPanel({ sessionId, active = true, suspendResize, onExit 
 
   useEffect(() => {
     if (active && termRef.current) {
+      termRef.current.scrollToBottom();
       termRef.current.focus();
     }
   }, [active]);

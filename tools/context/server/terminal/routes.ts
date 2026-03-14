@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import type { WebSocket } from "ws";
-import { spawnSession, connectSession, listSessions, killSession, getInfo, setSessionLabel, registerTap } from "./manager.js";
+import { spawnSession, connectSession, listSessions, killSession, getInfo, setSessionLabel, setSessionState, registerTap } from "./manager.js";
 import { logSessionStarted, tapSession } from "./session-logger.js";
 import { getSetting, getProject } from "../db/index.js";
 
@@ -58,6 +58,17 @@ export function registerTerminalRoutes(app: FastifyInstance): void {
       const ok = setSessionLabel(req.params.id, label);
       if (!ok) return reply.code(404).send({ error: "Not found" });
       return { ok: true, label };
+    },
+  );
+
+  app.patch<{ Params: { id: string }; Body: { state: string } }>(
+    "/api/terminal/:id/state",
+    async (req, reply) => {
+      const { state } = req.body ?? {};
+      if (!state) return reply.code(400).send({ error: "Missing state" });
+      const ok = setSessionState(req.params.id, state);
+      if (!ok) return reply.code(400).send({ error: "Invalid state or session not found" });
+      return { ok: true, state };
     },
   );
 

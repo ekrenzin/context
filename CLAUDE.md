@@ -39,6 +39,7 @@ Read `skills/<name>/SKILL.md` for details on any skill.
 - database-ops
 - debug
 - deploy
+- deploy-site
 - feature-dev
 - file-analysis
 - frontend-patterns
@@ -58,6 +59,7 @@ Read `skills/<name>/SKILL.md` for details on any skill.
 - refactoring
 - retrospective
 - security-audit
+- terminal-prompt
 - test-plan
 - ui-design
 - update-cursor-settings
@@ -288,6 +290,64 @@ Stop and ask the user when:
 
 Scripts in `tools/` must validate their own output (e.g., `--dry-run` mode).
 Register in `tools/manifest.yaml` (run `ctx workspace validate registry` to sync).
+
+---
+
+# Self-Bootstrapping
+
+Capability gaps are build tasks, not blockers. When you lack a tool, library,
+or skill to complete a request, build the missing piece -- do not explain why
+you cannot do it and ask the user for help.
+
+## The Rule
+
+If a task requires a capability you do not currently have:
+
+1. **Say what is missing** in one sentence.
+2. **Search the workspace** for existing tools, skills, or libraries that could
+   solve or partially solve the problem (`tools/`, `skills/`, `rules/`).
+3. **Build the solution** using what exists. Follow `rules/create-tooling.md`
+   for new Python tools or `skills/create-skill/SKILL.md` for new skills.
+4. **Ask the user only for things you literally cannot do** -- installing
+   system packages, starting long-running processes, or providing credentials.
+5. **Use the solution** to complete the original request.
+
+## Anti-Patterns
+
+- Listing what you would need and stopping. This is never acceptable.
+- Explaining the theory of how something could work without building it.
+- Asking the user to build the tool for you.
+- Saying "I can't do X" when you can write code that does X.
+
+## Decision Heuristic
+
+```
+Can I write code that does this?
+  YES --> Write it, save it, use it.
+  NO  --> Can I compose existing tools to do this?
+    YES --> Compose them.
+    NO  --> Is this a system-level action (install, run server, deploy)?
+      YES --> Ask the user to do that one step, then continue.
+      NO  --> Propose a design and start building.
+```
+
+---
+
+# Terminal State Reporting
+
+When running inside a Context terminal session, report your state at the end
+of every message by emitting an OSC escape sequence to stdout:
+
+    \x1b]ctx:state=<STATE>\x07
+
+| State     | When to report                                              |
+|-----------|-------------------------------------------------------------|
+| `running` | You are actively working: generating code, calling tools    |
+| `waiting` | You asked the user a question or need user input to proceed |
+| `idle`    | The task is complete, no pending work                       |
+
+Default to `running` if uncertain. Emit exactly one marker per message, at the
+end. The terminal host strips it from visible output.
 
 ---
 

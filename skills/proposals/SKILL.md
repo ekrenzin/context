@@ -155,18 +155,34 @@ ctx proposals build <slug> --dry-run        # preview without executing
 ctx proposals show <slug> --json            # inspect assembled prompt
 ```
 
+### Headless Execution
+
+Use `ctx claude run` to dispatch Claude autonomously on any task. If Claude
+fails or gets stuck, it escalates to the user via the Command Center terminal
+action FAB.
+
+```bash
+ctx claude run "Build proposal repo-capability-surface"
+ctx claude run -e "Build task 2 of proposal X"   # runs in CC terminal
+ctx claude run --budget 5.0 "Fix the auth bug"    # cost guardrail
+```
+
 ### MCP Tools (via Command Center)
 
-The CC MCP server exposes two tools (auto-discovered):
+The CC MCP server exposes these tools (auto-discovered):
 
 - `cc_proposal_list` -- list proposals with status
 - `cc_proposal_build` -- dispatch an agent to build a proposal or task
+- `cc_claude_run` -- run Claude headlessly on any task with auto-escalation
 
 ### Command Center UI
 
-Navigate to Solutions > Proposals in the dashboard. Each proposal card has a
-"Build" button. The proposal detail view has per-task build buttons and a
-header-level "Build All" button. Builds spawn embedded terminal sessions.
+The Proposals FAB (floating action button) pulses when actionable proposals
+exist (draft or in-progress). Click it to see active proposals, build them,
+or create new ones without navigating away from your current page.
+
+The full Proposals view is also available via the Workspace tab. Each proposal
+card has a "Build" button. The detail view has per-task build and edit buttons.
 
 ## Guidelines
 

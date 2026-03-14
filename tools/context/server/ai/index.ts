@@ -3,3 +3,8 @@ export type { AiProvider, AiResponse, AiRequestOptions } from "./client.js";
 export { getRateLimiter } from "./limiter.js";
 export * from "./prompts.js";
 export * from "./solution-prompts.js";
+export { analyzeSessions } from "./analyze-sessions.js";
+export { chat, runWithTools } from "./tool-runner.js";
+export { routePrompt } from "./router.js";
+export { detectCapabilities, listModelsWithCaps } from "./model-caps.js";
+export type { ModelTier, ModelCapabilities, ModelInfo } from "./model-caps.js";

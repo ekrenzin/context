@@ -4,29 +4,48 @@ import {
   Box,
   Typography,
   Button,
-  Stepper,
-  Step,
-  StepLabel,
+  TextField,
   Stack,
+  Chip,
   CircularProgress,
+  Alert,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import { api } from "../lib/api";
-import { type WizardState, INITIAL_STATE } from "./wizard-config";
-import { BasicsStep, ReposStepFull } from "./wizard-steps";
-import { ToolsStep, GoalsStep, ReviewStep } from "./wizard-choices";
+import { DirectoryPicker } from "../components/DirectoryPicker";
+import { PageLayout } from "../components/PageLayout";
 
-const STEPS = ["Basics", "Repositories", "Tools", "Goals", "Review"];
+declare global {
+  interface Window {
+    ctx?: { pickDirectory?: () => Promise<string | null> };
+  }
+}
+
+const PROJECT_TYPES = ["software", "operations", "research", "mixed"];
+
+function isElectron(): boolean {
+  return typeof window.ctx?.pickDirectory === "function";
+}
 
 export default function CreateProject() {
   const navigate = useNavigate();
-  const [step, setStep] = useState(0);
-  const [state, setState] = useState<WizardState>(INITIAL_STATE);
-  const [repoInput, setRepoInput] = useState("");
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [rootPath, setRootPath] = useState("");
+  const [projectType, setProjectType] = useState("software");
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState("");
 
-  function update(partial: Partial<WizardState>) {
-    setState((prev) => ({ ...prev, ...partial }));
+  async function handleBrowse() {
+    if (isElectron()) {
+      const dir = await window.ctx!.pickDirectory!();
+      if (dir) setRootPath(dir);
+    } else {
+      setPickerOpen(true);
+    }
   }
 
   async function handleCreate() {
@@ -34,13 +53,13 @@ export default function CreateProject() {
     setError("");
     try {
       const project = await api.createProject({
-        name: state.name,
-        description: state.description,
-        rootPath: state.rootPath,
-        projectType: state.projectType,
-        goals: state.goals,
-        repos: state.repos,
-        config: { ides: state.ides },
+        name,
+        description,
+        rootPath,
+        projectType,
+        goals: [],
+        repos: [],
+        config: { ides: ["cursor"] },
       });
       navigate(`/projects/${project.id}`);
     } catch (err) {
@@ -50,48 +69,86 @@ export default function CreateProject() {
     }
   }
 
-  const canNext = step === 0 ? state.name.trim() && state.rootPath.trim() : true;
+  const valid = name.trim() && rootPath.trim();
 
   return (
-    <Box sx={{ pt: 2, maxWidth: 700, mx: "auto" }}>
-      <Typography variant="h5" fontWeight={700} sx={{ mb: 3 }}>New Project</Typography>
+    <PageLayout title="New Project">
+      <Box sx={{ maxWidth: 560 }}>
+        <Stack spacing={2.5}>
+          <TextField
+            label="Project name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            fullWidth
+            required
+            autoFocus
+          />
+          <TextField
+            label="Root path"
+            helperText="Directory where the workspace will be created"
+            value={rootPath}
+            onChange={(e) => setRootPath(e.target.value)}
+            fullWidth
+            required
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleBrowse} edge="end" aria-label="browse">
+                      <FolderOpenIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
+          <TextField
+            label="Description (optional)"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            fullWidth
+            multiline
+            rows={2}
+          />
+          <Box>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              Project type
+            </Typography>
+            <Stack direction="row" spacing={1}>
+              {PROJECT_TYPES.map((t) => (
+                <Chip
+                  key={t}
+                  label={t}
+                  onClick={() => setProjectType(t)}
+                  color={projectType === t ? "primary" : "default"}
+                  variant={projectType === t ? "filled" : "outlined"}
+                />
+              ))}
+            </Stack>
+          </Box>
 
-      <Stepper activeStep={step} sx={{ mb: 4 }}>
-        {STEPS.map((label) => (
-          <Step key={label}><StepLabel>{label}</StepLabel></Step>
-        ))}
-      </Stepper>
+          {error && <Alert severity="error">{error}</Alert>}
 
-      {step === 0 && <BasicsStep state={state} update={update} />}
-      {step === 1 && (
-        <ReposStepFull
-          state={state}
-          update={update}
-          repoInput={repoInput}
-          setRepoInput={setRepoInput}
+          <Stack direction="row" spacing={1} justifyContent="flex-end">
+            <Button onClick={() => navigate(-1)}>Cancel</Button>
+            <Button
+              variant="contained"
+              onClick={handleCreate}
+              disabled={creating || !valid}
+              startIcon={creating ? <CircularProgress size={16} /> : undefined}
+            >
+              {creating ? "Creating..." : "Create"}
+            </Button>
+          </Stack>
+        </Stack>
+
+        <DirectoryPicker
+          open={pickerOpen}
+          onClose={() => setPickerOpen(false)}
+          onSelect={(p) => setRootPath(p)}
+          title="Choose workspace location"
         />
-      )}
-      {step === 2 && <ToolsStep state={state} update={update} />}
-      {step === 3 && <GoalsStep state={state} update={update} />}
-      {step === 4 && <ReviewStep state={state} error={error} />}
-
-      <Stack direction="row" justifyContent="space-between" sx={{ mt: 4 }}>
-        <Button disabled={step === 0} onClick={() => setStep((s) => s - 1)}>Back</Button>
-        {step < STEPS.length - 1 ? (
-          <Button variant="contained" disabled={!canNext} onClick={() => setStep((s) => s + 1)}>
-            Next
-          </Button>
-        ) : (
-          <Button
-            variant="contained"
-            onClick={handleCreate}
-            disabled={creating || !state.name.trim() || !state.rootPath.trim()}
-            startIcon={creating ? <CircularProgress size={16} /> : undefined}
-          >
-            {creating ? "Creating..." : "Create Project"}
-          </Button>
-        )}
-      </Stack>
-    </Box>
+      </Box>
+    </PageLayout>
   );
 }

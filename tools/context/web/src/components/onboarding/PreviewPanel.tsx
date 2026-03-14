@@ -1,6 +1,14 @@
 import { Box, Typography, Card, Chip, Stack } from "@mui/material";
 import { resolveAccent, resolveSurfaceGradient, type BrandingConfig } from "../../lib/branding";
 
+function hexToRgba(hex: string, alpha: number): string {
+  const h = hex.replace("#", "");
+  const rv = parseInt(h.substring(0, 2), 16);
+  const g = parseInt(h.substring(2, 4), 16);
+  const b = parseInt(h.substring(4, 6), 16);
+  return `rgba(${rv}, ${g}, ${b}, ${alpha})`;
+}
+
 interface Props {
   config: BrandingConfig;
   mode: "dark" | "light";
@@ -13,17 +21,22 @@ export function PreviewPanel({ config, mode }: Props) {
   const surfGrad = resolveSurfaceGradient(config, mode);
   const elevation = config.elevation ?? "subtle";
   const isDark = mode === "dark";
+  const accentColor = p.accent ?? p.primary;
 
   const cardShadow =
     elevation === "flat"
       ? "none"
       : elevation === "raised"
         ? isDark
-          ? "0 4px 12px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.4)"
-          : "0 4px 12px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06)"
+          ? `0 4px 16px ${hexToRgba(accentColor, 0.2)}, 0 2px 6px rgba(0,0,0,0.5)`
+          : `0 4px 16px ${hexToRgba(accentColor, 0.1)}, 0 2px 6px rgba(0,0,0,0.08)`
         : isDark
-          ? "0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3)"
+          ? "0 1px 4px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.4)"
           : "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)";
+
+  const cardBorder = elevation === "raised"
+    ? isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)"
+    : p.border ?? (p.textSecondary + "33");
 
   return (
     <Box
@@ -75,7 +88,7 @@ export function PreviewPanel({ config, mode }: Props) {
             borderRadius: `${r}px`,
             p: 1.5,
             border: "1px solid",
-            borderColor: p.border ?? (p.textSecondary + "33"),
+            borderColor: cardBorder,
             boxShadow: cardShadow,
           }}
         >
@@ -93,7 +106,7 @@ export function PreviewPanel({ config, mode }: Props) {
             borderRadius: `${r}px`,
             p: 1.5,
             border: "1px solid",
-            borderColor: p.border ?? (p.textSecondary + "33"),
+            borderColor: cardBorder,
             boxShadow: cardShadow,
           }}
         >

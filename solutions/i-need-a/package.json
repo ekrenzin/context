@@ -1,0 +1,22 @@
+{
+  "name": "i-need-a-screenshare-service",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "tsx watch server/index.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "fastify": "^4.24.3",
+    "@fastify/cors": "^8.4.0",
+    "dotenv": "^16.3.1",
+    "ws": "^8.14.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.7",
+    "@types/ws": "^8.5.8",
+    "tsx": "^4.1.2",
+    "typescript": "^5.2.2"
+  }
+}

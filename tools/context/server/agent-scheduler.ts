@@ -12,6 +12,7 @@ import type {
   AgentSchedulerState,
   FingerprintSources,
 } from "./types.js";
+import { analyzeSessions } from "./ai/analyze-sessions.js";
 
 const INTERVAL_MS = 60 * 60 * 1000;
 const MAX_JOBS = 100;
@@ -285,6 +286,48 @@ export function createAgentScheduler(
     }
   }
 
+  async function runInProcessAnalysis(job: AgentJob): Promise<number> {
+    const startedAt = new Date().toISOString();
+    updateJob(job.id, { status: "running", startedAt });
+
+    try {
+      const result = await analyzeSessions(root, transcriptDir, { limit: 10 });
+      const completedAt = new Date().toISOString();
+      const durationMs =
+        new Date(completedAt).getTime() - new Date(startedAt).getTime();
+      const detail = `analyzed ${result.analyzed}, skipped ${result.skipped}, failed ${result.failed} of ${result.total}`;
+      const status: AgentJobStatus =
+        result.analyzed > 0 || (result.failed === 0 && result.skipped === 0)
+          ? "completed"
+          : result.failed > 0 && result.analyzed === 0
+            ? "failed"
+            : "completed";
+      updateJob(job.id, {
+        status,
+        completedAt,
+        durationMs,
+        exitCode: status === "failed" ? 1 : 0,
+        detail,
+        logTail: [detail],
+      });
+      return status === "failed" ? 1 : 0;
+    } catch (err) {
+      const completedAt = new Date().toISOString();
+      const durationMs =
+        new Date(completedAt).getTime() - new Date(startedAt).getTime();
+      const detail = err instanceof Error ? err.message : String(err);
+      updateJob(job.id, {
+        status: "failed",
+        completedAt,
+        durationMs,
+        exitCode: 1,
+        detail,
+        logTail: [detail],
+      });
+      return 1;
+    }
+  }
+
   async function runPipeline(trigger: AgentJobTrigger): Promise<void> {
     if (running) return;
     running = true;
@@ -319,12 +362,7 @@ export function createAgentScheduler(
         return;
       }
 
-      const { exitCode: j2exit } = await runScript(
-        j2,
-        ctxBin,
-        ["profiler", "analyze", "--limit", "10"],
-        root,
-      );
+      const j2exit = await runInProcessAnalysis(j2);
       if (cancelRequested) {
         skipRemaining("cancelled", j3, j4, j5, j6, j7);
         return;
@@ -439,8 +477,8 @@ export function createAgentScheduler(
       const job = makeJob(type, "manual");
       pushJob(job);
       broadcast();
-      const { cmd, args } = getJobScript(type);
-      runScript(job, cmd, args, root).finally(() => {
+
+      const finish = () => {
         running = false;
         cancelRequested = false;
         const post = buildFingerprint(root, transcriptDir);
@@ -448,7 +486,14 @@ export function createAgentScheduler(
         fingerprintSources = post.sources;
         scheduledNextRun = nextRunAt();
         broadcast();
-      });
+      };
+
+      if (type === "session-analysis") {
+        runInProcessAnalysis(job).finally(finish);
+      } else {
+        const { cmd, args } = getJobScript(type);
+        runScript(job, cmd, args, root).finally(finish);
+      }
       return true;
     },
     triggerIntelJob(params: IntelJobParams): string | null {

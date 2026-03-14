@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import type { FastifyInstance } from "fastify";
 import type { SessionRecord, SessionsPage, SessionAnalysis } from "../types.js";
+import { analyzeSessions } from "../ai/analyze-sessions.js";
 
 export function loadSessions(
   root: string,
@@ -213,6 +214,18 @@ export function registerSessionRoutes(
       const { chatId } = req.params;
       const turns = loadTranscript(transcriptDir, chatId);
       return { turns };
+    },
+  );
+
+  app.post<{ Body: { chatId?: string; limit?: number; force?: boolean } }>(
+    "/api/sessions/analyze",
+    async (req) => {
+      const { chatId, limit, force } = req.body ?? {};
+      return analyzeSessions(root, transcriptDir, {
+        chatId,
+        limit: limit ?? 10,
+        force,
+      });
     },
   );
 }

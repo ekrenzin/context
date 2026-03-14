@@ -138,7 +138,7 @@ export function CodeTab({ id }: { id: string }) {
         variant="outlined"
         sx={{
           flex: 1, overflow: "auto", p: 1.5,
-          bgcolor: "grey.900", color: "grey.100",
+          bgcolor: "background.default", color: "text.primary",
           fontFamily: "monospace", fontSize: 12, lineHeight: 1.6, whiteSpace: "pre-wrap",
         }}
       >
@@ -181,11 +181,11 @@ export function LogsTab({ id }: { id: string }) {
         variant="outlined"
         sx={{
           p: 1.5, height: "calc(100vh - 300px)", minHeight: 300, overflow: "auto",
-          bgcolor: "grey.900", color: "grey.100",
+          bgcolor: "background.default", color: "text.primary",
           fontFamily: "monospace", fontSize: 12, lineHeight: 1.6,
         }}
       >
-        {lines.length === 0 && <span style={{ color: "#888" }}>No log output yet.</span>}
+        {lines.length === 0 && <Typography variant="caption" component="span" color="text.secondary">No log output yet.</Typography>}
         {lines.map((line, i) => <div key={i}>{line}</div>)}
         <div ref={bottomRef} />
       </Paper>

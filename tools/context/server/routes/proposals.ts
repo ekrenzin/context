@@ -284,6 +284,7 @@ export function registerProposalRoutes(app: FastifyInstance, root: string, mqttC
       const dir = path.join(proposalsRoot, slug);
       if (!fs.existsSync(dir)) return reply.code(404).send({ error: "Proposal not found" });
       setStatus(proposalsRoot, slug, status);
+      mqttClient.publish(TOPICS.proposals.changed, { action: "status", slug, status });
       return { ok: true, slug, status };
     },
   );
@@ -334,8 +335,10 @@ export function registerProposalRoutes(app: FastifyInstance, root: string, mqttC
 
       const { spawnSession } = await import("../terminal/manager.js");
       const cmd = agent === "codex" ? "codex" : "claude";
+      const taskLabel = taskNum !== undefined ? ` task ${taskNum}` : "";
+      const userPrompt = `Build the proposal "${detail.title}"${taskLabel}. Follow the instructions in your system prompt.`;
       const args = cmd === "claude"
-        ? ["--append-system-prompt", prompt]
+        ? ["--append-system-prompt", prompt, userPrompt]
         : [prompt];
 
       const session = await spawnSession({ command: cmd, args, cwd: root });
@@ -345,6 +348,7 @@ export function registerProposalRoutes(app: FastifyInstance, root: string, mqttC
       if (taskNum !== undefined) {
         setStatus(proposalsRoot, slug, "in-progress", taskNum);
       }
+      mqttClient.publish(TOPICS.proposals.changed, { action: "building", slug });
 
       return {
         sessionId: session.id,
@@ -362,6 +366,7 @@ export function registerProposalRoutes(app: FastifyInstance, root: string, mqttC
       const dir = path.join(proposalsRoot, req.params.slug);
       if (!fs.existsSync(dir)) return reply.code(404).send({ error: "Proposal not found" });
       fs.rmSync(dir, { recursive: true, force: true });
+      mqttClient.publish(TOPICS.proposals.changed, { action: "deleted", slug: req.params.slug });
       return { ok: true, slug: req.params.slug };
     },
   );
@@ -441,9 +446,15 @@ export function registerProposalRoutes(app: FastifyInstance, root: string, mqttC
       const { spawnSession } = await import("../terminal/manager.js");
       const session = await spawnSession({
         command: "claude",
-        args: ["--append-system-prompt", prompt],
+        args: [
+          "--append-system-prompt", prompt,
+          `Create a proposal for: ${description.trim()}`,
+        ],
         cwd: root,
       });
+
+      mqttClient.publish(TOPICS.proposals.created, { slug: `new-${Date.now()}` });
+      mqttClient.publish(TOPICS.proposals.changed, { action: "created" });
 
       return { sessionId: session.id };
     },
@@ -472,9 +483,13 @@ export function registerProposalRoutes(app: FastifyInstance, root: string, mqttC
       fs.writeFileSync(promptPath, prompt, "utf8");
 
       const { spawnSession } = await import("../terminal/manager.js");
+      const editLabel = taskNum !== undefined ? `task ${taskNum} of ` : "";
       const session = await spawnSession({
         command: "claude",
-        args: ["--append-system-prompt", prompt],
+        args: [
+          "--append-system-prompt", prompt,
+          `Edit ${editLabel}proposal "${detail.title}". Wait for user instructions.`,
+        ],
         cwd: root,
       });
 

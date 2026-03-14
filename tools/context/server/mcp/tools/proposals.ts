@@ -98,7 +98,11 @@ export function register(server: McpServer, deps: McpDeps): void {
       fs.writeFileSync(promptPath, prompt, "utf8");
 
       const cmd = agent === "codex" ? "codex" : "claude";
-      const args = cmd === "claude" ? ["--prompt-file", promptPath] : [prompt];
+      const taskLabel = task !== undefined ? ` task ${task}` : "";
+      const userPrompt = `Build the proposal "${detail.title}"${taskLabel}. Follow the instructions in your system prompt.`;
+      const args = cmd === "claude"
+        ? ["--append-system-prompt", prompt, userPrompt]
+        : [prompt];
       const session = await spawnSession({ command: cmd, args, cwd: root });
 
       const taskLabel = task !== undefined ? ` (task ${task})` : "";

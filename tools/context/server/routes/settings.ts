@@ -17,6 +17,9 @@ const ALLOWED_KEYS = [
   "tunnel_enabled",
   "tunnel_name",
   "tunnel_pin",
+  "ui.colorMode",
+  "terminal.open",
+  "terminal.activeTab",
 ];
 
 export function registerSettingsRoutes(app: FastifyInstance): void {

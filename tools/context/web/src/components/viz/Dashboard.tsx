@@ -8,6 +8,7 @@ import {
   LinearProgress,
   Box,
   Alert,
+  useTheme,
 } from "@mui/material";
 import type { SessionRecord, StatsOverview } from "../../lib/api";
 import { api } from "../../lib/api";
@@ -72,6 +73,7 @@ interface Props {
 }
 
 export default function Dashboard({ generation }: Props) {
+  const theme = useTheme();
   const [stats, setStats] = useState<StatsOverview | null>(null);
   const [sessions, setSessions] = useState<SessionRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -159,7 +161,7 @@ export default function Dashboard({ generation }: Props) {
           <TopItemsChart
             title="Top Tools"
             data={buildToolData(sessions)}
-            color="#ff9800"
+            color={theme.palette.warning.main}
           />
         </Grid>
       </Grid>

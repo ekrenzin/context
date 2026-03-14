@@ -195,18 +195,15 @@ Add a `robots.txt` with `Sitemap: https://yoursite.com/sitemap.xml`.
 
 ## 8. Deployment
 
-Deploy to Cloudflare Pages via the Command Center:
+Deploy to Cloudflare Pages via the CLI. See the `deploy-site` skill for the
+full workflow. Quick reference:
 
-1. Build the site: the build command is `npm run build`, output directory
-   is `dist/`.
-2. In Command Center, navigate to Integrations and connect Cloudflare
-   (if not already connected).
-3. Use the Deploy action in Command Center -- it runs
-   `wrangler pages deploy dist/` under the hood.
-4. The live URL appears in Command Center after deploy.
+```bash
+cd site && npm run deploy          # production
+cd site && npm run deploy:preview  # preview URL for testing
+```
 
-**Do not** instruct the user to run terminal commands for deployment. The
-Command Center handles auth and deploy through its UI.
+Prerequisites: `npx wrangler login` (one-time, opens browser).
 
 For local development, `npm run dev` starts the Vite dev server on
 `localhost:5173`.

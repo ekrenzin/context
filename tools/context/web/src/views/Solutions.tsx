@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, lazy, Suspense } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Card,
@@ -6,18 +6,10 @@ import {
   Stack,
   Skeleton,
   Alert,
-  CircularProgress,
-  Tabs,
-  Tab,
 } from "@mui/material";
-import { useSearchParams } from "react-router-dom";
-import LightbulbIcon from "@mui/icons-material/Lightbulb";
 import { CardGrid } from "../components/CardGrid";
-import { PageLayout } from "../components/PageLayout";
 import { SolutionCard } from "../components/solutions/SolutionCard";
 import { SolutionEmptyState } from "../components/solutions/EmptyState";
-
-const Proposals = lazy(() => import("./Proposals"));
 
 interface Solution {
   id: string;
@@ -34,23 +26,19 @@ interface Solution {
   updated_at: string;
 }
 
-async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(url, init);
-  if (!res.ok) throw new Error(`${init?.method ?? "GET"} ${url}: ${res.status}`);
-  return res.json();
-}
-
-const TAB_KEYS = ["solutions", "proposals"] as const;
-type TabKey = (typeof TAB_KEYS)[number];
-
-function SolutionsList() {
+export default function Solutions() {
   const [solutions, setSolutions] = useState<Solution[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(() => {
     setLoading(true);
-    fetchJson<Solution[]>("/api/solutions").then(setSolutions)
+    fetch("/api/solutions")
+      .then((r) => {
+        if (!r.ok) throw new Error(`GET /api/solutions: ${r.status}`);
+        return r.json() as Promise<Solution[]>;
+      })
+      .then(setSolutions)
       .catch((e) => setError(e instanceof Error ? e.message : String(e)))
       .finally(() => setLoading(false));
   }, []);
@@ -97,36 +85,5 @@ function SolutionsList() {
         ))}
       </CardGrid>
     </Box>
-  );
-}
-
-export default function Solutions({ embedded }: { embedded?: boolean }) {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const [params, setParams] = useSearchParams();
-
-  if (embedded) {
-    return <SolutionsList />;
-  }
-
-  const raw = params.get("tab") as TabKey | null;
-  const tab = TAB_KEYS.includes(raw as TabKey) ? (raw as TabKey) : "solutions";
-  const tabIndex = TAB_KEYS.indexOf(tab);
-
-  return (
-    <PageLayout title="Solutions" icon={<LightbulbIcon color="primary" />}>
-      <Tabs
-        value={tabIndex}
-        onChange={(_, idx) => setParams({ tab: TAB_KEYS[idx] })}
-        sx={{ mb: 2 }}
-      >
-        <Tab label="Solutions" />
-        <Tab label="Proposals" />
-      </Tabs>
-
-      <Suspense fallback={<Box sx={{ display: "flex", justifyContent: "center", py: 8 }}><CircularProgress /></Box>}>
-        {tab === "solutions" && <SolutionsList />}
-        {tab === "proposals" && <Proposals />}
-      </Suspense>
-    </PageLayout>
   );
 }

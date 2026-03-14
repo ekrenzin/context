@@ -14,22 +14,16 @@
 #   remote      (optional) -- full clone URL; overrides the defaults when set
 
 defaults:
-  org: your-github-org
+  org: ekrenzin
   remote:
     http: https://github.com
     ssh: git@github.com
 
 repositories:
-  # Example entries -- uncomment and replace with your actual repos.
-  #
-  # - name: my-web-app
-  #   branch: main
-  #   description: Core web application (React/Node.js/PostgreSQL)
-  #
-  # - name: my-api-service
-  #   branch: main
-  #   description: Backend API service (Python/FastAPI)
-  #
-  # - name: my-worker
-  #   branch: main
-  #   description: Background job processor (Node.js/SQS)
+  - name: context-ui
+    branch: main
+    description: Command Center UI -- the workspace control plane (user-owned, fully editable)
+
+  - name: context-web
+    branch: main
+    description: Marketing site -- deployed to Cloudflare Pages (context-site)

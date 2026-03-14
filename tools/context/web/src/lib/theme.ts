@@ -25,15 +25,19 @@ function elevationComponents(
   palette: PaletteConfig,
 ): Components<Theme> {
   const isDark = mode === "dark";
+  const accent = palette.accent ?? palette.primary;
 
   if (level === "flat") {
     return {
       MuiCard: {
         defaultProps: { variant: "outlined" as const },
-        styleOverrides: { root: { backgroundImage: "none" } },
+        styleOverrides: { root: { backgroundImage: "none", boxShadow: "none" } },
       },
       MuiAppBar: {
         styleOverrides: { root: { backgroundImage: "none" } },
+      },
+      MuiPaper: {
+        styleOverrides: { root: { boxShadow: "none" } },
       },
       MuiButton: {
         styleOverrides: { contained: { boxShadow: "none", "&:hover": { boxShadow: "none" } } },
@@ -43,21 +47,27 @@ function elevationComponents(
 
   const isRaised = level === "raised";
 
+  // Raised uses accent-tinted shadows so they're visible on dark backgrounds
   const restShadow = isRaised
     ? isDark
-      ? "0 4px 12px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.4)"
-      : "0 4px 12px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06)"
+      ? `0 4px 16px ${hexToRgba(accent, 0.2)}, 0 2px 6px rgba(0,0,0,0.5)`
+      : `0 4px 16px ${hexToRgba(accent, 0.1)}, 0 2px 6px rgba(0,0,0,0.08)`
     : isDark
-      ? "0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3)"
+      ? "0 1px 4px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.4)"
       : "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)";
 
   const hoverShadow = isRaised
     ? isDark
-      ? "0 8px 24px rgba(0,0,0,0.6), 0 4px 8px rgba(0,0,0,0.5)"
-      : "0 8px 24px rgba(0,0,0,0.15), 0 4px 8px rgba(0,0,0,0.08)"
+      ? `0 8px 30px ${hexToRgba(accent, 0.3)}, 0 4px 12px rgba(0,0,0,0.6)`
+      : `0 8px 30px ${hexToRgba(accent, 0.15)}, 0 4px 12px rgba(0,0,0,0.1)`
     : isDark
-      ? "0 4px 12px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.4)"
+      ? `0 4px 14px ${hexToRgba(accent, 0.12)}, 0 2px 4px rgba(0,0,0,0.5)`
       : "0 4px 12px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06)";
+
+  // Raised mode: fade the border so shadows dominate
+  const borderStyle = isRaised
+    ? { borderColor: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)" }
+    : {};
 
   return {
     MuiCard: {
@@ -66,9 +76,10 @@ function elevationComponents(
         root: {
           backgroundImage: "none",
           boxShadow: restShadow,
-          transition: "box-shadow 0.2s ease, transform 0.2s ease",
+          transition: "box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease",
+          ...borderStyle,
           "&:hover": isRaised
-            ? { boxShadow: hoverShadow, transform: "translateY(-1px)" }
+            ? { boxShadow: hoverShadow, transform: "translateY(-2px)" }
             : {},
         },
       },
@@ -84,6 +95,7 @@ function elevationComponents(
     },
     MuiPaper: {
       styleOverrides: {
+        root: isRaised ? { boxShadow: restShadow, ...borderStyle } : {},
         elevation1: { boxShadow: restShadow },
       },
     },
@@ -112,6 +124,8 @@ function buildMode(
   const elevation = cfg.elevation ?? "subtle";
   const gradient = cfg.useGradient ? cfg.accentGradient : undefined;
   const accent = resolveAccent(cfg, mode);
+  const accentColor = p.accent ?? p.primary;
+  const isDark = mode === "dark";
 
   const gradientButton = gradient ? {
     background: gradient,
@@ -144,6 +158,17 @@ function buildMode(
     },
     components: {
       ...elevationComponents(mode, elevation, p),
+      MuiCssBaseline: {
+        styleOverrides: gradient ? {
+          "*::-webkit-scrollbar": { width: 8 },
+          "*::-webkit-scrollbar-track": { background: "transparent" },
+          "*::-webkit-scrollbar-thumb": {
+            background: hexToRgba(accentColor, 0.25),
+            borderRadius: 4,
+            "&:hover": { background: hexToRgba(accentColor, 0.4) },
+          },
+        } : {},
+      },
       MuiChip: {
         styleOverrides: {
           root: { fontWeight: 500 },
@@ -159,17 +184,24 @@ function buildMode(
             ...gradientButton,
             ...(elevationComponents(mode, elevation, p).MuiButton?.styleOverrides as Record<string, unknown>)?.contained as object,
           },
+          outlined: gradient ? {
+            borderColor: hexToRgba(accentColor, 0.4),
+            "&:hover": {
+              borderColor: accentColor,
+              backgroundColor: hexToRgba(accentColor, 0.08),
+            },
+          } : {},
         },
       },
       MuiListItemButton: {
         styleOverrides: {
           root: {
             "&.Mui-selected": {
-              backgroundColor: hexToRgba(p.accent ?? p.primary, 0.14),
-              borderLeft: gradient ? `3px solid` : undefined,
+              backgroundColor: hexToRgba(accentColor, 0.14),
+              borderLeft: gradient ? "3px solid" : undefined,
               borderImage: gradient ? `${gradient} 1` : undefined,
               "&:hover": {
-                backgroundColor: hexToRgba(p.accent ?? p.primary, 0.2),
+                backgroundColor: hexToRgba(accentColor, 0.2),
               },
             },
           },
@@ -181,7 +213,9 @@ function buildMode(
             backgroundImage: "none",
             backdropFilter: "blur(12px)",
             backgroundColor: hexToRgba(p.background, 0.85),
-            borderBottom: `1px solid ${p.border ?? hexToRgba(p.text, 0.08)}`,
+            borderBottom: gradient
+              ? `1px solid ${hexToRgba(accentColor, isDark ? 0.2 : 0.12)}`
+              : `1px solid ${p.border ?? hexToRgba(p.text, 0.08)}`,
           },
         },
       },
@@ -190,10 +224,43 @@ function buildMode(
           paper: {
             backgroundColor: p.surfaceAlt ?? p.surface,
             backgroundImage: cfg.useGradient
-              ? `linear-gradient(180deg, ${hexToRgba(p.accent ?? p.primary, 0.03)} 0%, transparent 40%)`
+              ? `linear-gradient(180deg, ${hexToRgba(accentColor, 0.05)} 0%, transparent 40%)`
               : "none",
           },
         },
+      },
+      MuiCard: {
+        ...(elevationComponents(mode, elevation, p).MuiCard ?? {}),
+        styleOverrides: {
+          ...(elevationComponents(mode, elevation, p).MuiCard?.styleOverrides ?? {}),
+          root: {
+            ...(elevationComponents(mode, elevation, p).MuiCard?.styleOverrides as Record<string, unknown>)?.root as object,
+            ...(gradient ? {
+              borderTop: `1px solid ${hexToRgba(accentColor, isDark ? 0.15 : 0.1)}`,
+            } : {}),
+          },
+        },
+      },
+      MuiOutlinedInput: {
+        styleOverrides: gradient ? {
+          root: {
+            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+              borderColor: accentColor,
+              borderWidth: 2,
+              boxShadow: `0 0 0 3px ${hexToRgba(accentColor, 0.12)}`,
+            },
+          },
+        } : {},
+      },
+      MuiSwitch: {
+        styleOverrides: gradient ? {
+          switchBase: {
+            "&.Mui-checked + .MuiSwitch-track": {
+              background: gradient,
+              opacity: 1,
+            },
+          },
+        } : {},
       },
       MuiTableRow: {
         styleOverrides: {
@@ -222,13 +289,27 @@ function buildMode(
         styleOverrides: {
           root: {
             "&.Mui-selected": {
-              color: p.accent ?? p.primary,
+              color: accentColor,
               backgroundImage: gradient
                 ? `linear-gradient(180deg, transparent 90%, ${accent})`
                 : "none",
             },
           },
         },
+      },
+      MuiToggleButton: {
+        styleOverrides: gradient ? {
+          root: {
+            "&.Mui-selected": {
+              backgroundColor: hexToRgba(accentColor, 0.14),
+              color: accentColor,
+              borderColor: hexToRgba(accentColor, 0.4),
+              "&:hover": {
+                backgroundColor: hexToRgba(accentColor, 0.2),
+              },
+            },
+          },
+        } : {},
       },
     },
   });

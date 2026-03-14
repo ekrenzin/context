@@ -1,4 +1,3 @@
-import fs from "fs";
 import { scanForNew, markProcessed } from "./scanner.js";
 import { parseTranscript } from "./parser.js";
 import { analyzeSession } from "./analyzer.js";
@@ -6,10 +5,20 @@ import { upsertSession } from "../db/index.js";
 import { getSetting } from "../db/index.js";
 import type { CtxMqttClient } from "ctx-mqtt";
 
+type ProfilerPhase = "idle" | "scanning" | "analyzing" | "synthesizing";
+
 interface LoopOptions {
   root: string;
   mqtt: CtxMqttClient;
   intervalMs?: number;
+}
+
+function publishStatus(mqtt: CtxMqttClient, phase: ProfilerPhase, detail: string): void {
+  mqtt.publish("ctx/profiler/status", { phase, detail, timestamp: new Date().toISOString() });
+}
+
+function publishActivity(mqtt: CtxMqttClient, action: string): void {
+  mqtt.publish("ctx/profiler/activity", { action, timestamp: new Date().toISOString() });
 }
 
 export function createSelfManagementLoop(opts: LoopOptions) {
@@ -22,12 +31,24 @@ export function createSelfManagementLoop(opts: LoopOptions) {
     running = true;
 
     try {
-      const pending = scanForNew();
-      if (pending.length === 0) return;
+      publishStatus(mqtt, "scanning", "Scanning for new transcripts...");
+      publishActivity(mqtt, "Scan started");
 
+      const pending = scanForNew();
+      if (pending.length === 0) {
+        publishStatus(mqtt, "idle", "Watching for new sessions");
+        publishActivity(mqtt, "No new transcripts found");
+        return;
+      }
+
+      publishStatus(mqtt, "scanning", `Found ${pending.length} new transcript(s)`);
+      publishActivity(mqtt, `Found ${pending.length} new transcript(s)`);
       mqtt.publish("ctx/analysis/started", { count: pending.length });
 
       for (const t of pending) {
+        publishStatus(mqtt, "analyzing", `Parsing: ${t.chatId}`);
+        publishActivity(mqtt, `Parsing transcript: ${t.chatId}`);
+
         const session = parseTranscript(t.path, t.chatId);
 
         upsertSession({
@@ -54,13 +75,20 @@ export function createSelfManagementLoop(opts: LoopOptions) {
           analysis: null,
         });
 
+        publishActivity(mqtt, `Session stored: ${session.chatId}`);
+
         const mode = getSetting("profiler_mode") ?? "suggest";
         if (mode === "auto") {
           try {
+            const title = session.firstQuery.slice(0, 60);
+            publishStatus(mqtt, "analyzing", `Analyzing: ${title}`);
+            publishActivity(mqtt, `Analyzing session: ${session.chatId}`);
             await analyzeSession(session, t.path);
+            publishActivity(mqtt, `Analysis complete: ${session.chatId}`);
           } catch (err) {
             const msg = err instanceof Error ? err.message : String(err);
             mqtt.publish("ctx/analysis/error", { chatId: t.chatId, error: msg });
+            publishActivity(mqtt, `Analysis failed: ${session.chatId}`);
           }
         }
 
@@ -68,6 +96,8 @@ export function createSelfManagementLoop(opts: LoopOptions) {
       }
 
       mqtt.publish("ctx/analysis/complete", { processed: pending.length });
+      publishStatus(mqtt, "idle", "Watching for new sessions");
+      publishActivity(mqtt, `Processed ${pending.length} transcript(s)`);
     } finally {
       running = false;
     }
@@ -75,6 +105,7 @@ export function createSelfManagementLoop(opts: LoopOptions) {
 
   return {
     start() {
+      publishStatus(mqtt, "idle", "Watching for new sessions");
       tick();
       timer = setInterval(tick, intervalMs);
     },
@@ -83,6 +114,7 @@ export function createSelfManagementLoop(opts: LoopOptions) {
         clearInterval(timer);
         timer = null;
       }
+      publishStatus(mqtt, "idle", "Profiler stopped");
     },
     async runOnce() {
       await tick();

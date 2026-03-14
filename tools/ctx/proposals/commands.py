@@ -132,13 +132,15 @@ def _write_prompt_file(slug: str, task: int | None, prompt: str) -> str:
     return path
 
 
-def _build_agent_cmd(agent: str, prompt_file: str) -> tuple[str, list[str]]:
+def _build_agent_cmd(agent: str, prompt_file: str, slug: str, task: int | None = None) -> tuple[str, list[str]]:
     """Return (command, args) for the agent."""
+    context = Path(prompt_file).read_text(encoding="utf-8")
+    task_label = f" task {task}" if task is not None else ""
+    user_prompt = f'Build the proposal "{slug}"{task_label}. Follow the instructions in your system prompt.'
     if agent == "claude":
-        return "claude", ["--prompt-file", prompt_file]
+        return "claude", ["--append-system-prompt", context, user_prompt]
     if agent == "codex":
-        content = Path(prompt_file).read_text(encoding="utf-8")
-        return "codex", [content]
+        return "codex", [context]
     return agent, []
 
 
@@ -147,7 +149,7 @@ def _dispatch_terminal(
     task: int | None, dry_run: bool,
 ) -> None:
     """Open a new macOS Terminal tab with the agent."""
-    cmd, args = _build_agent_cmd(agent, prompt_file)
+    cmd, args = _build_agent_cmd(agent, prompt_file, slug, task)
     shell_cmd = f"cd {shlex.quote(work_dir)} && {cmd} {' '.join(shlex.quote(a) for a in args)}"
     task_label = f" (task {task})" if task else ""
     title = f"Building: {slug}{task_label}"
@@ -187,7 +189,7 @@ def _dispatch_embedded(
     task: int | None, dry_run: bool,
 ) -> None:
     """Dispatch via the Command Center embedded terminal API."""
-    cmd, args = _build_agent_cmd(agent, prompt_file)
+    cmd, args = _build_agent_cmd(agent, prompt_file, slug, task)
     payload = {"command": cmd, "args": args, "cwd": work_dir}
     url = f"{CC_BASE}/api/terminal"
 

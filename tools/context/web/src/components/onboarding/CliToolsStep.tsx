@@ -20,10 +20,11 @@ interface Status {
   codex: ToolState;
 }
 
-export function CliToolsStep({ onComplete, onBack, onSkip }: {
+export function CliToolsStep({ onComplete, onBack, onSkip, onToolsDetected }: {
   onComplete: () => void;
   onBack: () => void;
   onSkip: () => void;
+  onToolsDetected?: (tools: { claude: boolean; codex: boolean }) => void;
 }) {
   const [status, setStatus] = useState<Status | null>(null);
   const [loading, setLoading] = useState(true);
@@ -35,6 +36,7 @@ export function CliToolsStep({ onComplete, onBack, onSkip }: {
     try {
       const s = await api.cliToolsStatus();
       setStatus(s);
+      onToolsDetected?.({ claude: s.claude.installed, codex: s.codex.installed });
     } catch {
       setStatus({
         claude: { installed: false, version: null },

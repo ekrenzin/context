@@ -1,109 +1,73 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { Box, Button, LinearProgress } from "@mui/material";
-import { fetchBranding, type BrandingConfig } from "../lib/branding";
+import type { BrandingConfig } from "../lib/branding";
 import { WelcomeStep } from "../components/onboarding/WelcomeStep";
 import { AiProviderStep } from "../components/onboarding/AiProviderStep";
-import { UIPreferencesStep } from "../components/onboarding/UIPreferencesStep";
 import { PersonaStep } from "../components/onboarding/PersonaStep";
 import { ProblemStep } from "../components/onboarding/ProblemStep";
 import { LocalModelStep } from "../components/onboarding/LocalModelStep";
 import { CliToolsStep } from "../components/onboarding/CliToolsStep";
 import { RemoteAccessStep } from "../components/onboarding/RemoteAccessStep";
-import { BuildingStep } from "../components/onboarding/BuildingStep";
-import { FirstWin } from "../components/onboarding/FirstWin";
+import { ProposingStep } from "../components/onboarding/ProposingStep";
 
 type Persona = "non-technical" | "power-user" | null;
+type CliTool = "claude" | "codex";
 
-interface SolutionResult {
+const TOOL_LABELS: Record<CliTool, string> = {
+  claude: "Claude Code",
+  codex: "Codex",
+};
+
+const STEP_COUNT = 7;
+
+export interface PendingSession {
   id: string;
-  name: string;
-  problem: string;
-  status: string;
-  components: unknown[];
+  label: string;
 }
 
-const STEP_COUNT = 8;
-
-const BUILD_MESSAGES = [
-  { delay: 0, text: "Understanding your problem..." },
-  { delay: 2000, text: "Designing the solution..." },
-  { delay: 5000, text: "Building what you need..." },
-  { delay: 8000, text: "Starting up..." },
-];
-
-function generateInsight(sol: SolutionResult): string {
-  const count = sol.components?.length ?? 0;
-  return `Your "${sol.name}" solution is live with ${count} component${count !== 1 ? "s" : ""}. `
-    + "It will get smarter as you use it.";
-}
-
-export default function Onboarding({ onComplete, onBrandingChange }: { onComplete: () => void; onBrandingChange: (cfg: BrandingConfig) => void }) {
+export default function Onboarding({ onComplete, onBrandingChange }: { onComplete: (session?: PendingSession) => void; onBrandingChange: (cfg: BrandingConfig) => void }) {
   const [step, setStep] = useState(0);
   const [persona, setPersona] = useState<Persona>(null);
-  const [buildStatus, setBuildStatus] = useState("");
-  const [solution, setSolution] = useState<SolutionResult | null>(null);
-  const [insight, setInsight] = useState("");
-  const [phase, setPhase] = useState<"steps" | "building" | "firstWin">("steps");
-  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
-  const selectedBranding = useRef<BrandingConfig | null>(null);
-
-  useEffect(() => {
-    return () => timersRef.current.forEach(clearTimeout);
-  }, []);
-
+  const [cliTools, setCliTools] = useState({ claude: false, codex: false });
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [selectedTool, setSelectedTool] = useState<CliTool>("claude");
+  const [phase, setPhase] = useState<"steps" | "proposing">("steps");
   const advance = useCallback(() => setStep((s) => s + 1), []);
   const back = useCallback(() => setStep((s) => Math.max(0, s - 1)), []);
-
-  function handleBrandingPreview(config: BrandingConfig) {
-    selectedBranding.current = config;
-    window.__CTX_BRANDING__ = config;
-    onBrandingChange(config);
-  }
-
-  async function handleUIComplete(config: BrandingConfig) {
-    handleBrandingPreview(config);
-    await fetchBranding();
-    advance();
-  }
 
   function handlePersonaSelect(p: "non-technical" | "power-user") {
     setPersona(p);
     advance();
   }
 
-  async function handleSolve(problem: string, name: string) {
-    setPhase("building");
+  function handleToolsDetected(tools: { claude: boolean; codex: boolean }) {
+    setCliTools(tools);
+  }
 
-    timersRef.current.forEach(clearTimeout);
-    timersRef.current = BUILD_MESSAGES.map(({ delay, text }) =>
-      setTimeout(() => setBuildStatus(text), delay),
-    );
+  async function handlePropose(problem: string, name: string, tool: CliTool) {
+    setSelectedTool(tool);
+    setPhase("proposing");
 
     try {
-      const res = await fetch("/api/solutions/build", {
+      const res = await fetch("/api/onboarding/propose", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ problem, name }),
+        body: JSON.stringify({ problem, name, tool }),
       });
-      if (!res.ok) throw new Error(`Build failed: ${res.status}`);
-      const sol: SolutionResult = await res.json();
-      setSolution(sol);
-      setInsight(generateInsight(sol));
-      completeOnboarding();
-      setPhase("firstWin");
+      if (!res.ok) throw new Error(`Propose failed: ${res.status}`);
+      const data: { sessionId: string; slug: string } = await res.json();
+      setSessionId(data.sessionId);
     } catch {
-      setBuildStatus("Something went wrong. Please try again.");
+      setPhase("steps");
     }
   }
 
+  function handleTransitionToDrawer() {
+    completeOnboarding();
+    onComplete(sessionId ? { id: sessionId, label: TOOL_LABELS[selectedTool] } : undefined);
+  }
+
   function skipOnboarding() {
-    if (selectedBranding.current) {
-      fetch("/api/branding", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(selectedBranding.current),
-      }).catch(() => { /* best-effort */ });
-    }
     completeOnboarding();
     onComplete();
   }
@@ -123,40 +87,34 @@ export default function Onboarding({ onComplete, onBrandingChange }: { onComplet
       case 1:
         return <AiProviderStep onComplete={advance} onBack={back} />;
       case 2:
-        return <UIPreferencesStep onComplete={handleUIComplete} onBack={back} onPreview={handleBrandingPreview} />;
-      case 3:
         return <LocalModelStep onComplete={advance} onBack={back} onSkip={advance} />;
+      case 3:
+        return <CliToolsStep onComplete={advance} onBack={back} onSkip={advance} onToolsDetected={handleToolsDetected} />;
       case 4:
-        return <CliToolsStep onComplete={advance} onBack={back} onSkip={advance} />;
-      case 5:
         return <RemoteAccessStep onComplete={advance} onBack={back} onSkip={advance} />;
-      case 6:
+      case 5:
         return <PersonaStep onSelect={handlePersonaSelect} onBack={back} />;
-      case 7:
-        return <ProblemStep persona={persona!} onSolve={handleSolve} onBack={back} />;
+      case 6:
+        return (
+          <ProblemStep
+            persona={persona!}
+            availableTools={cliTools}
+            onPropose={handlePropose}
+            onBack={back}
+          />
+        );
       default:
         return null;
     }
   }
 
-  if (phase === "building") {
+  if (phase === "proposing" && sessionId) {
     return (
-      <Box sx={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <BuildingStep status={buildStatus} />
-      </Box>
-    );
-  }
-
-  if (phase === "firstWin" && solution) {
-    return (
-      <Box sx={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", px: 3 }}>
-        <FirstWin
-          solution={solution}
-          insight={insight}
-          onExplore={() => onComplete()}
-          onSolveAnother={() => onComplete()}
-        />
-      </Box>
+      <ProposingStep
+        sessionId={sessionId}
+        tool={selectedTool}
+        onTransition={handleTransitionToDrawer}
+      />
     );
   }
 

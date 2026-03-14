@@ -34,12 +34,12 @@ export default function Workspace() {
       >
         <Tab label="Projects" />
         <Tab label="Solutions" />
-        <Tab label="Proposals" />
+        <Tab label="Proposals" data-tour="tour-proposals-tab" />
       </Tabs>
 
       <Suspense fallback={<Loading />}>
         {tab === "projects" && <Projects embedded />}
-        {tab === "solutions" && <Solutions embedded />}
+        {tab === "solutions" && <Solutions />}
         {tab === "proposals" && <Proposals />}
       </Suspense>
     </PageLayout>

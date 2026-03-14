@@ -15,11 +15,14 @@ import {
   IconButton,
   Tooltip,
   Snackbar,
+  LinearProgress,
+  useTheme,
+  alpha,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-import FolderIcon from "@mui/icons-material/Folder";
+import PsychologyIcon from "@mui/icons-material/Psychology";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import CodeIcon from "@mui/icons-material/Code";
 import EditNoteIcon from "@mui/icons-material/EditNote";
@@ -36,6 +39,18 @@ const IDE_ICONS: Record<string, React.ReactElement> = {
   windsurf: <AirIcon fontSize="small" />,
 };
 
+function timeAgo(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days}d ago`;
+  return new Date(iso).toLocaleDateString();
+}
+
 interface ProjectCardProps {
   project: ProjectRecord;
   ides: Array<{ name: string }>;
@@ -45,42 +60,75 @@ interface ProjectCardProps {
 
 function ProjectCard({ project, ides, onDelete, onLaunch }: ProjectCardProps) {
   const navigate = useNavigate();
+  const theme = useTheme();
   const config = JSON.parse(project.config || "{}");
 
+  // Derive a simple "maturity" signal from config
+  const goals: string[] = config.goals ?? [];
+  const maturity = goals.length > 3 ? "growing" : goals.length > 0 ? "learning" : "new";
+  const maturityColor =
+    maturity === "growing" ? "success" : maturity === "learning" ? "info" : "default";
+  const maturityProgress = maturity === "growing" ? 70 : maturity === "learning" ? 35 : 5;
+
   return (
-    <Card variant="outlined" sx={{ height: "100%" }}>
-      <CardActionArea onClick={() => navigate(`/projects/${project.id}`)}>
-        <CardContent>
-          <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
-            <FolderIcon color="primary" fontSize="small" />
-            <Typography variant="subtitle1" fontWeight={700}>
+    <Card
+      variant="outlined"
+      sx={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        borderColor: alpha(theme.palette.primary.main, 0.12),
+      }}
+    >
+      <CardActionArea
+        onClick={() => navigate(`/projects/${project.id}`)}
+        sx={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "stretch" }}
+      >
+        <CardContent sx={{ flex: 1 }}>
+          <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 0.5 }}>
+            <PsychologyIcon color="primary" fontSize="small" />
+            <Typography variant="subtitle1" fontWeight={700} sx={{ flex: 1 }}>
               {project.name}
             </Typography>
           </Stack>
+
           {project.description && (
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
               {project.description}
             </Typography>
           )}
-          <Stack direction="row" spacing={0.5} flexWrap="wrap" useFlexGap>
-            <Chip
-              label={project.status}
-              size="small"
-              color={project.status === "active" ? "success" : "default"}
-              variant="outlined"
+
+          <Typography variant="caption" color="text.secondary" fontFamily="monospace" noWrap>
+            {project.root_path}
+          </Typography>
+
+          {/* Maturity indicator */}
+          <Box sx={{ mt: 1.5 }}>
+            <Stack direction="row" justifyContent="space-between" sx={{ mb: 0.5 }}>
+              <Chip
+                label={maturity}
+                size="small"
+                color={maturityColor}
+                variant="outlined"
+                sx={{ height: 20, fontSize: "0.7rem" }}
+              />
+              <Typography variant="caption" color="text.secondary">
+                {timeAgo(project.updated_at)}
+              </Typography>
+            </Stack>
+            <LinearProgress
+              variant="determinate"
+              value={maturityProgress}
+              sx={{
+                height: 3,
+                borderRadius: 2,
+                bgcolor: alpha(theme.palette.primary.main, 0.06),
+              }}
             />
-            {config.projectType && (
-              <Chip label={config.projectType} size="small" variant="outlined" />
-            )}
-            <Chip
-              label={new Date(project.updated_at).toLocaleDateString()}
-              size="small"
-              variant="outlined"
-            />
-          </Stack>
+          </Box>
         </CardContent>
       </CardActionArea>
-      <CardActions sx={{ justifyContent: "space-between", pt: 0 }}>
+      <CardActions sx={{ justifyContent: "space-between", pt: 0, px: 1.5, pb: 1 }}>
         <Stack direction="row" spacing={0}>
           {ides.map((ide) => (
             <Tooltip key={ide.name} title={`Open in ${ide.name}`}>
@@ -207,15 +255,37 @@ export default function Projects({ embedded }: { embedded?: boolean }) {
           <CardGrid>
             {[1, 2, 3].map((i) => (
               <Box key={i}>
-                <Skeleton variant="rounded" height={120} />
+                <Skeleton variant="rounded" height={160} />
               </Box>
             ))}
           </CardGrid>
         </>
       ) : projects.length === 0 ? (
-        <Alert severity="info">
-          No projects yet. Create one to start building your intelligence layer.
-        </Alert>
+        <Box sx={{ textAlign: "center", py: 8 }}>
+          <PsychologyIcon sx={{ fontSize: 48, color: "text.secondary", mb: 2 }} />
+          <Typography variant="h6" color="text.secondary" sx={{ mb: 1 }}>
+            No projects yet
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            Create a project to start building an intelligence layer around your codebase.
+          </Typography>
+          <Stack direction="row" spacing={1} justifyContent="center">
+            <Button
+              variant="outlined"
+              startIcon={<FolderOpenIcon />}
+              onClick={() => setPickerOpen(true)}
+            >
+              Import existing folder
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={() => navigate("/projects/new")}
+            >
+              New Project
+            </Button>
+          </Stack>
+        </Box>
       ) : (
         <CardGrid>
           {projects.map((p) => (

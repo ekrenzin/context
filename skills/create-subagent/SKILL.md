@@ -207,6 +207,20 @@ Ask the AI to use your new agent:
 Use the my-agent subagent to [task description]
 ```
 
+## Headless Dispatch
+
+For autonomous, unsupervised agent work, use `ctx claude run` or the
+`cc_claude_run` MCP tool instead of IDE subagents. These run Claude in
+headless mode with auto-escalation to the user via the Command Center
+terminal action FAB if the agent gets stuck.
+
+```bash
+ctx claude run -s "You are a code reviewer" "Review the latest PR"
+ctx claude run -e --budget 3.0 "Run the test suite and fix failures"
+```
+
+See `rules/orchestration.md` for delegation patterns.
+
 ## Best Practices
 
 1. **Design focused subagents**: Each should excel at one specific task

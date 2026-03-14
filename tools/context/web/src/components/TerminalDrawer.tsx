@@ -5,6 +5,7 @@ import SmartToyIcon from "@mui/icons-material/SmartToy";
 import CodeIcon from "@mui/icons-material/Code";
 import { api } from "../lib/api";
 import { useDefaultCwd } from "../lib/use-default-cwd";
+import { randomWord } from "../lib/random-word";
 import { TerminalDrawerContent, type TerminalTab } from "./TerminalDrawerContent";
 
 const PRESETS = [
@@ -36,10 +37,19 @@ export interface TerminalDrawerHandle {
 interface Props {
   open: boolean;
   onClose: () => void;
+  highlight?: boolean;
 }
 
-export const TerminalDrawer = forwardRef<TerminalDrawerHandle, Props>(function TerminalDrawer({ open, onClose }, ref) {
+export const TerminalDrawer = forwardRef<TerminalDrawerHandle, Props>(function TerminalDrawer({ open, onClose, highlight }, ref) {
+  const [glowing, setGlowing] = useState(false);
   const [tabs, setTabs] = useState<TerminalTab[]>([]);
+
+  useEffect(() => {
+    if (!highlight || !open) return;
+    setGlowing(true);
+    const timer = setTimeout(() => setGlowing(false), 3000);
+    return () => clearTimeout(timer);
+  }, [highlight, open]);
   const [activeTab, setActiveTab] = useState(0);
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
   const attachedSessions = useRef(new Set<string>());
@@ -79,6 +89,7 @@ export const TerminalDrawer = forwardRef<TerminalDrawerHandle, Props>(function T
           id: s.id,
           label: s.label ?? labelForCommand(s.command),
           command: s.command,
+          nickname: randomWord(),
           exitCode: s.exitCode,
         }));
       if (restored.length === 0) return;
@@ -99,7 +110,7 @@ export const TerminalDrawer = forwardRef<TerminalDrawerHandle, Props>(function T
           return prev;
         }
         setActiveTab(prev.length);
-        return [...prev, { id: sessionId, label, command: label }];
+        return [...prev, { id: sessionId, label, command: label, nickname: randomWord() }];
       });
     },
   }));
@@ -125,7 +136,7 @@ export const TerminalDrawer = forwardRef<TerminalDrawerHandle, Props>(function T
   const handleSpawn = useCallback(async (command: string, args: string[], label: string) => {
     setMenuAnchor(null);
     const result = await api.spawnTerminal(command, args, defaultCwd);
-    const tab: TerminalTab = { id: result.id, label, command };
+    const tab: TerminalTab = { id: result.id, label, command, nickname: randomWord() };
     setTabs((prev) => {
       setActiveTab(prev.length);
       return [...prev, tab];
@@ -168,9 +179,10 @@ export const TerminalDrawer = forwardRef<TerminalDrawerHandle, Props>(function T
         maxWidth: open ? `${MAX_WIDTH_RATIO * 100}vw` : 0,
         pt: 8,
         overflow: "hidden",
-        borderLeft: open ? 1 : 0,
-        borderColor: "divider",
+        borderLeft: open ? (glowing ? 3 : 1) : 0,
+        borderColor: glowing ? "primary.main" : "divider",
         bgcolor: "background.paper",
+        boxShadow: glowing ? 6 : "none",
         transition: dragging
           ? "none"
           : (theme) =>

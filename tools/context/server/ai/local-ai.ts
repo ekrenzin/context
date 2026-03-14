@@ -11,7 +11,11 @@ import * as path from "path";
 import * as fs from "fs";
 import { createHash } from "crypto";
 import type { CtxMqttClient } from "ctx-mqtt";
-import { generate, isOllamaRunning } from "./ollama.js";
+import { generate, isOllamaRunning, listModels } from "./ollama.js";
+import { chat, runWithTools } from "./tool-runner.js";
+import { routePrompt } from "./router.js";
+import { detectCapabilities } from "./model-caps.js";
+import { complete } from "./client.js";
 import { getSetting, getProject } from "../db/index.js";
 import { setSessionLabel } from "../terminal/manager.js";
 
@@ -227,7 +231,7 @@ export function createLocalAi(mqtt: CtxMqttClient): LocalAiService {
     );
   }
 
-  // ── General prompt ─────────────────────────────────────────────
+  // ── General prompt (with routing + tool use) ───────────────────
 
   function listenPrompt(): void {
     const topic = "ctx/local-ai/prompt";
@@ -243,11 +247,42 @@ export function createLocalAi(mqtt: CtxMqttClient): LocalAiService {
         const replyTo: string = data.replyTo ?? "ctx/local-ai/reply";
         const maxTokens: number = data.maxTokens ?? 200;
         const temperature: number = data.temperature ?? 0.7;
+        const tools: boolean = data.tools ?? false;
+        const route: string | undefined = data.route;
 
         if (!prompt) return;
 
-        const model = getSetting("ollama_model");
-        if (!model || !(await isOllamaRunning())) {
+        const modelName = getSetting("ollama_model") ?? null;
+        const modelSize = await getModelSize(modelName);
+
+        const decision = await routePrompt(
+          { maxTokens, tools, route: route as "local" | "cloud" | "auto" | undefined },
+          modelName,
+          modelSize,
+        );
+
+        // Publish routing decision for observability
+        mqtt.publish("ctx/local-ai/routed", JSON.stringify({
+          backend: decision.backend,
+          reason: decision.reason,
+          model: modelName,
+          tokens: maxTokens,
+        }));
+
+        if (decision.backend === "cloud") {
+          const system = buildSystemPrompt();
+          const result = await complete({ prompt, system, maxTokens, temperature });
+          mqtt.publish(replyTo, JSON.stringify({
+            ok: true,
+            response: result.text,
+            backend: "cloud",
+            provider: result.provider,
+          }));
+          return;
+        }
+
+        // Local path
+        if (!modelName || !(await isOllamaRunning())) {
           mqtt.publish(replyTo, JSON.stringify({
             ok: false,
             error: "no model configured or ollama not running",
@@ -256,13 +291,38 @@ export function createLocalAi(mqtt: CtxMqttClient): LocalAiService {
         }
 
         const system = buildSystemPrompt();
-        const response = await generate(prompt, model, {
-          temperature,
-          maxTokens,
-          system,
-        });
 
-        mqtt.publish(replyTo, JSON.stringify({ ok: true, response }));
+        if (tools) {
+          const result = await runWithTools({
+            model: modelName,
+            modelSize,
+            messages: [
+              { role: "system", content: system },
+              { role: "user", content: prompt },
+            ],
+            tools: true,
+            temperature,
+            maxTokens,
+          });
+          mqtt.publish(replyTo, JSON.stringify({
+            ok: true,
+            response: result.response,
+            backend: "local",
+            toolCalls: result.toolCalls.length,
+            iterations: result.iterations,
+          }));
+        } else {
+          const response = await chat(prompt, modelName, {
+            temperature,
+            maxTokens,
+            system,
+          });
+          mqtt.publish(replyTo, JSON.stringify({
+            ok: true,
+            response,
+            backend: "local",
+          }));
+        }
       } catch (err) {
         mqtt.publish("ctx/local-ai/reply", JSON.stringify({
           ok: false,
@@ -270,6 +330,17 @@ export function createLocalAi(mqtt: CtxMqttClient): LocalAiService {
         }));
       }
     });
+  }
+
+  async function getModelSize(modelName: string | null): Promise<number> {
+    if (!modelName) return 0;
+    try {
+      const models = await listModels();
+      const found = models.find((m) => m.name === modelName);
+      return found?.size ?? 0;
+    } catch {
+      return 0;
+    }
   }
 
   // ── Helpers ─────────────────────────────────────────────────────

@@ -29,8 +29,12 @@ categories:
     label: Agent Memory
   - id: observability
     label: Observability
+  - id: git
+    label: Cross-Repo Git Coordination
   - id: dev
     label: Development Services
+  - id: security
+    label: Security Scanning
   - id: networking
     label: Networking
 
@@ -125,12 +129,91 @@ tools:
     description: Auto-synthesize agent skill files from recurring session workflow clusters
     risk: write
     agent_usage: Run after ctx profiler scan to detect workflow patterns and generate agent candidates
+  - path: ctx workspace git status
+    language: python
+    category: git
+    description: Show branch, dirty/clean, and ahead/behind for all repos
+    risk: read-only
+    agent_usage: Check git state across all repos before starting cross-repo work
+    skill: git-ops
+  - path: ctx workspace git fetch
+    language: python
+    category: git
+    description: Fetch all remotes across repos
+    risk: read-only
+    agent_usage: Fetch latest remote state before comparing branches
+    skill: git-ops
+  - path: ctx workspace git pull
+    language: python
+    category: git
+    description: Fast-forward pull all repos (skips dirty)
+    risk: write
+    agent_usage: Pull latest changes across repos before branching or merging
+    skill: git-ops
+  - path: ctx workspace git branch create
+    language: python
+    category: git
+    description: Create a branch across all repos
+    risk: write
+    agent_usage: Create coordinated feature branches across repos for cross-repo work
+    skill: git-ops
+  - path: ctx workspace git branch delete
+    language: python
+    category: git
+    description: Delete a branch across all repos
+    risk: write
+    agent_usage: Clean up feature branches after merge across repos
+    skill: git-ops
+  - path: ctx workspace git branch list
+    language: python
+    category: git
+    description: List branches in all repos
+    risk: read-only
+    agent_usage: Check which branches exist across repos
+    skill: git-ops
+  - path: ctx workspace git switch
+    language: python
+    category: git
+    description: Switch branch across all repos (skips dirty)
+    risk: write
+    agent_usage: Switch all repos to the same branch for coordinated development
+    skill: git-ops
+  - path: ctx claude run
+    language: python
+    category: agent
+    description: Run Claude Code headlessly on a task with auto-escalation to user on failure
+    risk: write
+    agent_usage: Dispatch a sub-agent to work autonomously on a task. Use --embedded to run in Command Center.
   - path: ctx workspace start
     language: python
     category: dev
     description: Launch all local dev services in background jobs
     risk: write
     agent_usage: Do not start directly -- prompt the user to run long-lived processes
+  - path: ctx security scan
+    language: python
+    category: security
+    description: Scan dependencies for known CVEs across workspace repos
+    risk: read-only
+    agent_usage: Run before deploying or as part of quality gates to detect dependency vulnerabilities
+    skill: security-scanner
+    dashboard: actions
+    dashboard_label: Security Scan
+    dashboard_icon: shield
+  - path: ctx security watch
+    language: python
+    category: security
+    description: Print recurring scan command for background CVE monitoring
+    risk: read-only
+    agent_usage: Suggest to user for continuous vulnerability monitoring
+    skill: security-scanner
+  - path: ctx security patch
+    language: python
+    category: security
+    description: Apply safe dependency upgrades for known CVEs (dry-run by default)
+    risk: write
+    agent_usage: Run after ctx security scan finds fixable vulnerabilities
+    skill: security-scanner
 
 actions: []
 

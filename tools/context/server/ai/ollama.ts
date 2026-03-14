@@ -133,6 +133,7 @@ export async function pullModel(
   }
 }
 
+/** @deprecated Use chat() from tool-runner.ts for new code. */
 export async function generate(
   prompt: string,
   model: string,

@@ -21,6 +21,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { useProject } from "../hooks/useProject";
 import { api, type ApprovalRecord } from "../lib/api";
+import { DiffView } from "../components/DiffView";
 
 function ApprovalCard({
   approval,
@@ -32,8 +33,6 @@ function ApprovalCard({
   const [expanded, setExpanded] = useState(false);
   const [acting, setActing] = useState(false);
   const { project } = useProject();
-  let diff: Record<string, unknown> = {};
-  try { diff = JSON.parse(approval.diff); } catch { /* empty */ }
 
   async function handleAction(action: "approve" | "reject") {
     if (!project) return;
@@ -76,11 +75,7 @@ function ApprovalCard({
         </Stack>
 
         <Collapse in={expanded}>
-          <Box sx={{ mt: 1.5, p: 1.5, bgcolor: "action.hover", borderRadius: 1, fontSize: "0.75rem" }}>
-            <pre style={{ margin: 0, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-              {JSON.stringify(diff, null, 2)}
-            </pre>
-          </Box>
+          <DiffView diff={approval.diff} />
         </Collapse>
 
         {approval.status === "pending" && (
