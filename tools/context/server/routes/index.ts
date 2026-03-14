@@ -32,6 +32,7 @@ import { registerMcpRegistryRoutes } from "./mcp-registry.js";
 import { registerProjectMcpRoutes } from "./project-mcp.js";
 import { registerKnowledgeRoutes } from "./knowledge.js";
 import { registerAgentEventRoutes } from "./agent-events.js";
+import { registerDeployRoutes } from "./deploy.js";
 import type { McpSync } from "../mcp-sync/index.js";
 
 import type { AgentScheduler } from "../agent-scheduler.js";

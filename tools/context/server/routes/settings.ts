@@ -20,6 +20,8 @@ const ALLOWED_KEYS = [
   "ui.colorMode",
   "terminal.open",
   "terminal.activeTab",
+  "cloudflare_api_token",
+  "cloudflare_account_id",
 ];
 
 export function registerSettingsRoutes(app: FastifyInstance): void {
