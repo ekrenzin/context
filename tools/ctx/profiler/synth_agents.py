@@ -13,7 +13,7 @@ from ctx.profiler.llm import call_agent
 
 AGENTS_DIR = root_dir() / ".cursor" / "skills" / "agents"
 CANDIDATES_PATH = root_dir() / "playground" / "output" / "agent-candidates.json"
-SYNTHESIS_MODEL = "gemini-3-flash"
+SYNTHESIS_MODEL = "claude-haiku-4-5-20251001"
 DEFAULT_LOOKBACK_DAYS = 30
 DEFAULT_MIN_SESSIONS = 3
 DEFAULT_TOP = 5
