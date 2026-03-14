@@ -3,6 +3,7 @@
 import typer
 
 from ctx.agent.commands import app as agent_app
+from ctx.aws.commands import app as aws_app
 from ctx.claude.commands import app as claude_app
 from ctx.proposals.commands import app as proposals_app
 from ctx.skills.commands import app as skills_app
@@ -22,6 +23,7 @@ app = typer.Typer(
 )
 
 app.add_typer(agent_app, name="agent", help="Agent event bus.")
+app.add_typer(aws_app, name="aws", help="AWS integration with Context-managed credentials.")
 app.add_typer(claude_app, name="claude", help="Run Claude Code headlessly with escalation.")
 app.add_typer(memory_app, name="memory", help="Persistent agent memory.")
 app.add_typer(profiler_app, name="profiler", help="Agent session transcript analysis.")

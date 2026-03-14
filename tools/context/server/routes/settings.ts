@@ -25,6 +25,9 @@ const ALLOWED_KEYS = [
   "terminal.drawerWidth",
   "cloudflare_api_token",
   "cloudflare_account_id",
+  "aws_access_key_id",
+  "aws_secret_access_key",
+  "aws_region",
 ];
 
 export function registerSettingsRoutes(app: FastifyInstance): void {

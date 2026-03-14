@@ -21,16 +21,42 @@ function parseSkillCounts(row: SessionRow): Record<string, number> {
 
 export function registerKnowledgeRoutes(app: FastifyInstance, root: string): void {
   // Memory entries with optional type filter and search
+  // Merges committed memory rows with pending candidates from learning table
   app.get("/api/knowledge/memory", async (req) => {
     const query = req.query as { type?: string; q?: string; limit?: string; offset?: string };
     const limit = query.limit ? parseInt(query.limit, 10) : 50;
     const offset = query.offset ? parseInt(query.offset, 10) : 0;
     const rows = listMemory({ type: query.type, limit, offset });
 
-    let filtered: MemoryRow[] = rows;
+    // Also surface pending memory candidates from the learning table
+    const candidates = listLearning({ type: "recommendation", limit: 50 });
+    const candidateRows: MemoryRow[] = candidates.map((c) => {
+      let title = c.id;
+      let content = c.content;
+      let tags = "";
+      try {
+        const parsed = JSON.parse(c.content);
+        title = parsed.filename ?? c.id;
+        content = parsed.content ?? c.content;
+        tags = parsed.category ?? "";
+      } catch { /* use raw content */ }
+      return {
+        id: c.id,
+        type: "pending",
+        title,
+        content,
+        tags,
+        repo: null,
+        ticket: null,
+        created_at: c.created_at,
+        updated_at: c.created_at,
+      } as MemoryRow;
+    });
+
+    let all = [...rows, ...candidateRows];
     if (query.q) {
       const q = query.q.toLowerCase();
-      filtered = rows.filter(
+      all = all.filter(
         (r) =>
           r.title.toLowerCase().includes(q) ||
           r.content.toLowerCase().includes(q) ||
@@ -38,7 +64,7 @@ export function registerKnowledgeRoutes(app: FastifyInstance, root: string): voi
       );
     }
 
-    return { items: filtered, total: filtered.length };
+    return { items: all, total: all.length };
   });
 
   // Learning entries with optional type filter

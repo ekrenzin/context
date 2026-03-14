@@ -1,0 +1,753 @@
+[     712ms] [ERROR] Warning: Failed %s type: %s%s prop The prop `sm` of `Grid` can only be used together with the `item` prop. 
+    at Grid2 (http://127.0.0.1:19471/node_modules/.vite/deps/@mui_material.js?v=6bd0873f:21640:22)
+    at Dashboard (http://127.0.0.1:19471/src/components/viz/Dashboard.tsx?t=1773529020705:87:37)
+    at Suspense
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at PageLayout (http://127.0.0.1:19471/src/components/PageLayout.tsx:20:3)
+    at Dashboard (http://127.0.0.1:19471/src/views/Insights.tsx?t=1773529354398:65:31)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at RenderedRoute (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:6355:26)
+    at Routes (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7222:3)
+    at Suspense
+    at main
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at AppLayout (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:132:22)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at ActiveProjectProvider (http://127.0.0.1:19471/src/hooks/useActiveProject.tsx?t=1773528058795:45:41)
+    at MqttProvider (http://127.0.0.1:19471/src/hooks/useMqtt.tsx:36:32)
+    at AuthProvider (http://127.0.0.1:19471/src/hooks/useAuth.tsx:21:32)
+    at TunnelAuthProvider (http://127.0.0.1:19471/src/hooks/useTunnelAuth.tsx:36:38)
+    at DefaultPropsProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5977:3)
+    at RtlProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5953:3)
+    at ThemeProvider2 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5909:5)
+    at ThemeProvider3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:6104:5)
+    at ThemeProviderNoVars (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:277:10)
+    at ThemeProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:359:3)
+    at App (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:528:27)
+    at Router (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7152:13)
+    at BrowserRouter (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:10363:3) @ http://127.0.0.1:19471/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=6bd0873f:63
+[     712ms] [ERROR] Warning: Failed %s type: %s%s prop The prop `xs` of `Grid` can only be used together with the `item` prop. 
+    at Grid2 (http://127.0.0.1:19471/node_modules/.vite/deps/@mui_material.js?v=6bd0873f:21640:22)
+    at Dashboard (http://127.0.0.1:19471/src/components/viz/Dashboard.tsx?t=1773529020705:87:37)
+    at Suspense
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at PageLayout (http://127.0.0.1:19471/src/components/PageLayout.tsx:20:3)
+    at Dashboard (http://127.0.0.1:19471/src/views/Insights.tsx?t=1773529354398:65:31)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at RenderedRoute (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:6355:26)
+    at Routes (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7222:3)
+    at Suspense
+    at main
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at AppLayout (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:132:22)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at ActiveProjectProvider (http://127.0.0.1:19471/src/hooks/useActiveProject.tsx?t=1773528058795:45:41)
+    at MqttProvider (http://127.0.0.1:19471/src/hooks/useMqtt.tsx:36:32)
+    at AuthProvider (http://127.0.0.1:19471/src/hooks/useAuth.tsx:21:32)
+    at TunnelAuthProvider (http://127.0.0.1:19471/src/hooks/useTunnelAuth.tsx:36:38)
+    at DefaultPropsProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5977:3)
+    at RtlProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5953:3)
+    at ThemeProvider2 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5909:5)
+    at ThemeProvider3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:6104:5)
+    at ThemeProviderNoVars (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:277:10)
+    at ThemeProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:359:3)
+    at App (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:528:27)
+    at Router (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7152:13)
+    at BrowserRouter (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:10363:3) @ http://127.0.0.1:19471/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=6bd0873f:63
+[     858ms] [ERROR] Warning: Failed %s type: %s%s prop The prop `md` of `Grid` can only be used together with the `item` prop. 
+    at Grid2 (http://127.0.0.1:19471/node_modules/.vite/deps/@mui_material.js?v=6bd0873f:21640:22)
+    at Dashboard (http://127.0.0.1:19471/src/components/viz/Dashboard.tsx?t=1773529020705:87:37)
+    at Suspense
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at PageLayout (http://127.0.0.1:19471/src/components/PageLayout.tsx:20:3)
+    at Dashboard (http://127.0.0.1:19471/src/views/Insights.tsx?t=1773529354398:65:31)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at RenderedRoute (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:6355:26)
+    at Routes (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7222:3)
+    at Suspense
+    at main
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at AppLayout (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:132:22)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at ActiveProjectProvider (http://127.0.0.1:19471/src/hooks/useActiveProject.tsx?t=1773528058795:45:41)
+    at MqttProvider (http://127.0.0.1:19471/src/hooks/useMqtt.tsx:36:32)
+    at AuthProvider (http://127.0.0.1:19471/src/hooks/useAuth.tsx:21:32)
+    at TunnelAuthProvider (http://127.0.0.1:19471/src/hooks/useTunnelAuth.tsx:36:38)
+    at DefaultPropsProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5977:3)
+    at RtlProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5953:3)
+    at ThemeProvider2 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5909:5)
+    at ThemeProvider3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:6104:5)
+    at ThemeProviderNoVars (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:277:10)
+    at ThemeProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:359:3)
+    at App (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:528:27)
+    at Router (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7152:13)
+    at BrowserRouter (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:10363:3) @ http://127.0.0.1:19471/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=6bd0873f:63
+[     862ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s 2026-03-08 
+    at svg
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at ActivityHeatmap (http://127.0.0.1:19471/src/components/viz/ActivityHeatmap.tsx:28:43)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at Dashboard (http://127.0.0.1:19471/src/components/viz/Dashboard.tsx?t=1773529020705:87:37)
+    at Suspense
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at PageLayout (http://127.0.0.1:19471/src/components/PageLayout.tsx:20:3)
+    at Dashboard (http://127.0.0.1:19471/src/views/Insights.tsx?t=1773529354398:65:31)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at RenderedRoute (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:6355:26)
+    at Routes (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7222:3)
+    at Suspense
+    at main
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at AppLayout (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:132:22)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at ActiveProjectProvider (http://127.0.0.1:19471/src/hooks/useActiveProject.tsx?t=1773528058795:45:41)
+    at MqttProvider (http://127.0.0.1:19471/src/hooks/useMqtt.tsx:36:32)
+    at AuthProvider (http://127.0.0.1:19471/src/hooks/useAuth.tsx:21:32)
+    at TunnelAuthProvider (http://127.0.0.1:19471/src/hooks/useTunnelAuth.tsx:36:38)
+    at DefaultPropsProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5977:3)
+    at RtlProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5953:3)
+    at ThemeProvider2 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5909:5)
+    at ThemeProvider3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:6104:5)
+    at ThemeProviderNoVars (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:277:10)
+    at ThemeProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:359:3)
+    at App (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:528:27)
+    at Router (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7152:13)
+    at BrowserRouter (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:10363:3) @ http://127.0.0.1:19471/node_modules/.vite/deps/chunk-SXRIVT2P.js?v=6bd0873f:520
+[     913ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://127.0.0.1:19471/api/knowledge/narrative?days=7:0
+[     963ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s 2026-03-08 
+    at svg
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at ActivityHeatmap (http://127.0.0.1:19471/src/components/viz/ActivityHeatmap.tsx:28:43)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at Dashboard (http://127.0.0.1:19471/src/components/viz/Dashboard.tsx?t=1773529020705:87:37)
+    at Suspense
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at PageLayout (http://127.0.0.1:19471/src/components/PageLayout.tsx:20:3)
+    at Dashboard (http://127.0.0.1:19471/src/views/Insights.tsx?t=1773529354398:65:31)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at RenderedRoute (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:6355:26)
+    at Routes (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7222:3)
+    at Suspense
+    at main
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at AppLayout (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:132:22)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at ActiveProjectProvider (http://127.0.0.1:19471/src/hooks/useActiveProject.tsx?t=1773528058795:45:41)
+    at MqttProvider (http://127.0.0.1:19471/src/hooks/useMqtt.tsx:36:32)
+    at AuthProvider (http://127.0.0.1:19471/src/hooks/useAuth.tsx:21:32)
+    at TunnelAuthProvider (http://127.0.0.1:19471/src/hooks/useTunnelAuth.tsx:36:38)
+    at DefaultPropsProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5977:3)
+    at RtlProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5953:3)
+    at ThemeProvider2 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5909:5)
+    at ThemeProvider3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:6104:5)
+    at ThemeProviderNoVars (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:277:10)
+    at ThemeProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:359:3)
+    at App (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:528:27)
+    at Router (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7152:13)
+    at BrowserRouter (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:10363:3) @ http://127.0.0.1:19471/node_modules/.vite/deps/chunk-SXRIVT2P.js?v=6bd0873f:520
+[    1045ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://127.0.0.1:19471/api/knowledge/narrative?days=7:0
+[    1095ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s 2026-03-08 
+    at svg
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at ActivityHeatmap (http://127.0.0.1:19471/src/components/viz/ActivityHeatmap.tsx:28:43)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at Dashboard (http://127.0.0.1:19471/src/components/viz/Dashboard.tsx?t=1773529020705:87:37)
+    at Suspense
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at PageLayout (http://127.0.0.1:19471/src/components/PageLayout.tsx:20:3)
+    at Dashboard (http://127.0.0.1:19471/src/views/Insights.tsx?t=1773529354398:65:31)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at RenderedRoute (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:6355:26)
+    at Routes (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7222:3)
+    at Suspense
+    at main
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at AppLayout (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:132:22)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at ActiveProjectProvider (http://127.0.0.1:19471/src/hooks/useActiveProject.tsx?t=1773528058795:45:41)
+    at MqttProvider (http://127.0.0.1:19471/src/hooks/useMqtt.tsx:36:32)
+    at AuthProvider (http://127.0.0.1:19471/src/hooks/useAuth.tsx:21:32)
+    at TunnelAuthProvider (http://127.0.0.1:19471/src/hooks/useTunnelAuth.tsx:36:38)
+    at DefaultPropsProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5977:3)
+    at RtlProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5953:3)
+    at ThemeProvider2 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5909:5)
+    at ThemeProvider3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:6104:5)
+    at ThemeProviderNoVars (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:277:10)
+    at ThemeProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:359:3)
+    at App (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:528:27)
+    at Router (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7152:13)
+    at BrowserRouter (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:10363:3) @ http://127.0.0.1:19471/node_modules/.vite/deps/chunk-SXRIVT2P.js?v=6bd0873f:520
+[    1137ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s 2026-03-08 
+    at svg
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at ActivityHeatmap (http://127.0.0.1:19471/src/components/viz/ActivityHeatmap.tsx:28:43)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at Dashboard (http://127.0.0.1:19471/src/components/viz/Dashboard.tsx?t=1773529020705:87:37)
+    at Suspense
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at PageLayout (http://127.0.0.1:19471/src/components/PageLayout.tsx:20:3)
+    at Dashboard (http://127.0.0.1:19471/src/views/Insights.tsx?t=1773529354398:65:31)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at RenderedRoute (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:6355:26)
+    at Routes (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7222:3)
+    at Suspense
+    at main
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at AppLayout (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:132:22)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at ActiveProjectProvider (http://127.0.0.1:19471/src/hooks/useActiveProject.tsx?t=1773528058795:45:41)
+    at MqttProvider (http://127.0.0.1:19471/src/hooks/useMqtt.tsx:36:32)
+    at AuthProvider (http://127.0.0.1:19471/src/hooks/useAuth.tsx:21:32)
+    at TunnelAuthProvider (http://127.0.0.1:19471/src/hooks/useTunnelAuth.tsx:36:38)
+    at DefaultPropsProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5977:3)
+    at RtlProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5953:3)
+    at ThemeProvider2 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5909:5)
+    at ThemeProvider3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:6104:5)
+    at ThemeProviderNoVars (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:277:10)
+    at ThemeProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:359:3)
+    at App (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:528:27)
+    at Router (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7152:13)
+    at BrowserRouter (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:10363:3) @ http://127.0.0.1:19471/node_modules/.vite/deps/chunk-SXRIVT2P.js?v=6bd0873f:520
+[    1258ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s 2026-03-08 
+    at svg
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at ActivityHeatmap (http://127.0.0.1:19471/src/components/viz/ActivityHeatmap.tsx:28:43)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at Dashboard (http://127.0.0.1:19471/src/components/viz/Dashboard.tsx?t=1773529020705:87:37)
+    at Suspense
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at PageLayout (http://127.0.0.1:19471/src/components/PageLayout.tsx:20:3)
+    at Dashboard (http://127.0.0.1:19471/src/views/Insights.tsx?t=1773529354398:65:31)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at RenderedRoute (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:6355:26)
+    at Routes (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7222:3)
+    at Suspense
+    at main
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at AppLayout (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:132:22)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at ActiveProjectProvider (http://127.0.0.1:19471/src/hooks/useActiveProject.tsx?t=1773528058795:45:41)
+    at MqttProvider (http://127.0.0.1:19471/src/hooks/useMqtt.tsx:36:32)
+    at AuthProvider (http://127.0.0.1:19471/src/hooks/useAuth.tsx:21:32)
+    at TunnelAuthProvider (http://127.0.0.1:19471/src/hooks/useTunnelAuth.tsx:36:38)
+    at DefaultPropsProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5977:3)
+    at RtlProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5953:3)
+    at ThemeProvider2 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5909:5)
+    at ThemeProvider3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:6104:5)
+    at ThemeProviderNoVars (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:277:10)
+    at ThemeProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:359:3)
+    at App (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:528:27)
+    at Router (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7152:13)
+    at BrowserRouter (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:10363:3) @ http://127.0.0.1:19471/node_modules/.vite/deps/chunk-SXRIVT2P.js?v=6bd0873f:520
+[   14122ms] [ERROR] Warning: Failed %s type: %s%s prop The prop `sm` of `Grid` can only be used together with the `item` prop. 
+    at Grid2 (http://127.0.0.1:19471/node_modules/.vite/deps/@mui_material.js?v=6bd0873f:21640:22)
+    at Dashboard (http://127.0.0.1:19471/src/components/viz/Dashboard.tsx?t=1773529020705:87:37)
+    at Suspense
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at PageLayout (http://127.0.0.1:19471/src/components/PageLayout.tsx:20:3)
+    at Dashboard (http://127.0.0.1:19471/src/views/Insights.tsx?t=1773529354398:65:31)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at RenderedRoute (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:6355:26)
+    at Routes (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7222:3)
+    at Suspense
+    at main
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at AppLayout (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:132:22)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at ActiveProjectProvider (http://127.0.0.1:19471/src/hooks/useActiveProject.tsx?t=1773528058795:45:41)
+    at MqttProvider (http://127.0.0.1:19471/src/hooks/useMqtt.tsx:36:32)
+    at AuthProvider (http://127.0.0.1:19471/src/hooks/useAuth.tsx:21:32)
+    at TunnelAuthProvider (http://127.0.0.1:19471/src/hooks/useTunnelAuth.tsx:36:38)
+    at DefaultPropsProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5977:3)
+    at RtlProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5953:3)
+    at ThemeProvider2 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5909:5)
+    at ThemeProvider3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:6104:5)
+    at ThemeProviderNoVars (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:277:10)
+    at ThemeProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:359:3)
+    at App (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:528:27)
+    at Router (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7152:13)
+    at BrowserRouter (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:10363:3) @ http://127.0.0.1:19471/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=6bd0873f:63
+[   14122ms] [ERROR] Warning: Failed %s type: %s%s prop The prop `xs` of `Grid` can only be used together with the `item` prop. 
+    at Grid2 (http://127.0.0.1:19471/node_modules/.vite/deps/@mui_material.js?v=6bd0873f:21640:22)
+    at Dashboard (http://127.0.0.1:19471/src/components/viz/Dashboard.tsx?t=1773529020705:87:37)
+    at Suspense
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at PageLayout (http://127.0.0.1:19471/src/components/PageLayout.tsx:20:3)
+    at Dashboard (http://127.0.0.1:19471/src/views/Insights.tsx?t=1773529354398:65:31)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at RenderedRoute (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:6355:26)
+    at Routes (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7222:3)
+    at Suspense
+    at main
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at AppLayout (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:132:22)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at ActiveProjectProvider (http://127.0.0.1:19471/src/hooks/useActiveProject.tsx?t=1773528058795:45:41)
+    at MqttProvider (http://127.0.0.1:19471/src/hooks/useMqtt.tsx:36:32)
+    at AuthProvider (http://127.0.0.1:19471/src/hooks/useAuth.tsx:21:32)
+    at TunnelAuthProvider (http://127.0.0.1:19471/src/hooks/useTunnelAuth.tsx:36:38)
+    at DefaultPropsProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5977:3)
+    at RtlProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5953:3)
+    at ThemeProvider2 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5909:5)
+    at ThemeProvider3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:6104:5)
+    at ThemeProviderNoVars (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:277:10)
+    at ThemeProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:359:3)
+    at App (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:528:27)
+    at Router (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7152:13)
+    at BrowserRouter (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:10363:3) @ http://127.0.0.1:19471/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=6bd0873f:63
+[   14381ms] [ERROR] Warning: Failed %s type: %s%s prop The prop `md` of `Grid` can only be used together with the `item` prop. 
+    at Grid2 (http://127.0.0.1:19471/node_modules/.vite/deps/@mui_material.js?v=6bd0873f:21640:22)
+    at Dashboard (http://127.0.0.1:19471/src/components/viz/Dashboard.tsx?t=1773529020705:87:37)
+    at Suspense
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at PageLayout (http://127.0.0.1:19471/src/components/PageLayout.tsx:20:3)
+    at Dashboard (http://127.0.0.1:19471/src/views/Insights.tsx?t=1773529354398:65:31)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at RenderedRoute (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:6355:26)
+    at Routes (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7222:3)
+    at Suspense
+    at main
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at AppLayout (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:132:22)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at ActiveProjectProvider (http://127.0.0.1:19471/src/hooks/useActiveProject.tsx?t=1773528058795:45:41)
+    at MqttProvider (http://127.0.0.1:19471/src/hooks/useMqtt.tsx:36:32)
+    at AuthProvider (http://127.0.0.1:19471/src/hooks/useAuth.tsx:21:32)
+    at TunnelAuthProvider (http://127.0.0.1:19471/src/hooks/useTunnelAuth.tsx:36:38)
+    at DefaultPropsProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5977:3)
+    at RtlProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5953:3)
+    at ThemeProvider2 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5909:5)
+    at ThemeProvider3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:6104:5)
+    at ThemeProviderNoVars (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:277:10)
+    at ThemeProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:359:3)
+    at App (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:528:27)
+    at Router (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7152:13)
+    at BrowserRouter (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:10363:3) @ http://127.0.0.1:19471/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=6bd0873f:63
+[   14385ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s 2026-03-08 
+    at svg
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at ActivityHeatmap (http://127.0.0.1:19471/src/components/viz/ActivityHeatmap.tsx:28:43)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at Dashboard (http://127.0.0.1:19471/src/components/viz/Dashboard.tsx?t=1773529020705:87:37)
+    at Suspense
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at PageLayout (http://127.0.0.1:19471/src/components/PageLayout.tsx:20:3)
+    at Dashboard (http://127.0.0.1:19471/src/views/Insights.tsx?t=1773529354398:65:31)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at RenderedRoute (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:6355:26)
+    at Routes (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7222:3)
+    at Suspense
+    at main
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at AppLayout (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:132:22)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at ActiveProjectProvider (http://127.0.0.1:19471/src/hooks/useActiveProject.tsx?t=1773528058795:45:41)
+    at MqttProvider (http://127.0.0.1:19471/src/hooks/useMqtt.tsx:36:32)
+    at AuthProvider (http://127.0.0.1:19471/src/hooks/useAuth.tsx:21:32)
+    at TunnelAuthProvider (http://127.0.0.1:19471/src/hooks/useTunnelAuth.tsx:36:38)
+    at DefaultPropsProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5977:3)
+    at RtlProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5953:3)
+    at ThemeProvider2 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5909:5)
+    at ThemeProvider3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:6104:5)
+    at ThemeProviderNoVars (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:277:10)
+    at ThemeProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:359:3)
+    at App (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:528:27)
+    at Router (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7152:13)
+    at BrowserRouter (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:10363:3) @ http://127.0.0.1:19471/node_modules/.vite/deps/chunk-SXRIVT2P.js?v=6bd0873f:520
+[   14425ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://127.0.0.1:19471/api/knowledge/narrative?days=7:0
+[   14475ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s 2026-03-08 
+    at svg
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at ActivityHeatmap (http://127.0.0.1:19471/src/components/viz/ActivityHeatmap.tsx:28:43)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at Dashboard (http://127.0.0.1:19471/src/components/viz/Dashboard.tsx?t=1773529020705:87:37)
+    at Suspense
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at PageLayout (http://127.0.0.1:19471/src/components/PageLayout.tsx:20:3)
+    at Dashboard (http://127.0.0.1:19471/src/views/Insights.tsx?t=1773529354398:65:31)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at RenderedRoute (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:6355:26)
+    at Routes (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7222:3)
+    at Suspense
+    at main
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at AppLayout (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:132:22)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at ActiveProjectProvider (http://127.0.0.1:19471/src/hooks/useActiveProject.tsx?t=1773528058795:45:41)
+    at MqttProvider (http://127.0.0.1:19471/src/hooks/useMqtt.tsx:36:32)
+    at AuthProvider (http://127.0.0.1:19471/src/hooks/useAuth.tsx:21:32)
+    at TunnelAuthProvider (http://127.0.0.1:19471/src/hooks/useTunnelAuth.tsx:36:38)
+    at DefaultPropsProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5977:3)
+    at RtlProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5953:3)
+    at ThemeProvider2 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5909:5)
+    at ThemeProvider3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:6104:5)
+    at ThemeProviderNoVars (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:277:10)
+    at ThemeProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:359:3)
+    at App (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:528:27)
+    at Router (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7152:13)
+    at BrowserRouter (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:10363:3) @ http://127.0.0.1:19471/node_modules/.vite/deps/chunk-SXRIVT2P.js?v=6bd0873f:520
+[   14573ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://127.0.0.1:19471/api/knowledge/narrative?days=7:0
+[   14742ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s 2026-03-08 
+    at svg
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at ActivityHeatmap (http://127.0.0.1:19471/src/components/viz/ActivityHeatmap.tsx:28:43)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at Dashboard (http://127.0.0.1:19471/src/components/viz/Dashboard.tsx?t=1773529020705:87:37)
+    at Suspense
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at PageLayout (http://127.0.0.1:19471/src/components/PageLayout.tsx:20:3)
+    at Dashboard (http://127.0.0.1:19471/src/views/Insights.tsx?t=1773529354398:65:31)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at RenderedRoute (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:6355:26)
+    at Routes (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7222:3)
+    at Suspense
+    at main
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at AppLayout (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:132:22)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at ActiveProjectProvider (http://127.0.0.1:19471/src/hooks/useActiveProject.tsx?t=1773528058795:45:41)
+    at MqttProvider (http://127.0.0.1:19471/src/hooks/useMqtt.tsx:36:32)
+    at AuthProvider (http://127.0.0.1:19471/src/hooks/useAuth.tsx:21:32)
+    at TunnelAuthProvider (http://127.0.0.1:19471/src/hooks/useTunnelAuth.tsx:36:38)
+    at DefaultPropsProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5977:3)
+    at RtlProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5953:3)
+    at ThemeProvider2 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5909:5)
+    at ThemeProvider3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:6104:5)
+    at ThemeProviderNoVars (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:277:10)
+    at ThemeProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:359:3)
+    at App (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:528:27)
+    at Router (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7152:13)
+    at BrowserRouter (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:10363:3) @ http://127.0.0.1:19471/node_modules/.vite/deps/chunk-SXRIVT2P.js?v=6bd0873f:520
+[   14781ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s 2026-03-08 
+    at svg
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at ActivityHeatmap (http://127.0.0.1:19471/src/components/viz/ActivityHeatmap.tsx:28:43)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at Dashboard (http://127.0.0.1:19471/src/components/viz/Dashboard.tsx?t=1773529020705:87:37)
+    at Suspense
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at PageLayout (http://127.0.0.1:19471/src/components/PageLayout.tsx:20:3)
+    at Dashboard (http://127.0.0.1:19471/src/views/Insights.tsx?t=1773529354398:65:31)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at RenderedRoute (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:6355:26)
+    at Routes (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7222:3)
+    at Suspense
+    at main
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at AppLayout (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:132:22)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at ActiveProjectProvider (http://127.0.0.1:19471/src/hooks/useActiveProject.tsx?t=1773528058795:45:41)
+    at MqttProvider (http://127.0.0.1:19471/src/hooks/useMqtt.tsx:36:32)
+    at AuthProvider (http://127.0.0.1:19471/src/hooks/useAuth.tsx:21:32)
+    at TunnelAuthProvider (http://127.0.0.1:19471/src/hooks/useTunnelAuth.tsx:36:38)
+    at DefaultPropsProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5977:3)
+    at RtlProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5953:3)
+    at ThemeProvider2 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5909:5)
+    at ThemeProvider3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:6104:5)
+    at ThemeProviderNoVars (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:277:10)
+    at ThemeProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:359:3)
+    at App (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:528:27)
+    at Router (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7152:13)
+    at BrowserRouter (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:10363:3) @ http://127.0.0.1:19471/node_modules/.vite/deps/chunk-SXRIVT2P.js?v=6bd0873f:520
+[   14825ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s 2026-03-08 
+    at svg
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at ActivityHeatmap (http://127.0.0.1:19471/src/components/viz/ActivityHeatmap.tsx:28:43)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at Dashboard (http://127.0.0.1:19471/src/components/viz/Dashboard.tsx?t=1773529020705:87:37)
+    at Suspense
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at PageLayout (http://127.0.0.1:19471/src/components/PageLayout.tsx:20:3)
+    at Dashboard (http://127.0.0.1:19471/src/views/Insights.tsx?t=1773529354398:65:31)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at RenderedRoute (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:6355:26)
+    at Routes (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7222:3)
+    at Suspense
+    at main
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at div
+    at http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:1605:45
+    at Box3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:4382:19)
+    at AppLayout (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:132:22)
+    at ErrorBoundary (http://127.0.0.1:19471/src/components/ErrorBoundary.tsx:12:5)
+    at ActiveProjectProvider (http://127.0.0.1:19471/src/hooks/useActiveProject.tsx?t=1773528058795:45:41)
+    at MqttProvider (http://127.0.0.1:19471/src/hooks/useMqtt.tsx:36:32)
+    at AuthProvider (http://127.0.0.1:19471/src/hooks/useAuth.tsx:21:32)
+    at TunnelAuthProvider (http://127.0.0.1:19471/src/hooks/useTunnelAuth.tsx:36:38)
+    at DefaultPropsProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5977:3)
+    at RtlProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5953:3)
+    at ThemeProvider2 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:5909:5)
+    at ThemeProvider3 (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-7ZH3OZQN.js?v=6bd0873f:6104:5)
+    at ThemeProviderNoVars (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:277:10)
+    at ThemeProvider (http://127.0.0.1:19471/node_modules/.vite/deps/chunk-WN7L3WUH.js?v=6bd0873f:359:3)
+    at App (http://127.0.0.1:19471/src/App.tsx?t=1773529354398:528:27)
+    at Router (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:7152:13)
+    at BrowserRouter (http://127.0.0.1:19471/node_modules/.vite/deps/react-router-dom.js?v=6bd0873f:10363:3) @ http://127.0.0.1:19471/node_modules/.vite/deps/chunk-SXRIVT2P.js?v=6bd0873f:520
+[   74737ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:19471/api/terminal/e1a2b069-b0da-44f7-9d9c-ca0f80a3c20e:0
+[   84755ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:19471/api/terminal/e1a2b069-b0da-44f7-9d9c-ca0f80a3c20e:0
+[   94741ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:19471/api/terminal/e1a2b069-b0da-44f7-9d9c-ca0f80a3c20e:0
+[  104738ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:19471/api/terminal/e1a2b069-b0da-44f7-9d9c-ca0f80a3c20e:0
+[  114738ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:19471/api/terminal/e1a2b069-b0da-44f7-9d9c-ca0f80a3c20e:0
+[  124741ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:19471/api/terminal/e1a2b069-b0da-44f7-9d9c-ca0f80a3c20e:0
+[  134737ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:19471/api/terminal/e1a2b069-b0da-44f7-9d9c-ca0f80a3c20e:0
+[  144741ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:19471/api/terminal/e1a2b069-b0da-44f7-9d9c-ca0f80a3c20e:0
+[  154739ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:19471/api/terminal/e1a2b069-b0da-44f7-9d9c-ca0f80a3c20e:0

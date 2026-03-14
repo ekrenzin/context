@@ -76,7 +76,7 @@ export default function Dashboard() {
         }
       >
         <Box sx={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
-          <Tabs value={tabIndex} onChange={handleTabChange} variant="fullWidth" sx={{ mb: 2, flexShrink: 0 }}>
+          <Tabs value={tabIndex} onChange={handleTabChange} sx={{ mb: 2, flexShrink: 0 }}>
             <Tab label="Overview" />
             <Tab label="Skill Graph" />
             <Tab label="Session Map" />
@@ -84,7 +84,7 @@ export default function Dashboard() {
             <Tab label="System" />
           </Tabs>
 
-          <Box sx={{ display: "flex", flex: 1, minHeight: 0, width: "100%" }}>
+          <Box sx={{ display: "flex", flex: 1, minHeight: 0 }}>
             <Suspense fallback={<Loading />}>
               {tab === "overview" && <Overview generation={generation} />}
               {tab === "skills" && <SkillGraph />}
