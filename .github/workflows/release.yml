@@ -35,15 +35,15 @@ jobs:
 
       - name: Install command-center
         run: npm install
-        working-directory: tools/command-center
+        working-directory: tools/context
 
       - name: Build
         run: npm run build
-        working-directory: tools/command-center
+        working-directory: tools/context
 
       - name: Package
         run: npx electron-builder --${{ matrix.platform }}
-        working-directory: tools/command-center
+        working-directory: tools/context
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -51,7 +51,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: release-${{ matrix.platform }}
-          path: tools/command-center/release/*
+          path: tools/context/release/*
 
   upload-r2:
     needs: build
