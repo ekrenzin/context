@@ -19,7 +19,7 @@ export async function nib(
   timeoutMs = 30_000,
 ): Promise<NibResult> {
   return new Promise((res, rej) => {
-    execFile(NIB_BIN, args, { timeout: timeoutMs }, (err, stdout, stderr) => {
+    execFile(NIB_BIN, args, { timeout: timeoutMs, maxBuffer: 50 * 1024 * 1024 }, (err, stdout, stderr) => {
       if (err && !stdout) {
         rej(new Error(`nib failed: ${err.message}\n${stderr}`));
         return;
