@@ -1,135 +1,146 @@
 import { spawn, execSync, type ChildProcess } from "child_process";
-import net from "net";
+import path from "path";
 import os from "os";
 
-let child: ChildProcess | null = null;
-
-const GUACD_HOST = "127.0.0.1";
-const GUACD_PORT = 4822;
-
 export type ProgressCallback = (phase: string, message: string) => void;
-
 const noop: ProgressCallback = () => {};
 
-async function isListening(host: string, port: number): Promise<boolean> {
-  return new Promise((resolve) => {
-    const sock = net.createConnection({ host, port }, () => {
-      sock.destroy();
-      resolve(true);
-    });
-    sock.on("error", () => resolve(false));
-    sock.setTimeout(1000, () => {
-      sock.destroy();
-      resolve(false);
-    });
-  });
+function findPython(root: string): string {
+  const isWin = process.platform === "win32";
+  return isWin
+    ? path.join(root, "tools", ".venv", "Scripts", "python.exe")
+    : path.join(root, "tools", ".venv", "bin", "python");
 }
 
-function which(cmd: string): boolean {
+function findCtx(root: string): string {
+  const isWin = process.platform === "win32";
+  return isWin
+    ? path.join(root, "tools", ".venv", "Scripts", "ctx.exe")
+    : path.join(root, "tools", ".venv", "bin", "ctx");
+}
+
+function hasPkg(pythonBin: string, pkg: string): boolean {
   try {
-    execSync(`which ${cmd}`, { stdio: "ignore" });
+    execSync(`${pythonBin} -c "import ${pkg}"`, { stdio: "ignore", timeout: 5000 });
     return true;
   } catch {
     return false;
   }
 }
 
-function installGuacd(progress: ProgressCallback): void {
-  const platform = os.platform();
-
-  if (platform === "darwin") {
-    if (!which("brew")) {
-      throw new Error("Homebrew not found. Install it first: https://brew.sh");
-    }
-    progress("installing-guacd", "Installing guacamole-server via Homebrew (this may take a few minutes)...");
-    execSync("brew install guacamole-server", { stdio: "inherit", timeout: 300_000 });
-    progress("installing-guacd", "guacamole-server installed successfully");
-    return;
+function installRdpDeps(pythonBin: string, root: string, progress: ProgressCallback): void {
+  progress("installing-deps", "Installing RDP dependencies (aardwolf, Pillow)...");
+  const pip = pythonBin.replace(/python[^/\\]*$/, "pip");
+  const env = { ...process.env, PYO3_USE_ABI3_FORWARD_COMPATIBILITY: "1" };
+  try {
+    execSync(
+      `${pip} install "aardwolf>=0.2.0" "Pillow>=10.0.0"`,
+      { cwd: root, stdio: "pipe", timeout: 300_000, env },
+    );
+    progress("installing-deps", "RDP dependencies installed");
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    throw new Error(`Failed to install RDP dependencies: ${msg}`);
   }
-
-  if (platform === "linux") {
-    if (which("apt-get")) {
-      progress("installing-guacd", "Installing guacd via apt (this may take a minute)...");
-      execSync("sudo apt-get update && sudo apt-get install -y guacd", {
-        stdio: "inherit",
-        timeout: 300_000,
-      });
-      progress("installing-guacd", "guacd installed successfully");
-      return;
-    }
-    if (which("yum")) {
-      progress("installing-guacd", "Installing guacd via yum...");
-      execSync("sudo yum install -y guacd", {
-        stdio: "inherit",
-        timeout: 300_000,
-      });
-      progress("installing-guacd", "guacd installed successfully");
-      return;
-    }
-    throw new Error("No supported package manager found (apt-get, yum)");
-  }
-
-  throw new Error(`Unsupported platform: ${platform}. Install guacd manually.`);
 }
 
-function spawnGuacd(): ChildProcess {
-  const proc = spawn("guacd", ["-f", "-b", GUACD_HOST, "-l", String(GUACD_PORT)], {
-    stdio: "pipe",
+export interface RdpBridgeProcess {
+  proc: ChildProcess;
+  send: (msg: Record<string, unknown>) => void;
+  onLine: (cb: (msg: Record<string, unknown>) => void) => void;
+  kill: () => void;
+}
+
+export interface BridgeOptions {
+  root: string;
+  host: string;
+  port: number;
+  username: string;
+  password: string;
+  domain?: string;
+  width?: number;
+  height?: number;
+}
+
+/**
+ * Ensure aardwolf is installed, then spawn the Python RDP bridge process.
+ * Returns a handle for sending input and receiving frame/status JSON lines.
+ */
+export async function spawnBridge(
+  opts: BridgeOptions,
+  progress: ProgressCallback = noop,
+): Promise<RdpBridgeProcess> {
+  const pythonBin = findPython(opts.root);
+  const ctxBin = findCtx(opts.root);
+
+  // Check if aardwolf is installed
+  progress("checking-deps", "Checking RDP dependencies...");
+  if (!hasPkg(pythonBin, "aardwolf")) {
+    installRdpDeps(pythonBin, opts.root, progress);
+  }
+  progress("starting-bridge", "Starting RDP bridge...");
+
+  const args = [
+    "rdp", "connect",
+    "--host", opts.host,
+    "--port", String(opts.port),
+    "--username", opts.username,
+    "--password", opts.password,
+    "--domain", opts.domain ?? "",
+    "--width", String(opts.width ?? 1280),
+    "--height", String(opts.height ?? 720),
+  ];
+
+  const proc = spawn(ctxBin, args, {
+    stdio: ["pipe", "pipe", "pipe"],
+    cwd: opts.root,
+    env: { ...process.env, PYO3_USE_ABI3_FORWARD_COMPATIBILITY: "1" },
   });
-  proc.on("error", () => { /* handled via waitForSpawnError */ });
-  proc.on("exit", () => { child = null; });
-  return proc;
-}
 
-async function waitForSpawnError(proc: ChildProcess): Promise<Error | null> {
-  return new Promise((resolve) => {
+  let lineCb: ((msg: Record<string, unknown>) => void) | null = null;
+  let buffer = "";
+
+  proc.stdout!.on("data", (chunk: Buffer) => {
+    buffer += chunk.toString("utf-8");
+    const lines = buffer.split("\n");
+    buffer = lines.pop() ?? "";
+    for (const line of lines) {
+      if (!line.trim()) continue;
+      try {
+        const msg = JSON.parse(line);
+        if (lineCb) lineCb(msg);
+      } catch { /* skip malformed */ }
+    }
+  });
+
+  proc.stderr!.on("data", (chunk: Buffer) => {
+    const text = chunk.toString("utf-8").trim();
+    if (text) console.error(`[rdp-bridge] ${text}`);
+  });
+
+  // Handle spawn errors
+  const spawnErr = await new Promise<Error | null>((resolve) => {
     proc.on("error", (err) => resolve(err));
-    setTimeout(() => resolve(null), 500);
+    setTimeout(() => resolve(null), 1000);
   });
+
+  if (spawnErr) {
+    throw new Error(`Failed to start RDP bridge: ${spawnErr.message}`);
+  }
+
+  return {
+    proc,
+    send: (msg) => {
+      if (!proc.stdin!.destroyed) {
+        proc.stdin!.write(JSON.stringify(msg) + "\n");
+      }
+    },
+    onLine: (cb) => { lineCb = cb; },
+    kill: () => {
+      if (!proc.killed) {
+        proc.stdin!.write(JSON.stringify({ type: "disconnect" }) + "\n");
+        setTimeout(() => { if (!proc.killed) proc.kill(); }, 2000);
+      }
+    },
+  };
 }
-
-export async function ensureGuacd(progress: ProgressCallback = noop): Promise<void> {
-  progress("checking-guacd", "Checking if guacd is running...");
-
-  if (await isListening(GUACD_HOST, GUACD_PORT)) {
-    progress("ready", "guacd is already running");
-    return;
-  }
-
-  if (child) {
-    progress("starting-guacd", "guacd is starting up...");
-    return;
-  }
-
-  if (!which("guacd")) {
-    progress("installing-guacd", "guacd not found, installing...");
-    installGuacd(progress);
-  }
-
-  progress("starting-guacd", "Starting guacd...");
-  child = spawnGuacd();
-  const err = await waitForSpawnError(child);
-  if (err) {
-    child = null;
-    throw new Error(`Failed to start guacd: ${err.message}`);
-  }
-
-  for (let i = 0; i < 20; i++) {
-    await new Promise((r) => setTimeout(r, 250));
-    if (await isListening(GUACD_HOST, GUACD_PORT)) {
-      progress("ready", "guacd is running");
-      return;
-    }
-  }
-
-  throw new Error("guacd spawned but never started listening on port 4822");
-}
-
-export function stopGuacd(): void {
-  if (child) {
-    child.kill();
-    child = null;
-  }
-}
-
-export { GUACD_HOST, GUACD_PORT };

@@ -15,14 +15,14 @@ export function registerScreenTools(server: McpServer): void {
       if (region) args.push("--region", region);
       const r = await nib(args, 60_000);
       if (!r.ok) return { content: [{ type: "text", text: nibError(r) }], isError: true };
-      const data = r.data as { base64: string } | undefined;
-      if (!data?.base64) {
+      const b64 = typeof r.data === "string" ? r.data : (r.data as Record<string, string>)?.base64;
+      if (!b64) {
         return { content: [{ type: "text", text: "Screenshot returned no image data" }], isError: true };
       }
       return {
         content: [{
           type: "image",
-          data: data.base64,
+          data: b64,
           mimeType: format === "jpg" ? "image/jpeg" : "image/png",
         }],
       };
