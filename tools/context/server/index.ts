@@ -18,6 +18,7 @@ import { ensureAuthToken } from "./auth/index.js";
 import { registerAuthHook, setServerToken } from "./auth/index.js";
 import { importMarkdownMemory } from "./memory/import.js";
 import { registerTerminalRoutes } from "./terminal/routes.js";
+import { registerRdpRoutes, closeRdpSessions } from "./routes/rdp.js";
 import { closeAll as closeTerminals, restoreSessions } from "./terminal/manager.js";
 import { initSessionLogger } from "./terminal/session-logger.js";
 import { initTerminalBridge } from "./terminal/mqtt-bridge.js";
@@ -123,6 +124,7 @@ export async function start(): Promise<void> {
 
   registerRoutes(app, ROOT, scheduler, transcriptDir, updateChecker, mqttClient, autoCommit, mcpSync);
   registerTerminalRoutes(app);
+  registerRdpRoutes(app);
   registerActionRoutes(app);
   registerTunnelAuth(app, mqttClient);
   registerTunnelRoutes(app);
@@ -194,6 +196,7 @@ export async function start(): Promise<void> {
   async function shutdown() {
     tunnel.stop();
     remoteBridge.stop();
+    closeRdpSessions();
     closeTerminals();
     mcpSync.stop();
     autoCommit.stop();
