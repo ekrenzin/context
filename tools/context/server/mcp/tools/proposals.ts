@@ -105,11 +105,11 @@ export function register(server: McpServer, deps: McpDeps): void {
         : [prompt];
       const session = await spawnSession({ command: cmd, args, cwd: root });
 
-      const taskLabel = task !== undefined ? ` (task ${task})` : "";
+      const taskSuffix = task !== undefined ? ` (task ${task})` : "";
       return {
         content: [{
           type: "text" as const,
-          text: `Dispatched ${cmd} to build ${slug}${taskLabel}.\nTerminal session: ${session.id}\nView in Command Center: /terminal?session=${session.id}`,
+          text: `Dispatched ${cmd} to build ${slug}${taskSuffix}.\nTerminal session: ${session.id}\nView in Command Center: /terminal?session=${session.id}`,
         }],
       };
     },
