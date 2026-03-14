@@ -52,3 +52,36 @@ jobs:
         with:
           name: release-${{ matrix.platform }}
           path: tools/command-center/release/*
+
+  upload-r2:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install wrangler
+        run: npm install -g wrangler
+
+      - name: Upload to R2
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          for dir in artifacts/release-*/; do
+            for file in "$dir"*; do
+              [ -f "$file" ] || continue
+              filename=$(basename "$file")
+              wrangler r2 object put "context-releases/${VERSION}/${filename}" --file "$file"
+              wrangler r2 object put "context-releases/latest/${filename}" --file "$file"
+            done
+          done
