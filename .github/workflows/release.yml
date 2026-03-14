@@ -25,9 +25,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Clone context-ui
+        uses: actions/checkout@v4
+        with:
+          repository: ekrenzin/context-ui
+          path: repos/context-ui
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+
+      - name: Install context-ui
+        run: npm install
+        working-directory: repos/context-ui
 
       - name: Install ctx-mqtt
         run: npm install
