@@ -12,6 +12,7 @@ from ctx.localpypi.commands import app as localpypi_app
 from ctx.memory.commands import app as memory_app
 from ctx.profiler.commands import app as profiler_app
 from ctx.security.commands import app as security_app
+from ctx.rdp.commands import app as rdp_app
 from ctx.workspace.commands import app as workspace_app
 
 app = typer.Typer(
