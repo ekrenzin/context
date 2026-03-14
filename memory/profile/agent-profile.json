@@ -212,7 +212,7 @@
     "Grep": 2414,
     "TodoWrite": 1908,
     "Write": 1709,
-    "Edit": 1418,
+    "Edit": 1420,
     "Bash": 1397,
     "Glob": 1222,
     "cursor": 428,
@@ -221,7 +221,7 @@
     "Agent": 242,
     "Delete": 191,
     "ReadFile": 177,
-    "WebFetch": 123,
+    "WebFetch": 125,
     "WebSearch": 113,
     "AskQuestion": 110,
     "CreatePlan": 96,
@@ -309,6 +309,6 @@
     "list_dir -> list_dir": 18,
     "Shell -> Shell -> Read": 18
   },
-  "last_scan": "2026-03-14T19:30:01+00:00",
+  "last_scan": "2026-03-14T19:31:06+00:00",
   "transcripts_scanned": 2496
 }
