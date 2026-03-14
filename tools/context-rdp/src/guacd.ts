@@ -1,6 +1,6 @@
 import { spawn, execSync, type ChildProcess } from "child_process";
+import * as net from "net";
 import path from "path";
-import os from "os";
 
 export type ProgressCallback = (phase: string, message: string) => void;
 const noop: ProgressCallback = () => {};
@@ -46,6 +46,8 @@ function installRdpDeps(pythonBin: string, root: string, progress: ProgressCallb
 
 export interface RdpBridgeProcess {
   proc: ChildProcess;
+  pid: number;
+  socketPath: string;
   send: (msg: Record<string, unknown>) => void;
   onLine: (cb: (msg: Record<string, unknown>) => void) => void;
   kill: () => void;
@@ -60,24 +62,28 @@ export interface BridgeOptions {
   domain?: string;
   width?: number;
   height?: number;
+  socketPath: string;
+}
+
+function ensureDeps(root: string, progress: ProgressCallback): void {
+  const pythonBin = findPython(root);
+  progress("checking-deps", "Checking RDP dependencies...");
+  if (!hasPkg(pythonBin, "aardwolf")) {
+    installRdpDeps(pythonBin, root, progress);
+  }
 }
 
 /**
- * Ensure aardwolf is installed, then spawn the Python RDP bridge process.
- * Returns a handle for sending input and receiving frame/status JSON lines.
+ * Spawn the Python RDP bridge in socket mode. The bridge listens on a Unix
+ * socket so it can outlive the WebSocket connection and accept reconnections.
  */
 export async function spawnBridge(
   opts: BridgeOptions,
   progress: ProgressCallback = noop,
 ): Promise<RdpBridgeProcess> {
-  const pythonBin = findPython(opts.root);
   const ctxBin = findCtx(opts.root);
 
-  // Check if aardwolf is installed
-  progress("checking-deps", "Checking RDP dependencies...");
-  if (!hasPkg(pythonBin, "aardwolf")) {
-    installRdpDeps(pythonBin, opts.root, progress);
-  }
+  ensureDeps(opts.root, progress);
   progress("starting-bridge", "Starting RDP bridge...");
 
   const args = [
@@ -89,14 +95,17 @@ export async function spawnBridge(
     "--domain", opts.domain ?? "",
     "--width", String(opts.width ?? 1280),
     "--height", String(opts.height ?? 720),
+    "--socket", opts.socketPath,
   ];
 
   const proc = spawn(ctxBin, args, {
-    stdio: ["pipe", "pipe", "pipe"],
+    stdio: ["ignore", "pipe", "pipe"],
     cwd: opts.root,
+    detached: true,
     env: { ...process.env, PYO3_USE_ABI3_FORWARD_COMPATIBILITY: "1" },
   });
 
+  // Read stdout for status/ready messages during startup
   let lineCb: ((msg: Record<string, unknown>) => void) | null = null;
   const pendingMessages: Record<string, unknown>[] = [];
   let buffer = "";
@@ -109,11 +118,8 @@ export async function spawnBridge(
       if (!line.trim()) continue;
       try {
         const msg = JSON.parse(line);
-        if (lineCb) {
-          lineCb(msg);
-        } else {
-          pendingMessages.push(msg);
-        }
+        if (lineCb) lineCb(msg);
+        else pendingMessages.push(msg);
       } catch { /* skip malformed */ }
     }
   });
@@ -123,34 +129,113 @@ export async function spawnBridge(
     if (text) console.error(`[rdp-bridge] ${text}`);
   });
 
-  // Handle spawn errors
-  const spawnErr = await new Promise<Error | null>((resolve) => {
-    proc.on("error", (err) => resolve(err));
-    setTimeout(() => resolve(null), 1000);
+  // Wait for the bridge to report READY (connected + socket listening)
+  await new Promise<void>((resolve, reject) => {
+    const timeout = setTimeout(() => reject(new Error("Bridge did not connect in time")), 60_000);
+
+    const origLineCb = lineCb;
+    lineCb = (msg) => {
+      // Forward status messages to the progress callback
+      if (msg.type === "status") {
+        progress(msg.phase as string, msg.message as string);
+      }
+      if (msg.type === "error") {
+        clearTimeout(timeout);
+        reject(new Error(msg.message as string));
+        return;
+      }
+      if (msg.type === "ready") {
+        clearTimeout(timeout);
+        lineCb = origLineCb;
+        resolve();
+        return;
+      }
+      // Buffer non-ready messages
+      pendingMessages.push(msg);
+    };
+
+    proc.on("error", (err) => { clearTimeout(timeout); reject(err); });
+    proc.on("exit", (code) => {
+      clearTimeout(timeout);
+      reject(new Error(`Bridge exited during startup (code ${code})`));
+    });
   });
 
-  if (spawnErr) {
-    throw new Error(`Failed to start RDP bridge: ${spawnErr.message}`);
-  }
+  // Detach -- bridge lives independently
+  proc.unref();
 
   return {
     proc,
-    send: (msg) => {
-      if (!proc.stdin!.destroyed) {
-        proc.stdin!.write(JSON.stringify(msg) + "\n");
-      }
-    },
+    pid: proc.pid!,
+    socketPath: opts.socketPath,
+    send: () => { /* input goes via socket clients, not stdin */ },
     onLine: (cb) => {
       lineCb = cb;
-      // Replay any messages that arrived before the callback was set
       for (const msg of pendingMessages) cb(msg);
       pendingMessages.length = 0;
     },
     kill: () => {
       if (!proc.killed) {
-        proc.stdin!.write(JSON.stringify({ type: "disconnect" }) + "\n");
-        setTimeout(() => { if (!proc.killed) proc.kill(); }, 2000);
+        try { process.kill(proc.pid!, "SIGTERM"); } catch {}
       }
     },
   };
+}
+
+/** Connect to an already-running bridge via its Unix socket. */
+export class BridgeSocket {
+  private socket: net.Socket;
+  private dataHandlers = new Set<(msg: Record<string, unknown>) => void>();
+  private buf = "";
+  private _connected = false;
+
+  constructor(private socketPath: string) {
+    this.socket = new net.Socket();
+  }
+
+  async connect(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.socket.connect(this.socketPath, () => {
+        this._connected = true;
+        resolve();
+      });
+
+      this.socket.on("data", (chunk) => {
+        this.buf += chunk.toString();
+        const lines = this.buf.split("\n");
+        this.buf = lines.pop()!;
+        for (const line of lines) {
+          if (!line) continue;
+          try {
+            const msg = JSON.parse(line);
+            for (const h of this.dataHandlers) h(msg);
+          } catch {}
+        }
+      });
+
+      this.socket.on("error", (err) => {
+        if (!this._connected) reject(err);
+      });
+    });
+  }
+
+  get connected(): boolean {
+    return this._connected && !this.socket.destroyed;
+  }
+
+  send(msg: Record<string, unknown>): void {
+    if (this.connected) {
+      this.socket.write(JSON.stringify(msg) + "\n");
+    }
+  }
+
+  onData(handler: (msg: Record<string, unknown>) => void): () => void {
+    this.dataHandlers.add(handler);
+    return () => { this.dataHandlers.delete(handler); };
+  }
+
+  disconnect(): void {
+    this.socket.destroy();
+    this._connected = false;
+  }
 }
