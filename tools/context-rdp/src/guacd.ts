@@ -25,13 +25,35 @@ export async function ensureGuacd(): Promise<void> {
 
   if (child) return;
 
-  child = spawn("guacd", ["-f", "-b", GUACD_HOST, "-l", String(GUACD_PORT)], {
-    stdio: "pipe",
+  try {
+    child = spawn("guacd", ["-f", "-b", GUACD_HOST, "-l", String(GUACD_PORT)], {
+      stdio: "pipe",
+    });
+  } catch {
+    child = null;
+    throw new Error(
+      "guacd not found. Install it: brew install guacamole-server (macOS) or apt install guacd (Linux)",
+    );
+  }
+
+  // Catch spawn errors (ENOENT etc.) so they don't crash the process
+  const spawnError = await new Promise<Error | null>((resolve) => {
+    child!.on("error", (err) => {
+      child = null;
+      resolve(err);
+    });
+    child!.on("exit", () => {
+      child = null;
+    });
+    // If no error within 500ms, assume spawn succeeded
+    setTimeout(() => resolve(null), 500);
   });
 
-  child.on("exit", () => {
-    child = null;
-  });
+  if (spawnError) {
+    throw new Error(
+      "guacd not found. Install it: brew install guacamole-server (macOS) or apt install guacd (Linux)",
+    );
+  }
 
   // Wait for guacd to start listening
   for (let i = 0; i < 20; i++) {
