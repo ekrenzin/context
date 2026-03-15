@@ -121,18 +121,25 @@ export function readProposalDir(proposalsRoot: string, slug: string): ProposalDe
   };
 }
 
-export function buildPrompt(detail: ProposalDetail, taskNumber?: number): string {
+export function buildPrompt(detail: ProposalDetail, taskNumber?: number, memoryContext?: string): string {
   const relPath = `docs/proposals/${detail.slug}`;
   const parts: string[] = [
     "You are building a feature based on a design proposal.",
     "Read the CLAUDE.md and AGENTS.md files first for workspace context.",
     `The proposal lives in ${relPath}/`,
+  ];
+
+  if (memoryContext) {
+    parts.push("", memoryContext);
+  }
+
+  parts.push(
     "",
     "# Proposal",
     `<!-- source: ${relPath}/PROPOSAL.md -->`,
     "",
     detail.proposal.trim(),
-  ];
+  );
 
   if (detail.impact) {
     parts.push("", "# Impact Analysis", `<!-- source: ${relPath}/impact.md -->`, "", detail.impact.trim());
@@ -407,10 +414,10 @@ export function registerProposalRoutes(app: FastifyInstance, root: string, mqttC
     },
   );
 
-  app.post<{ Body: { description: string } }>(
+  app.post<{ Body: { description: string; memoryContext?: string } }>(
     "/api/proposals",
     async (req, reply) => {
-      const { description } = req.body ?? {};
+      const { description, memoryContext } = req.body ?? {};
       if (!description?.trim()) return reply.code(400).send({ error: "description is required" });
 
       const skillPath = path.join(root, "skills", "proposals", "SKILL.md");
@@ -419,9 +426,16 @@ export function registerProposalRoutes(app: FastifyInstance, root: string, mqttC
         skillContext = fs.readFileSync(skillPath, "utf8");
       }
 
-      const prompt = [
+      const promptParts = [
         "You are creating a new design proposal based on the user's description.",
         "Read the CLAUDE.md and AGENTS.md files first for workspace context.",
+      ];
+
+      if (memoryContext) {
+        promptParts.push("", memoryContext);
+      }
+
+      promptParts.push(
         "",
         "# Proposals Skill Reference",
         "",
@@ -441,7 +455,9 @@ export function registerProposalRoutes(app: FastifyInstance, root: string, mqttC
         "6. Present the proposal summary to the user for feedback before finishing.",
         "",
         "Be thorough but concise. Ask the user questions to refine scope before writing files.",
-      ].join("\n");
+      );
+
+      const prompt = promptParts.join("\n");
 
       const { spawnSession } = await import("../terminal/manager.js");
       const session = await spawnSession({

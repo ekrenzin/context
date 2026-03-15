@@ -21,6 +21,7 @@ import type { SessionInfo, SocketPty } from "./manager.js";
 import { setSessionState } from "./manager.js";
 import { broadcastOutput, broadcastExit } from "./broadcast-relay.js";
 import { writeSessionMeta, updateSessionMeta } from "../routes/session-logs.js";
+import { parsePtyChunk } from "./parse-pty.js";
 
 let mqttClient: CtxMqttClient | null = null;
 let logDir: string | null = null;
@@ -108,9 +109,13 @@ export function tapSession(sessionId: string, pty: SocketPty): void {
     // Strip OSC markers from logged/broadcast data
     const clean = data.replace(OSC_STATE_RE, "");
     if (clean) {
+      const parsed = parsePtyChunk(clean);
       appendLog(sessionId, { type: "output", data: clean });
       if (mqttClient?.connected()) {
-        mqttClient.publish(TOPICS.session.output(sessionId), clean);
+        mqttClient.publish(
+          TOPICS.session.output(sessionId),
+          JSON.stringify(parsed),
+        );
       }
       broadcastOutput(sessionId, clean);
     }

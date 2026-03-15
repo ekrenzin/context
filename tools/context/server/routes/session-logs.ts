@@ -156,6 +156,34 @@ function backfillMeta(dir: string, id: string): SessionLogMeta {
 export function registerSessionLogRoutes(app: FastifyInstance, root: string): void {
   app.get("/api/session-logs", async () => listSessionLogs(root));
 
+  // Stream JSONL content for incremental rendering (register before /:id)
+  app.get<{ Params: { id: string } }>(
+    "/api/session-logs/:id/stream",
+    async (req, reply) => {
+      const filePath = logPath(sessionsDir(root), req.params.id);
+      if (!fs.existsSync(filePath)) {
+        reply.code(404).send({ error: "Session log not found" });
+        return;
+      }
+
+      reply.raw.writeHead(200, {
+        "Content-Type": "application/x-ndjson",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache",
+      });
+
+      const stream = createReadStream(filePath, { encoding: "utf-8" });
+      const rl = createInterface({ input: stream, crlfDelay: Infinity });
+
+      for await (const line of rl) {
+        if (!line.trim()) continue;
+        reply.raw.write(line + "\n");
+      }
+
+      reply.raw.end();
+    },
+  );
+
   app.get<{ Params: { id: string } }>(
     "/api/session-logs/:id",
     async (req, reply) => {

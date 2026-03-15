@@ -178,10 +178,6 @@ export async function start(): Promise<void> {
   toolCatalog.build(mcp);
   console.log(`[ai] tool catalog built with ${toolCatalog.size} tool(s)`);
 
-  // Register AI chat routes (legacy) and dispatch routes
-  const { registerAiChatRoutes } = await import("./routes/ai-chat.js");
-  registerAiChatRoutes(app, toolCatalog);
-
   const { registerDispatchRoutes } = await import("./routes/dispatch.js");
   registerDispatchRoutes(app, ROOT);
 

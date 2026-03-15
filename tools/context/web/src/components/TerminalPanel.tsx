@@ -1,16 +1,8 @@
-import { useEffect, useRef, useState } from "react";
 import { Box } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
-import { Terminal } from "@xterm/xterm";
-import { FitAddon } from "@xterm/addon-fit";
-import { WebLinksAddon } from "@xterm/addon-web-links";
-import "@xterm/xterm/css/xterm.css";
-import { createTerminalTheme } from "../lib/xterm-theme";
+import { useTerminal, type SessionState } from "../hooks/useTerminal";
 
-export type SessionState = "running" | "waiting" | "idle";
-
-/** Regex matching OSC escape: \x1b]ctx:state=<state>\x07 */
-const OSC_STATE_RE = /\x1b\]ctx:state=(running|waiting|idle)\x07/g;
+export type { SessionState };
 
 interface Props {
   sessionId: string;
@@ -22,230 +14,29 @@ interface Props {
 
 export function TerminalPanel({ sessionId, active = true, suspendResize, onExit, onStateChange }: Props) {
   const theme = useTheme();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const termRef = useRef<Terminal | null>(null);
-  const wsRef = useRef<WebSocket | null>(null);
-  const fitRef = useRef<FitAddon | null>(null);
-  const onExitRef = useRef(onExit);
-  onExitRef.current = onExit;
-  const onStateChangeRef = useRef(onStateChange);
-  onStateChangeRef.current = onStateChange;
-  const suspendResizeRef = useRef(suspendResize);
-  suspendResizeRef.current = suspendResize;
-  const [dragOver, setDragOver] = useState(false);
-  const dragCountRef = useRef(0);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-
-    const term = new Terminal({
-      theme: createTerminalTheme(theme),
-      fontFamily: "'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace",
-      fontSize: 14,
-      cursorBlink: true,
-      allowProposedApi: true,
-    });
-
-    const fit = new FitAddon();
-    fitRef.current = fit;
-    termRef.current = term;
-
-    term.loadAddon(fit);
-    term.loadAddon(new WebLinksAddon((_event, uri) => {
-      window.open(uri, "_blank", "noopener");
-    }));
-    term.open(el);
-    fit.fit();
-    term.focus();
-
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const ws = new WebSocket(`${protocol}//${window.location.host}/ws/terminal/${sessionId}`);
-    wsRef.current = ws;
-
-    ws.onopen = () => fit.fit();
-
-    ws.onmessage = (event) => {
-      try {
-        const msg = JSON.parse(event.data);
-        if (msg.type === "output") {
-          // Extract OSC state markers before writing to terminal
-          let outData = msg.data as string;
-          let stateMatch: RegExpExecArray | null;
-          while ((stateMatch = OSC_STATE_RE.exec(outData)) !== null) {
-            onStateChangeRef.current?.(stateMatch[1] as SessionState);
-          }
-          OSC_STATE_RE.lastIndex = 0;
-          outData = outData.replace(OSC_STATE_RE, "");
-          if (outData) term.write(outData);
-        } else if (msg.type === "exit") {
-          term.write(`\r\n\x1b[90m[process exited with code ${msg.code}]\x1b[0m\r\n`);
-          onExitRef.current?.(msg.code);
-        } else if (msg.type === "error") {
-          term.write(`\r\n\x1b[31m[${msg.message}]\x1b[0m\r\n`);
-        }
-      } catch { /* ignore malformed messages */ }
-    };
-
-    ws.onclose = () => {
-      term.write("\r\n\x1b[90m[disconnected]\x1b[0m\r\n");
-    };
-
-    term.onData((data) => {
-      if (ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({ type: "input", data }));
-      }
-    });
-
-    let resizeTimer: ReturnType<typeof setTimeout> | null = null;
-    const sendResize = () => {
-      if (suspendResizeRef.current) return;
-      if (resizeTimer) clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        fit.fit();
-        if (ws.readyState === WebSocket.OPEN) {
-          ws.send(JSON.stringify({ type: "resize", cols: term.cols, rows: term.rows }));
-        }
-      }, 120);
-    };
-
-    const observer = new ResizeObserver(sendResize);
-    observer.observe(el);
-
-    // File drag-and-drop: attach to the container so the overlay (which
-    // appears on top of xterm's canvas) can also receive events.
-    const onDragOver = (e: DragEvent) => {
-      if (e.dataTransfer?.types.includes("Files")) {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = "copy";
-      }
-    };
-
-    const onDragEnter = (e: DragEvent) => {
-      if (!e.dataTransfer?.types.includes("Files")) return;
-      e.preventDefault();
-      dragCountRef.current++;
-      if (dragCountRef.current === 1) setDragOver(true);
-    };
-
-    const onDragLeave = () => {
-      dragCountRef.current--;
-      if (dragCountRef.current === 0) setDragOver(false);
-    };
-
-    const escapePath = (p: string) =>
-      /[^A-Za-z0-9_./:@-]/.test(p) ? `'${p.replace(/'/g, "'\\''")}'` : p;
-
-    const sendPaths = (paths: string[]) => {
-      ws.send(JSON.stringify({ type: "input", data: paths.map(escapePath).join(" ") }));
-      term.focus();
-    };
-
-    const uploadFile = (file: File): Promise<string | null> =>
-      new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const b64 = (reader.result as string).split(",")[1] ?? "";
-          fetch("/api/fs/upload", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name: file.name, data: b64 }),
-          })
-            .then((r) => {
-              if (!r.ok) {
-                console.warn(`[drop] upload failed: ${r.status} ${r.statusText}`);
-                return null;
-              }
-              return r.json();
-            })
-            .then((j: { path: string } | null) => resolve(j?.path ?? null))
-            .catch((err) => {
-              console.warn("[drop] upload error:", err);
-              resolve(null);
-            });
-        };
-        reader.onerror = () => resolve(null);
-        reader.readAsDataURL(file);
-      });
-
-    const onDrop = (e: DragEvent) => {
-      e.preventDefault();
-      dragCountRef.current = 0;
-      setDragOver(false);
-      if (!e.dataTransfer || ws.readyState !== WebSocket.OPEN) return;
-
-      const ctx = (window as unknown as { ctx?: { getPathForFile?: (f: File) => string } }).ctx;
-      const resolved: string[] = [];
-      const unresolved: File[] = [];
-      for (const file of Array.from(e.dataTransfer.files)) {
-        const filePath =
-          ctx?.getPathForFile?.(file) ??
-          (file as File & { path?: string }).path;
-        if (filePath) resolved.push(filePath);
-        else unresolved.push(file);
-      }
-
-      if (unresolved.length === 0) {
-        sendPaths(resolved);
-        return;
-      }
-
-      // Upload files that the browser can't resolve paths for
-      term.write("\r\n\x1b[90m[uploading dropped file(s)...]\x1b[0m");
-      Promise.all(unresolved.map(uploadFile)).then((uploaded) => {
-        const all = [...resolved, ...uploaded.filter(Boolean) as string[]];
-        if (all.length === 0) {
-          const names = unresolved.map((f) => f.name);
-          term.write(`\r\n\x1b[33m[drop: upload failed for: ${names.join(", ")}]\x1b[0m\r\n`);
-          return;
-        }
-        term.write("\r\n");
-        sendPaths(all);
-      });
-    };
-
-    el.addEventListener("dragover", onDragOver);
-    el.addEventListener("dragenter", onDragEnter);
-    el.addEventListener("dragleave", onDragLeave);
-    el.addEventListener("drop", onDrop);
-
-    return () => {
-      el.removeEventListener("dragover", onDragOver);
-      el.removeEventListener("dragenter", onDragEnter);
-      el.removeEventListener("dragleave", onDragLeave);
-      el.removeEventListener("drop", onDrop);
-      observer.disconnect();
-      if (resizeTimer) clearTimeout(resizeTimer);
-      ws.close();
-      term.dispose();
-      termRef.current = null;
-      wsRef.current = null;
-      fitRef.current = null;
-    };
-  }, [sessionId, theme]);
-
-  // Fit terminal once when drawer drag ends
-  useEffect(() => {
-    if (suspendResize === false && fitRef.current && wsRef.current) {
-      const fit = fitRef.current;
-      const ws = wsRef.current;
-      const term = termRef.current;
-      fit.fit();
-      if (term && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({ type: "resize", cols: term.cols, rows: term.rows }));
-      }
-    }
-  }, [suspendResize]);
-
-  useEffect(() => {
-    if (active && termRef.current) {
-      termRef.current.scrollToBottom();
-      termRef.current.focus();
-    }
-  }, [active]);
+  const { containerRef, focused, setFocused, dragOver } = useTerminal({
+    sessionId,
+    active,
+    suspendResize,
+    onExit,
+    onStateChange,
+  });
 
   return (
-    <Box sx={{ position: "relative", width: "100%", height: "100%" }}>
+    <Box
+      sx={{
+        position: "relative",
+        width: "100%",
+        height: "100%",
+        opacity: focused ? 1 : 0.8,
+        filter: focused ? "none" : "saturate(0.7)",
+        transition: "opacity 200ms ease, filter 200ms ease, transform 200ms ease",
+        "&:hover": !focused ? {
+          opacity: 0.9,
+          filter: "saturate(0.85)",
+        } : {},
+      }}
+    >
       <Box
         ref={containerRef}
         sx={{
@@ -254,6 +45,21 @@ export function TerminalPanel({ sessionId, active = true, suspendResize, onExit,
           "& .xterm": { height: "100%", p: 0.5 },
         }}
       />
+      {!focused && (
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 5,
+            cursor: "pointer",
+          }}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setFocused(true);
+          }}
+        />
+      )}
       {dragOver && (
         <Box
           sx={{

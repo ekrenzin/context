@@ -43,15 +43,27 @@ export function registerOnboardingRoutes(app: FastifyInstance, root: string): vo
     },
   );
 
-  app.post<{ Body: { problem: string; name: string; tool: "claude" | "codex" } }>(
+  app.post<{ Body: { problem: string; name: string; tool: "claude" | "codex"; projectId?: string } }>(
     "/api/onboarding/propose",
     async (req, reply) => {
-      const { problem, name, tool } = req.body ?? {};
+      const { problem, name, tool, projectId } = req.body ?? {};
       if (!problem?.trim() || !name?.trim()) {
         return reply.code(400).send({ error: "problem and name are required" });
       }
       if (tool !== "claude" && tool !== "codex") {
         return reply.code(400).send({ error: "tool must be claude or codex" });
+      }
+
+      // Resolve session cwd: use project root if provided, else workspace root
+      let sessionCwd = root;
+      if (projectId) {
+        try {
+          const { getProject } = await import("../db/index.js");
+          const project = getProject(projectId);
+          if (project?.root_path) sessionCwd = project.root_path;
+        } catch {
+          // Fall back to workspace root
+        }
       }
 
       const skillPath = path.join(root, "skills", "proposals", "SKILL.md");
@@ -103,7 +115,7 @@ export function registerOnboardingRoutes(app: FastifyInstance, root: string): vo
           `${prompt}\n\n---\n\n${userPrompt}`,
         ];
 
-      const session = await spawnSession({ command: cmd, args, cwd: root });
+      const session = await spawnSession({ command: cmd, args, cwd: sessionCwd });
 
       return { sessionId: session.id, slug };
     },

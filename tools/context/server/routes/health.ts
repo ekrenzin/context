@@ -1,3 +1,4 @@
+import os from "os";
 import type { FastifyInstance } from "fastify";
 import type { CtxMqttClient } from "ctx-mqtt";
 import { listSolutions } from "../solutions/index.js";
@@ -58,6 +59,7 @@ export function registerHealthRoutes(app: FastifyInstance, mqttClient: CtxMqttCl
 
     return {
       firstRun,
+      home: os.homedir(),
       ai: { configured: aiConfigured, provider },
       mqtt: mqttConnected ? "connected" : "disconnected",
       platform: process.platform as "darwin" | "win32" | "linux",

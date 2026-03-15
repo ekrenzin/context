@@ -23,9 +23,9 @@ export const views: ViewEntry[] = [
   },
   {
     path: "/ai",
-    label: "AI",
-    icon: "ChatBubbleOutline",
-    component: lazy(() => import("./AiChat")),
+    label: "Dispatch",
+    icon: "RocketLaunch",
+    component: lazy(() => import("./Dispatch")),
   },
   {
     path: "/tools",

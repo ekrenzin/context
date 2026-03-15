@@ -13,8 +13,8 @@
       "last_seen": "2026-03-05"
     },
     "feature-dev": {
-      "count": 55,
-      "last_seen": "2026-03-12"
+      "count": 56,
+      "last_seen": "2026-03-15"
     },
     "pr-summary": {
       "count": 48,
@@ -76,6 +76,10 @@
       "count": 6,
       "last_seen": "2026-02-28"
     },
+    "proposals": {
+      "count": 5,
+      "last_seen": "2026-03-15"
+    },
     "preflight": {
       "count": 5,
       "last_seen": "2026-03-05"
@@ -89,10 +93,6 @@
       "last_seen": "2026-03-04"
     },
     "deploy": {
-      "count": 3,
-      "last_seen": "2026-03-15"
-    },
-    "proposals": {
       "count": 3,
       "last_seen": "2026-03-15"
     },
@@ -152,6 +152,10 @@
       "count": 2,
       "last_seen": "2026-03-04"
     },
+    "deploy-site": {
+      "count": 1,
+      "last_seen": "2026-03-15"
+    },
     "ui-design": {
       "count": 1,
       "last_seen": "2026-03-03"
@@ -206,30 +210,30 @@
     }
   },
   "tools": {
-    "Read": 8277,
+    "Read": 8461,
     "Shell": 6460,
     "StrReplace": 3966,
-    "Grep": 2603,
+    "Grep": 2675,
     "TodoWrite": 1908,
-    "Write": 1812,
-    "Bash": 1760,
-    "Edit": 1693,
-    "Glob": 1264,
+    "Bash": 1906,
+    "Write": 1859,
+    "Edit": 1765,
+    "Glob": 1321,
     "cursor": 428,
     "Task": 397,
     "ReadLints": 313,
-    "Agent": 286,
+    "Agent": 307,
     "Delete": 191,
     "ReadFile": 177,
     "WebFetch": 129,
     "WebSearch": 114,
     "AskQuestion": 110,
-    "ToolSearch": 102,
+    "ToolSearch": 104,
     "CreatePlan": 96,
     "read_file": 86,
     "ApplyPatch": 85,
     "SwitchMode": 80,
-    "TaskUpdate": 70,
+    "TaskUpdate": 74,
     "list_dir": 49,
     "rg": 43,
     "mcp__playwright__browser_navigate": 42,
@@ -240,10 +244,10 @@
     "todo_write": 22,
     "run_terminal_cmd": 15,
     "LS": 14,
-    "ExitPlanMode": 11,
+    "ExitPlanMode": 12,
     "delete_file": 11,
+    "EnterPlanMode": 10,
     "write": 10,
-    "EnterPlanMode": 9,
     "mcp__playwright__browser_evaluate": 9,
     "mcp__playwright__browser_wait_for": 7,
     "mcp__playwright__browser_snapshot": 7,
@@ -256,21 +260,21 @@
     "TaskOutput": 3,
     "read_lints": 3,
     "user": 2,
+    "Skill": 1,
     "List_dir": 1,
-    "Subagent": 1,
-    "Skill": 1
+    "Subagent": 1
   },
   "sequences": {
-    "Read -> Read": 2030,
+    "Read -> Read": 2033,
     "Shell -> Shell": 985,
     "Read -> Read -> Read": 919,
     "Grep -> Grep": 400,
     "StrReplace -> StrReplace": 364,
     "Shell -> Shell -> Shell": 288,
-    "Glob -> Glob": 258,
+    "Glob -> Glob": 276,
     "Write -> Write": 249,
     "StrReplace -> StrReplace -> StrReplace": 213,
-    "Read -> Glob": 159,
+    "Read -> Glob": 160,
     "Read -> Shell": 155,
     "TodoWrite -> Shell": 155,
     "Write -> Write -> Write": 139,
@@ -280,17 +284,17 @@
     "Delete -> Delete": 129,
     "Grep -> Grep -> Grep": 116,
     "Delete -> Delete -> Delete": 99,
-    "Glob -> Read": 87,
+    "Glob -> Read": 88,
     "ReadFile -> ReadFile": 86,
     "TodoWrite -> Read": 82,
     "Grep -> Read": 79,
     "Grep -> Glob": 58,
+    "Glob -> Glob -> Glob": 57,
     "TodoWrite -> StrReplace": 56,
-    "Glob -> Glob -> Glob": 54,
     "ReadFile -> ReadFile -> ReadFile": 53,
     "Shell -> Glob": 50,
+    "Bash -> Bash": 49,
     "Glob -> Grep": 46,
-    "Bash -> Bash": 44,
     "Glob -> Shell": 43,
     "Task -> Task -> Task": 40,
     "Shell -> Grep": 38,
@@ -306,12 +310,12 @@
     "Read -> Read -> Shell": 26,
     "Read -> Task": 25,
     "Read -> Glob -> Glob": 25,
-    "Agent -> Agent": 21,
+    "Agent -> Agent": 24,
+    "Edit -> Edit": 21,
     "TodoWrite -> Shell -> Shell": 21,
-    "Edit -> Edit": 20,
     "list_dir -> list_dir": 18,
     "Shell -> Shell -> Read": 18
   },
-  "last_scan": "2026-03-15T02:35:55+00:00",
-  "transcripts_scanned": 2538
+  "last_scan": "2026-03-15T03:18:17+00:00",
+  "transcripts_scanned": 2553
 }

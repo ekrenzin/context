@@ -134,6 +134,25 @@ export interface ProjectMcpServerRow {
   updated_at: string;
 }
 
+export interface DispatchLogRow {
+  id: string;
+  input: string;
+  intent: string;
+  confidence: number;
+  skills: string;
+  repo: string | null;
+  agent: string;
+  command: string;
+  cross_repo: number;
+  cross_repo_detail: string | null;
+  skill_gaps: string | null;
+  memory_updated: number;
+  analysis_status: string;
+  analysis_error: string | null;
+  created_at: string;
+  analyzed_at: string | null;
+}
+
 export interface ConfigField {
   key: string;
   label: string;

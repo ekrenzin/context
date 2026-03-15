@@ -464,20 +464,6 @@ export const api = {
   aiModels: () =>
     get<{ models: AiModelOption[] }>("/api/ai/models"),
 
-  // AI Conversations
-  createConversation: () =>
-    postJson<import("../types/chat").Conversation>("/api/ai/conversations", {}),
-
-  listConversations: () =>
-    get<import("../types/chat").Conversation[]>("/api/ai/conversations"),
-
-  getConversation: (id: string) =>
-    get<import("../types/chat").Conversation & { messages: import("../types/chat").ChatMessage[] }>(
-      `/api/ai/conversations/${id}`,
-    ),
-
-  deleteConversation: (id: string) =>
-    del<{ ok: boolean }>(`/api/ai/conversations/${id}`),
 };
 
 export interface AiModelOption {

@@ -164,7 +164,12 @@ export function createLocalAi(mqtt: CtxMqttClient): LocalAiService {
       const buf = sessionBuffers.get(sessionId);
       if (!buf) return;
 
-      const chunk = payload.toString();
+      const raw = payload.toString();
+      let chunk = raw;
+      try {
+        const parsed = JSON.parse(raw);
+        if (parsed.text) chunk = parsed.text;
+      } catch { /* legacy raw string — use as-is */ }
       buf.output = (buf.output + chunk).slice(-OUTPUT_BUFFER_SIZE);
 
       if (buf.timer) clearTimeout(buf.timer);
