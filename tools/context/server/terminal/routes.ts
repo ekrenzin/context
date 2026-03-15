@@ -19,11 +19,12 @@ export function registerTerminalRoutes(app: FastifyInstance): void {
       cwd?: string;
       cols?: number;
       rows?: number;
+      projectId?: string;
     };
   }>("/api/terminal", async (req) => {
-    const { command, args, cols, rows } = req.body ?? {};
+    const { command, args, cols, rows, projectId } = req.body ?? {};
     const cwd = req.body?.cwd || resolveDefaultCwd();
-    const session = await spawnSession({ command, args, cwd, cols, rows });
+    const session = await spawnSession({ command, args, cwd, cols, rows, projectId });
     logSessionStarted(session);
 
     // Open a dedicated tap connection for logging/MQTT (independent of WebSocket clients)

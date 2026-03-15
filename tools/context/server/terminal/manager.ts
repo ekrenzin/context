@@ -22,6 +22,7 @@ export interface SessionInfo {
   exitCode?: number;
   label?: string;
   state?: SessionState;
+  projectId?: string;
 }
 
 interface PersistedSession {
@@ -33,6 +34,7 @@ interface PersistedSession {
   startedAt: string;
   label?: string;
   state?: SessionState;
+  projectId?: string;
 }
 
 export interface SpawnOptions {
@@ -42,6 +44,7 @@ export interface SpawnOptions {
   cols?: number;
   rows?: number;
   env?: Record<string, string>;
+  projectId?: string;
 }
 
 /** Disposable handle returned by onData/onExit. */
@@ -146,6 +149,7 @@ function saveManifest(): void {
     startedAt: s.startedAt,
     label: s.label,
     state: s.state,
+    projectId: s.projectId,
   }));
   fs.writeFileSync(MANIFEST_PATH, JSON.stringify({ sessions: entries }, null, 2));
 }
@@ -232,6 +236,7 @@ export async function spawnSession(opts: SpawnOptions): Promise<SessionInfo> {
     cwd,
     startedAt: new Date().toISOString(),
     state: "running",
+    projectId: opts.projectId,
   };
 
   sessions.set(id, session);
@@ -330,6 +335,7 @@ export async function restoreSessions(): Promise<number> {
       startedAt: entry.startedAt,
       label: entry.label,
       state: entry.state,
+      projectId: entry.projectId,
     });
     restored++;
   }
@@ -366,5 +372,6 @@ function toInfo(s: LiveSession): SessionInfo {
     exitCode: s.exitCode,
     label: s.label,
     state: s.state,
+    projectId: s.projectId,
   };
 }
