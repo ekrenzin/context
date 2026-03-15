@@ -2,6 +2,7 @@
   "name": "ctx-command-center",
   "version": "0.1.0",
   "private": true,
+  "repository": "ekrenzin/context",
   "type": "module",
   "scripts": {
     "preinstall": "npm --prefix ../ctx-mqtt install",

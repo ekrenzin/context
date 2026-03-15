@@ -92,6 +92,10 @@
       "count": 3,
       "last_seen": "2026-03-05"
     },
+    "deploy": {
+      "count": 3,
+      "last_seen": "2026-03-15"
+    },
     "guardduty": {
       "count": 3,
       "last_seen": "2026-02-28"
@@ -103,10 +107,6 @@
     "contribute": {
       "count": 3,
       "last_seen": "2026-03-03"
-    },
-    "deploy": {
-      "count": 2,
-      "last_seen": "2026-02-28"
     },
     "dev-tunnel": {
       "count": 2,
@@ -206,19 +206,19 @@
     }
   },
   "tools": {
-    "Read": 8164,
+    "Read": 8197,
     "Shell": 6460,
     "StrReplace": 3966,
-    "Grep": 2555,
+    "Grep": 2568,
     "TodoWrite": 1908,
-    "Write": 1780,
-    "Bash": 1707,
-    "Edit": 1607,
-    "Glob": 1247,
+    "Write": 1793,
+    "Bash": 1727,
+    "Edit": 1636,
+    "Glob": 1252,
     "cursor": 428,
     "Task": 397,
     "ReadLints": 313,
-    "Agent": 271,
+    "Agent": 276,
     "Delete": 191,
     "ReadFile": 177,
     "WebFetch": 129,
@@ -260,7 +260,7 @@
     "Subagent": 1
   },
   "sequences": {
-    "Read -> Read": 2029,
+    "Read -> Read": 2030,
     "Shell -> Shell": 985,
     "Read -> Read -> Read": 919,
     "Grep -> Grep": 400,
@@ -283,14 +283,14 @@
     "ReadFile -> ReadFile": 86,
     "TodoWrite -> Read": 82,
     "Grep -> Read": 78,
-    "Grep -> Glob": 56,
+    "Grep -> Glob": 57,
     "TodoWrite -> StrReplace": 56,
     "Glob -> Glob -> Glob": 53,
     "ReadFile -> ReadFile -> ReadFile": 53,
     "Shell -> Glob": 50,
-    "Glob -> Grep": 45,
+    "Glob -> Grep": 46,
+    "Bash -> Bash": 43,
     "Glob -> Shell": 43,
-    "Bash -> Bash": 41,
     "Task -> Task -> Task": 40,
     "Shell -> Grep": 38,
     "TodoWrite -> Write": 35,
@@ -311,6 +311,6 @@
     "list_dir -> list_dir": 18,
     "Shell -> Shell -> Read": 18
   },
-  "last_scan": "2026-03-14T23:11:37+00:00",
-  "transcripts_scanned": 2523
+  "last_scan": "2026-03-15T00:30:31+00:00",
+  "transcripts_scanned": 2528
 }

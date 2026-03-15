@@ -135,6 +135,24 @@ export function registerFilesystemRoutes(app: FastifyInstance): void {
     };
   });
 
+  // Create a directory (recursive)
+  app.post("/api/fs/mkdir", async (req, reply) => {
+    const body = req.body as { path?: string };
+    if (!body?.path) {
+      reply.status(400);
+      return { error: "path is required" };
+    }
+    const target = path.resolve(body.path);
+    try {
+      fs.mkdirSync(target, { recursive: true });
+      return { path: target, created: true };
+    } catch (err: unknown) {
+      reply.status(500);
+      const msg = err instanceof Error ? err.message : String(err);
+      return { error: msg };
+    }
+  });
+
   // Upload a dropped file (browser can't expose local paths)
   // 20 MB limit to accommodate base64-encoded images
   app.post("/api/fs/upload", { bodyLimit: 20 * 1024 * 1024 }, async (req, reply) => {
