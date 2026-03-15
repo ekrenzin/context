@@ -109,11 +109,13 @@ export function registerOnboardingRoutes(app: FastifyInstance, root: string): vo
     },
   );
 
-  app.post<{ Body: { persona?: string; branding?: unknown; solutionId?: string } }>(
+  app.post<{ Body: { persona?: string; intents?: string[]; intentFreeform?: string; branding?: unknown; solutionId?: string } }>(
     "/api/onboarding/complete",
     async (req) => {
-      const { persona } = req.body;
+      const { persona, intents, intentFreeform } = req.body;
       if (persona) setSetting("persona", persona);
+      if (intents) setSetting("intents", JSON.stringify(intents));
+      if (intentFreeform) setSetting("intent_freeform", intentFreeform);
       setSetting("onboarding_complete", "true");
       return { ok: true };
     },

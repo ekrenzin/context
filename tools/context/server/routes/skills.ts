@@ -78,7 +78,7 @@ function parseYamlList(yaml: string, key: string): string[] {
   return [];
 }
 
-function loadSkillGraph(root: string): SkillGraph {
+export function loadSkillGraph(root: string): SkillGraph {
   const skillsDir = path.join(root, ".cursor", "skills");
 
   let skillDirs: string[] = [];

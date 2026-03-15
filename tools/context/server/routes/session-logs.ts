@@ -156,7 +156,6 @@ function backfillMeta(dir: string, id: string): SessionLogMeta {
 export function registerSessionLogRoutes(app: FastifyInstance, root: string): void {
   app.get("/api/session-logs", async () => listSessionLogs(root));
 
-  // Stream JSONL content line-by-line as newline-delimited JSON
   app.get<{ Params: { id: string } }>(
     "/api/session-logs/:id",
     async (req, reply) => {
@@ -166,21 +165,20 @@ export function registerSessionLogRoutes(app: FastifyInstance, root: string): vo
         return;
       }
 
-      reply.raw.writeHead(200, {
-        "Content-Type": "application/x-ndjson",
-        "Transfer-Encoding": "chunked",
-        "Cache-Control": "no-cache",
-      });
-
       const stream = createReadStream(filePath, { encoding: "utf-8" });
       const rl = createInterface({ input: stream, crlfDelay: Infinity });
+      const entries: unknown[] = [];
 
       for await (const line of rl) {
         if (!line.trim()) continue;
-        reply.raw.write(line + "\n");
+        try {
+          entries.push(JSON.parse(line));
+        } catch {
+          // skip malformed lines
+        }
       }
 
-      reply.raw.end();
+      return { entries };
     },
   );
 
